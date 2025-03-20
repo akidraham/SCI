@@ -1,0 +1,191 @@
+/* filename: admin-navbar.css 
+CSS untuk halaman admin navbar */
+
+/* ===== Global Styles ===== */
+:root {
+  --sidebar-width: 250px;
+  --sidebar-minimized-width: 60px;
+  --transition-duration: 0.3s;
+  --primary-color: #007bff;
+  --text-color: #495057;
+  --background-color: #f7f9fb;
+  --hover-bg-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ===== Offcanvas Styles ===== */
+.offcanvas.offcanvas-halaman-admin {
+  background: var(--background-color);
+  color: var(--text-color);
+  width: var(--sidebar-width) !important;
+  transition: width var(--transition-duration) ease-in-out, transform var(--transition-duration) ease-in-out;
+}
+
+.offcanvas.offcanvas-start.offcanvas-halaman-admin {
+  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Profile Section ===== */
+.offcanvas-halaman-admin .profile-section {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  transition: all var(--transition-duration) ease;
+  cursor: pointer;
+}
+
+.offcanvas-halaman-admin .profile-img {
+  max-width: 50%;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+  background-color: #34495e;
+  transition: all var(--transition-duration) ease;
+}
+
+/* ===== Navigation Links ===== */
+.offcanvas-halaman-admin .nav-link {
+  color: var(--text-color);
+  padding: 12px 15px;
+  border-radius: 5px;
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all var(--transition-duration) ease;
+}
+
+.offcanvas-halaman-admin .nav-link i {
+  width: 20px;
+  text-align: center;
+  font-size: 1.1rem;
+  transition: transform var(--transition-duration) ease;
+}
+
+.offcanvas-halaman-admin .nav-link:hover {
+  background-color: var(--hover-bg-color);
+  transform: translateX(5px);
+  color: var(--primary-color);
+}
+
+.offcanvas-halaman-admin .nav-link.active {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Separator ===== */
+.offcanvas-halaman-admin .separator {
+  margin: 1rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  transition: opacity var(--transition-duration) ease;
+}
+
+/* ===== Logout Button ===== */
+.offcanvas-halaman-admin .logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 5px 0;
+  padding: 12px 15px;
+  border-radius: 5px;
+  text-align: left;
+  border: 1px solid transparent;
+  transition: all var(--transition-duration) ease;
+}
+
+/* ===== Icon Handling ===== */
+.close-icon::before {
+  content: "\f00d"; /* fa-times */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  transition: transform var(--transition-duration) ease;
+}
+
+/* ===== Hover Effects ===== */
+@media (hover: hover) {
+  .close-btn-adminnavbar:hover .close-icon::before {
+    transform: scale(1.1);
+    color: var(--primary-color);
+  }
+}
+
+/* ===== Transition Handling ===== */
+.offcanvas-halaman-admin,
+.offcanvas-halaman-admin * {
+  transition: all var(--transition-duration) ease !important;
+}
+
+/* ===== Close Button Styles ===== */
+.close-btn-adminnavbar {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  color: var(--text-color);
+  transition: all var(--transition-duration) ease;
+  z-index: 1050;
+}
+
+.close-btn-adminnavbar .close-icon {
+  font-size: 1.5rem;
+  vertical-align: middle;
+}
+
+.close-btn-adminnavbar:hover {
+  color: var(--primary-color);
+  transform: rotate(90deg);
+}
+
+/* ===== Menu Toggle Button ===== */
+.menu-toggle {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 1040;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-duration) ease;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-toggle:hover {
+  background-color: #0069d9;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.menu-toggle:active {
+  transform: scale(0.95);
+}
+
+.menu-toggle i {
+  font-size: 1.25rem;
+  transition: transform 0.2s ease;
+}
+
+/* Animation for toggle icon */
+.menu-toggle:hover i {
+  transform: rotate(90deg);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .menu-toggle {
+    padding: 0.5rem 0.75rem;
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .close-btn-adminnavbar {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}

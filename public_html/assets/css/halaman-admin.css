@@ -1,0 +1,123 @@
+/* AREA HALAMAN ADMIN
+================================================================================ */
+/* Updated Navigation Styles */
+.navigasi-halaman-admin .border-hover {
+  border: 1px solid #dee2e6;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+
+.navigasi-halaman-admin .border-hover:hover {
+  border-color: #0d6efd;
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+}
+
+/* Simplified Profile Section */
+.user-info-halaman-admin .profile-img {
+  width: 80px;
+  height: 80px;
+  border: 2px solid #fff;
+}
+
+.user-info-halaman-admin .card-header {
+  background: #fff !important;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.user-info-halaman-admin .detail-item {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.user-info-halaman-admin .detail-item:last-child {
+  border-bottom: 0;
+}
+/* AKHIR AREA HALAMAN ADMIN
+================================================================================ */
+
+/* AREA HALAMAN MANAGE PRODUCTS
+================================================================================ */
+.halaman-manage-products-bagian-table .product-checkbox {
+  cursor: pointer;
+}
+
+#productDetailsModal .modal-body {
+  padding: 2rem;
+}
+
+#productDetailsModal strong {
+  color: #2c3e50;
+  margin-right: 0.5rem;
+}
+
+#detailProductPrice {
+  font-weight: 700;
+  color: #27ae60;
+}
+
+#detailProductCurrency {
+  font-size: 0.9em;
+  color: #7f8c8d;
+}
+
+.modal-halaman-admin-bagian-details .carousel-item img {
+  object-fit: cover;
+  width: 100%;
+  height: 300px;
+  border-radius: 5px;
+}
+
+.compact-recent-activity .list-group-item {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.075);
+  margin-bottom: 0.25rem;
+}
+
+.compact-recent-activity .badge {
+  font-size: 0.75em;
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+}
+
+.compact-recent-activity small {
+  font-size: 0.85em;
+}
+
+.compact-recent-activity .fa-fw {
+  width: 1.25em;
+}
+/* AKHIR AREA HALAMAN MANAGE PRODUCTS
+================================================================================ */
+
+/* AREA HALAMAN EDIT PRODUCTS
+================================================================================ */
+.halaman-admin-edit-product .separator {
+  border-right: 2px solid #dee2e6;
+  height: 100%;
+}
+
+.halaman-admin-edit-product .preview-card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: white;
+}
+
+.halaman-admin-edit-product .live-version {
+  padding-right: 30px;
+}
+
+.halaman-admin-edit-product .edit-section {
+  padding-left: 30px;
+}
+
+.halaman-admin-edit-product h4.section-title {
+  border-bottom: 2px solid #0d6efd;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+/* AKHIR AREA HALAMAN EDIT PRODUCTS
+================================================================================ */
