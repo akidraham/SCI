@@ -86,7 +86,7 @@ setCacheHeaders($isLive);
     <!--========== AKHIR AREA SCROLL TO TOP ==========-->
 
     <!--========== AREA MANAGE PRODUCTS ==========-->
-    <div class="jarak-kustom area-konten-manage-products">
+    <div class="area-konten-manage-products">
         <div class="container">
             <section class="judul-halaman-admin-dashboard">
                 <h2 class="fs-1 mb-5 text-center">Manage Products</h2>
