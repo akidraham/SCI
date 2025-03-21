@@ -273,7 +273,7 @@ setCacheHeaders($isLive);
                         $counter = 1;
                         foreach ($products as $product):
                             $encodedId = $optimus->encode($product['product_id']);
-                            ?>
+                        ?>
                             <tr>
                                 <td>
                                     <input type="checkbox" name="selected_products[]" value="<?= $product['product_id'] ?>"
@@ -673,7 +673,9 @@ setCacheHeaders($isLive);
         src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
     <!-- Custom JS -->
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
-    <script> const BASE_URL = '<?= $baseUrl ?>';</script>
+    <script>
+        const BASE_URL = '<?= $baseUrl ?>';
+    </script>
     <!-- Script terkait dengan tagify -->
     <script>
         const TAGS_WHITELIST = [
