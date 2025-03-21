@@ -24,7 +24,9 @@ if (getenv('ENV_LOADED')) {
 }
 
 use voku\helper\AntiXSS;
+
 $antiXSS = new AntiXSS();
+
 use Jenssegers\Optimus\Optimus;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpClient\HttpClient;
