@@ -216,7 +216,6 @@ function getProductImages(PDO $pdo, int $productId): array
         $stmt->execute([$productId]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
     } catch (PDOException $e) {
         throw new RuntimeException("Gagal mengambil gambar produk: " . $e->getMessage());
     }
@@ -670,7 +669,6 @@ function addProduct($data, $config, $env)
             'message' => 'Product successfully added.',
             'product_id' => $product_id
         ];
-
     } catch (Exception $e) {
         // Delete uploaded images if an error occurs
         foreach ($data['images'] as $imagePath) {
@@ -772,7 +770,6 @@ function handleAddProductForm($config, $env)
             $config = getEnvironmentConfig();
             header("Location: " . getBaseUrl($config, $_ENV['LIVE_URL']) . "manage_products");
             exit();
-
         } catch (Throwable $e) {
             // Delete uploaded images if an error occurs
             if (!empty($productData['images'])) {
@@ -879,19 +876,16 @@ function updateProduct($data, $product_id, $config, $env)
 
         $pdo->commit(); // Commit transaction if all operations succeed
         return ['error' => false, 'message' => 'Produk berhasil diperbarui', 'product_id' => $product_id];
-
     } catch (PDOException $e) {
         if ($pdo)
             $pdo->rollBack(); // Roll back transaction on database error
         deleteUploadedImagesOnError($new_images_uploaded); // Delete uploaded images to prevent orphaned files
         return ['error' => true, 'message' => 'Database error: ' . $e->getMessage()];
-
     } catch (RuntimeException $e) {
         if ($pdo)
             $pdo->rollBack(); // Roll back transaction on runtime error
         deleteUploadedImagesOnError($new_images_uploaded);
         return ['error' => true, 'message' => $e->getMessage()];
-
     } catch (Exception $e) {
         if ($pdo)
             $pdo->rollBack(); // Roll back transaction on general exception
