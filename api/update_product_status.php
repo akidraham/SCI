@@ -73,25 +73,67 @@ try {
     // Debugging: Log database update query
     error_log("Updating product_id={$productId} to status={$newStatus}");
 
+    // Ambil nama produk dan status sebelum diubah
+    $stmt = $pdo->prepare("SELECT product_name, active FROM products WHERE product_id = ?");
+    $stmt->execute([$productId]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$product) {
+        error_log("Product not found for product_id={$productId}");
+        echo json_encode([
+            'success' => false,
+            'message' => 'Product not found'
+        ]);
+        exit;
+    }
+
+    $oldStatus = $product['active'];
+    $productName = $product['product_name'];
+
+    // Cek apakah status sudah sama
+    if ($oldStatus === $newStatus) {
+        error_log("No update needed. Status for product_id={$productId} is already {$newStatus}");
+        echo json_encode([
+            'success' => false,
+            'message' => 'Status is already set to ' . $newStatus
+        ]);
+        exit;
+    }
+
+    // Eksekusi UPDATE ke database
     $stmt = $pdo->prepare("UPDATE products SET active = ? WHERE product_id = ?");
     $stmt->execute([$newStatus, $productId]);
 
-    // Debugging: Log query execution success
-    error_log("Status updated successfully for product_id={$productId}");
+    if ($stmt->rowCount() > 0) {
+        error_log("Status updated successfully for product_id={$productId}");
 
-    // Log the admin action
-    if ($adminId) {
-        logAdminAction(
-            $adminId,
-            'update_status',
-            'products',
-            $productId,
-            "Changed status to {$newStatus}",
-            $envConfig,
-            isLive() ? 'live' : 'local'
-        );
+        $logMessage = "Update Status - Changed status from \"{$productName}\" to {$newStatus}";
+
+        if ($adminId) {
+            logAdminAction(
+                $adminId,
+                'update_status',
+                'products',
+                $productId,
+                $logMessage,
+                $envConfig,
+                isLive() ? 'live' : 'local'
+            );
+        } else {
+            error_log("Admin ID not found, skipping log entry.");
+        }
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Status updated successfully'
+        ]);
+        exit;
     } else {
-        error_log("Admin ID not found, skipping log entry.");
+        error_log("No rows affected, status might be the same for product_id={$productId}");
+        echo json_encode([
+            'success' => false,
+            'message' => 'No changes were made'
+        ]);
     }
 
     echo json_encode([
