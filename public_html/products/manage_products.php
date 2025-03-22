@@ -285,13 +285,37 @@ setCacheHeaders($isLive);
 
                                 <!-- Kolom Status Penjualan -->
                                 <td>
-                                    <?php
-                                    $status = strtolower($product['active']);
-                                    $badgeClass = ($status === 'active') ? 'success' : 'danger';
-                                    ?>
-                                    <span class="badge bg-<?= $badgeClass ?>">
-                                        <?= ucfirst($status) ?>
-                                    </span>
+                                    <div class="dropdown">
+                                        <?php
+                                        $allowedStatuses = ['active', 'inactive'];
+                                        $status = in_array(strtolower($product['active']), $allowedStatuses) ? strtolower($product['active']) : 'inactive';
+                                        $badgeClass = ($status === 'active') ? 'success' : 'danger';
+                                        ?>
+                                        <button class="btn btn-sm btn-<?= htmlspecialchars($badgeClass, ENT_QUOTES, 'UTF-8') ?> dropdown-toggle d-flex align-items-center"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <?= htmlspecialchars(ucfirst($status), ENT_QUOTES, 'UTF-8') ?>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item <?= $status === 'active' ? 'disabled' : '' ?>"
+                                                    href="#"
+                                                    data-product-id="<?= intval($product['product_id']) ?>"
+                                                    data-new-status="active">
+                                                    Active
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item <?= $status === 'inactive' ? 'disabled' : '' ?>"
+                                                    href="#"
+                                                    data-product-id="<?= intval($product['product_id']) ?>"
+                                                    data-new-status="inactive">
+                                                    Inactive
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </td>
 
                                 <td>Rp <?= number_format($product['price_amount'], 0, ',', '.') ?>,00</td>

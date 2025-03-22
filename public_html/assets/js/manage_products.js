@@ -221,9 +221,12 @@ async function deleteSelectedProducts() {
   }
 }
 
-// ==================== JS untuk Filter Category dan Search Bar ==================== //
 /**
- * Updates the product table with the provided data.
+ * Updates the products table by rendering a paginated list of products.
+ *
+ * @param {Array} products - An array of product objects to be displayed.
+ * @param {number} [currentPage=1] - The current page number for pagination.
+ * @param {number} [limit=10] - The number of products to display per page.
  */
 function updateTable(products, currentPage = 1, limit = 10) {
   const tbody = document.getElementById("productsTableBody");
@@ -232,6 +235,9 @@ function updateTable(products, currentPage = 1, limit = 10) {
   products.forEach((product, index) => {
     const row = document.createElement("tr");
     const rowNumber = (currentPage - 1) * limit + index + 1;
+    const status = product.active.toLowerCase();
+    const badgeClass = status === "active" ? "success" : "danger";
+
     row.innerHTML = `
           <td>
               <input type="checkbox" name="selected_products[]" 
@@ -242,9 +248,32 @@ function updateTable(products, currentPage = 1, limit = 10) {
           <td>${escapeHtml(product.product_name)}</td>
           <td>${escapeHtml(product.categories || "Uncategorized")}</td>
           <td>
-            <span class="badge bg-${product.active.toLowerCase() === "active" ? "success" : "danger"}">
-                ${product.active === "active" ? "Active" : "Inactive"}
-            </span>
+              <div class="dropdown">
+                  <button class="btn btn-sm badge bg-${badgeClass} dropdown-toggle" 
+                          type="button" 
+                          data-bs-toggle="dropdown" 
+                          aria-expanded="false">
+                      ${product.active === "active" ? "Active" : "Inactive"}
+                  </button>
+                  <ul class="dropdown-menu">
+                      <li>
+                          <a class="dropdown-item ${status === "active" ? "disabled" : ""}" 
+                             href="#" 
+                             data-product-id="${product.product_id}"
+                             data-new-status="active">
+                              Active
+                          </a>
+                      </li>
+                      <li>
+                          <a class="dropdown-item ${status === "inactive" ? "disabled" : ""}" 
+                             href="#" 
+                             data-product-id="${product.product_id}"
+                             data-new-status="inactive">
+                              Inactive
+                          </a>
+                      </li>
+                  </ul>
+              </div>
           </td>
           <td>Rp ${formatPrice(product.price_amount)}</td>
           <td>
@@ -440,6 +469,88 @@ function viewDetails(productId) {
     });
 }
 
+// ==================== JS untuk Update Status Produk ==================== //
+
+/**
+ * Handles the status update process for a product.
+ * Prevents the default event behavior, extracts necessary data,
+ * confirms the action, sends an update request, and updates the UI accordingly.
+ *
+ * @param {Event} event - The event object triggered by clicking a dropdown item.
+ */
+function handleStatusUpdate(event) {
+  event.preventDefault();
+  console.log("handleStatusUpdate triggered");
+
+  const item = event.target.closest(".dropdown-item");
+  if (!item) {
+    console.log("No valid dropdown item found.");
+    return;
+  }
+  if (item.classList.contains("disabled")) {
+    console.log("Item is disabled, aborting.");
+    return;
+  }
+
+  const productId = item.dataset.productId;
+  const newStatus = item.dataset.newStatus;
+
+  console.log(`Product ID: ${productId}, New Status: ${newStatus}`);
+
+  if (!confirm(`Are you sure you want to set this product to ${newStatus}?`)) {
+    console.log("User cancelled the action.");
+    return;
+  }
+
+  fetch(`${BASE_URL}api-proxy.php?action=update_product_status`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-TOKEN": getCsrfToken(),
+    },
+    body: JSON.stringify({
+      product_id: productId,
+      new_status: newStatus,
+    }),
+    credentials: "include",
+  })
+    .then((response) => {
+      console.log("Raw response received:", response);
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Parsed response data:", data);
+
+      if (data.success) {
+        showNotification("Status updated successfully!", "success");
+
+        // Update UI without page reload
+        const badge = document
+          .querySelector(`[data-product-id="${productId}"]`)
+          .closest(".dropdown")
+          .querySelector(".badge");
+
+        console.log("Updating UI badge:", badge);
+
+        badge.className = `btn btn-sm badge bg-${newStatus === "active" ? "success" : "danger"} dropdown-toggle`;
+        badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+
+        // Update dropdown items state
+        const dropdownItems = badge.closest(".dropdown").querySelectorAll(".dropdown-item");
+        dropdownItems.forEach((item) => {
+          item.classList.toggle("disabled", item.dataset.newStatus === newStatus);
+        });
+      } else {
+        console.error("Error response from server:", data.message);
+        showNotification(data.message || "Failed to update status", "error");
+      }
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+      showNotification("Error updating status: " + error.message, "error");
+    });
+}
+
 // ==================== Event Listeners dan Inisialisasi ==================== //
 document.addEventListener("DOMContentLoaded", () => {
   // Ambil halaman pertama saat halaman dimuat
@@ -495,6 +606,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (files.length > 10) {
       alert("You can upload a maximum of 10 images.");
       event.preventDefault();
+    }
+  });
+
+  // Di bagian Event Listeners, tambahkan:
+  document.addEventListener("click", function (e) {
+    const toggle = e.target.closest(".dropdown-toggle");
+    if (toggle) {
+      const dropdown = new bootstrap.Dropdown(toggle);
+      dropdown.toggle();
     }
   });
 });
