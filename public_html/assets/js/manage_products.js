@@ -472,68 +472,86 @@ function viewDetails(productId) {
 // ==================== JS untuk Update Status Produk ==================== //
 
 /**
- * Handles the status update process for a product.
- * Prevents the default event behavior, extracts necessary data,
- * confirms the action, sends an update request, and updates the UI accordingly.
- *
- * @param {Event} event - The event object triggered by clicking a dropdown item.
+ * Handles the status update for a product when a dropdown item is clicked.
+ * @param {Event} event - The event triggered by clicking a dropdown item.
  */
 function handleStatusUpdate(event) {
   event.preventDefault();
-  console.log("handleStatusUpdate triggered");
+  console.log("[DEBUG] handleStatusUpdate triggered");
 
+  // Find the closest dropdown item
   const item = event.target.closest(".dropdown-item");
   if (!item) {
-    console.log("No valid dropdown item found.");
+    console.warn("[WARNING] No valid dropdown item found.");
     return;
   }
+
+  // Prevent action if item is disabled
   if (item.classList.contains("disabled")) {
-    console.log("Item is disabled, aborting.");
+    console.info("[INFO] Item is disabled, aborting.");
     return;
   }
 
   const productId = item.dataset.productId;
   const newStatus = item.dataset.newStatus;
 
-  console.log(`Product ID: ${productId}, New Status: ${newStatus}`);
+  console.log(`[DEBUG] Product ID: ${productId}, New Status: ${newStatus}`);
 
+  // Confirm action with user
   if (!confirm(`Are you sure you want to set this product to ${newStatus}?`)) {
-    console.log("User cancelled the action.");
+    console.info("[INFO] User cancelled the action.");
     return;
   }
 
+  // Send request to update status
   fetch(`${BASE_URL}api-proxy.php?action=update_product_status`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRF-TOKEN": getCsrfToken(),
     },
     body: JSON.stringify({
       product_id: productId,
       new_status: newStatus,
+      csrf_token: getCsrfToken(),
     }),
     credentials: "include",
   })
-    .then((response) => {
-      console.log("Raw response received:", response);
-      return response.json();
+    .then((response) => response.text()) // Convert response to text first
+    .then((text) => {
+      console.log("[DEBUG] Raw response text:", text);
+
+      // Coba cari JSON di dalam response, abaikan teks tambahan di awal
+      const jsonMatch = text.match(/\{.*\}$/s);
+      if (!jsonMatch) {
+        throw new Error("Invalid JSON response: " + text);
+      }
+
+      return JSON.parse(jsonMatch[0]); // Ambil hanya bagian JSON
     })
     .then((data) => {
-      console.log("Parsed response data:", data);
+      console.log("[DEBUG] Parsed response data:", data);
 
       if (data.success) {
+        console.log("[SUCCESS] Status updated successfully.");
         showNotification("Status updated successfully!", "success");
 
-        // Update UI without page reload
+        setTimeout(() => {
+          window.location.href = `${BASE_URL}manage_products`;
+        }, 1500);
+
+        // Update UI badge
         const badge = document
           .querySelector(`[data-product-id="${productId}"]`)
           .closest(".dropdown")
           .querySelector(".badge");
 
-        console.log("Updating UI badge:", badge);
-
-        badge.className = `btn btn-sm badge bg-${newStatus === "active" ? "success" : "danger"} dropdown-toggle`;
-        badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+        if (badge) {
+          console.log("[DEBUG] Updating UI badge:", badge);
+          badge.className = `btn btn-sm badge bg-${newStatus === "active" ? "success" : "danger"} dropdown-toggle`;
+          badge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+        } else {
+          console.warn("[WARNING] Badge element not found for product ID:", productId);
+        }
 
         // Update dropdown items state
         const dropdownItems = badge.closest(".dropdown").querySelectorAll(".dropdown-item");
@@ -541,12 +559,12 @@ function handleStatusUpdate(event) {
           item.classList.toggle("disabled", item.dataset.newStatus === newStatus);
         });
       } else {
-        console.error("Error response from server:", data.message);
+        console.error("[ERROR] Server response error:", data.message);
         showNotification(data.message || "Failed to update status", "error");
       }
     })
     .catch((error) => {
-      console.error("Fetch error:", error);
+      console.error("[ERROR] Fetch error:", error);
       showNotification("Error updating status: " + error.message, "error");
     });
 }
@@ -615,6 +633,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (toggle) {
       const dropdown = new bootstrap.Dropdown(toggle);
       dropdown.toggle();
+    }
+  });
+
+  document.getElementById("productsTableBody")?.addEventListener("click", (e) => {
+    const dropdownItem = e.target.closest(".dropdown-item[data-product-id][data-new-status]");
+    if (dropdownItem) {
+      handleStatusUpdate(e);
     }
   });
 });
