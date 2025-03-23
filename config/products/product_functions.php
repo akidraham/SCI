@@ -581,38 +581,36 @@ function getTotalProductsByKeyword($config, $env, $keyword)
 }
 
 /**
- * Adds a new product to the database.
- *
+ * Adds a new product to the database, including its details, images, category, and tags.
+ * 
  * This function performs the following steps:
- * - Validates required keys in the provided data.
- * - Checks for validation errors in the product data.
- * - Ensures that at least one image is provided and the count does not exceed 10.
+ * - Validates required fields in the input data.
+ * - Ensures the number of product images is within the allowed range.
  * - Sanitizes the input data.
- * - Inserts product details into the `products` table.
+ * - Inserts the product into the `products` table.
  * - Associates images with the product in the `product_images` table.
  * - Links the product to a category in the `product_category_mapping` table.
- * - Rolls back the transaction and deletes uploaded images if an error occurs.
- *
- * @param array $data The product data including name, price, currency, description, slug, images, and category.
- * @return array An associative array indicating success or failure with an error message if applicable.
+ * - Processes and associates tags with the product in the `tags` and `product_tag_mapping` tables.
+ * - Rolls back the transaction if an error occurs.
+ * 
+ * @param array $data The product data including name, price, currency, description, slug, images, category, and tags.
+ * @param array $config Database configuration.
+ * @param string $env Environment settings.
+ * @return array Returns an array indicating success or failure with a message.
  */
 function addProduct($data, $config, $env)
 {
     $requiredKeys = ['name', 'price_amount', 'currency', 'description', 'slug', 'images', 'category'];
     foreach ($requiredKeys as $key) {
-        if (!isset($data[$key])) {
-            return ['error' => true, 'message' => "Key '$key' not found in product data."];
-        }
+        if (!isset($data[$key])) return ['error' => true, 'message' => "Key '$key' not found in product data."];
     }
 
-    // Validate product data
     $violations = validateProductData($data);
     if (count($violations) > 0) {
         handleError("Validation failed: " . implode(", ", array_map(fn($v) => $v->getMessage(), $violations)), getEnvironmentConfig()['local']);
         return ['error' => true, 'message' => 'Invalid product data. Please check your input.'];
     }
 
-    // Ensure at least one image is provided and does not exceed 10
     if (empty($data['images']) || !is_array($data['images'])) {
         handleError("Product images required", getEnvironmentConfig()['local']);
         return ['error' => true, 'message' => 'Product images are required.'];
@@ -624,14 +622,13 @@ function addProduct($data, $config, $env)
         return ['error' => true, 'message' => 'Number of images must be between 1 and 10.'];
     }
 
-    // Sanitize product data
     $data = sanitizeProductData($data);
 
     try {
         $pdo = getPDOConnection($config, $env);
         $pdo->beginTransaction();
 
-        // Insert product details
+        // Insert product into `products` table
         $stmt = $pdo->prepare("INSERT INTO products (product_name, price_amount, currency, description, slug) VALUES (:name, :price_amount, :currency, :description, :slug)");
         $success = $stmt->execute([
             'name' => $data['name'],
@@ -640,41 +637,57 @@ function addProduct($data, $config, $env)
             'description' => $data['description'],
             'slug' => $data['slug']
         ]);
-
         if (!$success || $stmt->rowCount() === 0) {
             $pdo->rollBack();
             return ['error' => true, 'message' => 'Failed to save product to database.'];
         }
-
         $product_id = $pdo->lastInsertId();
 
-        // Insert product images
+        // Insert product images into `product_images` table
         $stmtImages = $pdo->prepare("INSERT INTO product_images (product_id, image_path) VALUES (?, ?)");
-        foreach ($data['images'] as $imagePath) {
-            $stmtImages->execute([$product_id, $imagePath]);
-        }
+        foreach ($data['images'] as $imagePath) $stmtImages->execute([$product_id, $imagePath]);
 
-        // Link product to category
+        // Link product to category in `product_category_mapping`
         $stmt = $pdo->prepare("INSERT INTO product_category_mapping (product_id, category_id) VALUES (:product_id, :category_id)");
         $success = $stmt->execute(['product_id' => $product_id, 'category_id' => $data['category']]);
-
         if (!$success) {
             $pdo->rollBack();
             return ['error' => true, 'message' => 'Failed to link product to category.'];
         }
 
+        // Process tags
+        if (!empty($data['tags'])) {
+            foreach ($data['tags'] as $tagName) {
+                $tagName = trim($tagName);
+                if (empty($tagName)) continue;
+
+                // Check if tag exists
+                $stmt = $pdo->prepare("SELECT tag_id FROM tags WHERE tag_name = :tag_name");
+                $stmt->execute(['tag_name' => $tagName]);
+                $tag = $stmt->fetch();
+
+                if (!$tag) {
+                    // Insert new tag into `tags` table
+                    $insertTag = $pdo->prepare("INSERT INTO tags (tag_name) VALUES (:tag_name)");
+                    $insertTag->execute(['tag_name' => $tagName]);
+                    $tag_id = $pdo->lastInsertId();
+                } else {
+                    $tag_id = $tag['tag_id'];
+                }
+
+                // Link product to tag in `product_tag_mapping`
+                $insertMapping = $pdo->prepare("INSERT INTO product_tag_mapping (product_id, tag_id) VALUES (:product_id, :tag_id)");
+                $insertMapping->execute(['product_id' => $product_id, 'tag_id' => $tag_id]);
+            }
+        }
+
         $pdo->commit();
-        return [
-            'error' => false,
-            'message' => 'Product successfully added.',
-            'product_id' => $product_id
-        ];
+        return ['error' => false, 'message' => 'Product successfully added.', 'product_id' => $product_id];
     } catch (Exception $e) {
         // Delete uploaded images if an error occurs
         foreach ($data['images'] as $imagePath) {
             $absPath = __DIR__ . '/../../public_html' . $imagePath;
-            if (file_exists($absPath))
-                @unlink($absPath);
+            if (file_exists($absPath)) @unlink($absPath);
         }
 
         $pdo->rollBack();
@@ -714,6 +727,21 @@ function handleAddProductForm($config, $env)
                 'slug' => '',
                 'images' => []
             ];
+
+            $tagsInput = $_POST['productTags'] ?? '[]';
+            $tags = json_decode($tagsInput);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $tagsInput = trim($_POST['productTags'] ?? '');
+                $tags = $tagsInput ? explode(',', $tagsInput) : [];
+                $tags = array_map('trim', $tags);
+            }
+
+            $tags = array_filter($tags, function ($tag) {
+                return !empty($tag);
+            });
+
+            $productData['tags'] = $tags;
 
             // Validate product price
             $rawPrice = $_POST['productPriceAmount'] ?? '';

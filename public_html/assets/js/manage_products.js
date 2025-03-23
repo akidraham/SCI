@@ -678,6 +678,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tagify) tagify.destroy();
   });
 
+  // Handle form submission untuk serialize tags ke JSON
+  const addProductForm = document.getElementById("addProductForm");
+  if (addProductForm) {
+    addProductForm.addEventListener("submit", function (e) {
+      if (tagify) {
+        const tags = tagify.value; // Dapatkan array objek tag
+        const tagValues = tags.map((tag) => tag.value); // Ambil nilai tag
+        // Update nilai input dengan JSON string
+        document.getElementById("productTags").value = JSON.stringify(tagValues);
+      }
+    });
+  }
+
   /**
    * Limits the number of uploaded images to 10.
    * @param {Event} event - The form submission event.
