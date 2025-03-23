@@ -125,13 +125,15 @@ function isLive()
  */
 function handleError($message, $env)
 {
+    // Log the error message securely
+    error_log($message);
+
     if ($env === 'local') {
         $whoops = new Whoops\Run;
         $whoops->pushHandler(new Whoops\Handler\PrettyPageHandler);
         $whoops->register();
         throw new Exception($message);
     } else {
-        error_log($message);
         exit;
     }
 }
