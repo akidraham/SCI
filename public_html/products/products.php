@@ -24,11 +24,33 @@ setCacheHeaders($isLive); // Set header no cache in local from config.php
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Products - Sarjana Canggih Indonesia</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>favicon.ico" />
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/vendor/css/bootstrap.min.css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/css/styles.css" />
 </head>
 
-<body>
-    <!-- PLACEHOLDER -->
+<body style="background-color: #f7f9fb;">
+
+    <!--========== INSERT HEADER ==========-->
+    <?php include __DIR__ . '/../includes/header.php'; ?>
+    <!--========== AKHIR INSERT HEADER ==========-->
+
+    <!--========== AREA SCROLL TO TOP ==========-->
+    <div class="scroll">
+        <!-- Scroll to Top Button -->
+        <a href="#" class="scroll-to-top" id="scrollToTopBtn">
+            <i class="fa-solid fa-angles-up"></i>
+        </a>
+    </div>
+    <!--========== AKHIR AREA SCROLL TO TOP ==========-->
+
 </body>
 
 </html>
