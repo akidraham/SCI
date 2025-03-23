@@ -340,15 +340,32 @@ async function searchProducts(keyword, page = 1, limit = 10, categoryId = null) 
 }
 
 // ==================== JS untuk Tagify ==================== //
+/**
+ * Tagify instance to handle product tags input.
+ * @type {Tagify|null}
+ */
 let tagify = null;
 
+/**
+ * Initializes the Tagify component for the product tags input field.
+ * It configures Tagify with a predefined whitelist, dropdown settings,
+ * validation rules, and event handling.
+ */
 function initializeTagify() {
   const input = document.getElementById("productTags");
+
+  // Destroy existing Tagify instance if it exists
   if (tagify) tagify.destroy();
 
+  // Initialize a new Tagify instance
   tagify = new Tagify(input, {
     whitelist: TAGS_WHITELIST,
-    dropdown: { enabled: 1, maxItems: 50, closeOnSelect: false, highlightFirst: true },
+    dropdown: {
+      enabled: 1,
+      maxItems: 50,
+      closeOnSelect: false,
+      highlightFirst: true,
+    },
     enforceWhitelist: false,
     editTags: true,
     duplicates: false,
@@ -357,12 +374,17 @@ function initializeTagify() {
     pattern: /^[a-zA-Z0-9\s\-_]+$/,
   });
 
+  // Event listener for tag addition
   tagify.on("add", (e) => {
     const tagValue = e.detail.data.value;
+
+    // Validate tag format
     if (!/^[a-zA-Z0-9\s\-_]+$/.test(tagValue)) {
       showNotification(`Invalid tag: ${tagValue}`, "error");
       tagify.removeTag(e.detail.tag);
     }
+
+    // Enforce max tag limit
     if (tagify.value.length > 10) {
       showNotification("Max 10 tags allowed", "error");
       tagify.removeTag(e.detail.tag);
@@ -570,7 +592,6 @@ function handleStatusUpdate(event) {
 }
 
 // ==================== Event Listeners and Initialization ==================== //
-
 document.addEventListener("DOMContentLoaded", () => {
   /**
    * Fetches and displays the first page of products when the page is loaded.
@@ -726,5 +747,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
 // ==================== End of Event Listeners and Initialization ==================== //
