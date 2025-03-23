@@ -103,7 +103,7 @@ if (!empty($activeProducts)) {
                                 <!-- Body card -->
                                 <div class="card-body d-flex flex-column p-4">
                                     <!-- Nama produk -->
-                                    <h5 class="card-title fs-5 fw-bold mb-2 text-truncate">
+                                    <h5 class="card-title fs-5 fw-bold mb-2">
                                         <?php echo $product['name']; ?>
                                     </h5>
 
