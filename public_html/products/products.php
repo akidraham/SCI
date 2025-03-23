@@ -51,6 +51,19 @@ setCacheHeaders($isLive); // Set header no cache in local from config.php
     </div>
     <!--========== AKHIR AREA SCROLL TO TOP ==========-->
 
+    <!--========== AREA BANNER ==========-->
+    <section class="py-5 bg-banner-halaman-products text-white">
+        <div class="container py-5">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-lg-8 text-center">
+                    <h1 class="display-1 fw-bold mb-4">Products</h1>
+                    <p class="lead mb-0">Explore our high-quality solutions tailored for your success.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--========== AKHIR AREA BANNER ==========-->
+
     <!--================ AREA FOOTER =================-->
     <?php include __DIR__ . '/../includes/footer.php'; ?>
     <!--================ AKHIR AREA FOOTER =================-->

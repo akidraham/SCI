@@ -1218,3 +1218,12 @@ section.judul-halaman-about .container h2 {
 }
 /* AKHIR AREA HALAMAN ABOUT US
 ================================================================================ */
+
+/* AREA HALAMAN EDIT PRODUCTS
+================================================================================ */
+.bg-banner-halaman-products {
+  background: linear-gradient(to bottom, #003566, #001d3d);
+  width: 100%;
+}
+/* AKHIR AREA HALAMAN EDIT PRODUCTS
+================================================================================ */
