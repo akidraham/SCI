@@ -503,14 +503,16 @@ setCacheHeaders($isLive);
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <!-- Form untuk menambahkan produk baru -->
+                            <!-- Form Produk Baru -->
                             <form id="addProductForm" action="<?php echo $baseUrl; ?>manage_products" method="POST"
                                 enctype="multipart/form-data">
+                                <!-- Bagian Nama Produk -->
                                 <div class="mb-3">
                                     <label for="productName" class="form-label">Product Name</label>
                                     <input type="text" class="form-control" id="productName" name="productName"
                                         required>
                                 </div>
+                                <!-- Bagian Kategori -->
                                 <div class="mb-3">
                                     <label for="productCategory" class="form-label">Category</label>
                                     <select class="form-select" id="productCategory" name="productCategory" required>
@@ -521,6 +523,7 @@ setCacheHeaders($isLive);
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
+                                <!-- Tags -->
                                 </div>
                                 <div class="mb-3">
                                     <label for="productTags" class="form-label">Tags</label>
@@ -532,11 +535,12 @@ setCacheHeaders($isLive);
                                             <option value="<?php echo htmlspecialchars($tag['tag_name']); ?>">
                                             <?php endforeach; ?>
                                     </datalist>
+                                <!-- Bagian Harga -->
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Harga</label>
                                     <div class="row g-2 align-items-end">
-                                        <!-- Currency Display -->
+                                        <!-- Display Mata Uang -->
                                         <div class="col-3">
                                             <label class="form-label small text-muted">Mata Uang</label>
                                             <select class="form-select" disabled>
@@ -545,7 +549,7 @@ setCacheHeaders($isLive);
                                             <input type="hidden" name="productCurrency" value="IDR">
                                         </div>
 
-                                        <!-- Price Input -->
+                                        <!-- Input Harga -->
                                         <div class="col-9">
                                             <label for="productPriceAmount"
                                                 class="form-label small text-muted">Jumlah</label>
@@ -558,10 +562,12 @@ setCacheHeaders($isLive);
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Bagian Deskripsi Produk -->
                                 <div class="mb-3">
                                     <label for="productDescription" class="form-label">Description</label>
                                     <textarea class="form-control" id="productDescription" name="productDescription"
                                         rows="3"></textarea>
+                                <!-- Bagian Gambar Produk -->
                                 </div>
                                 <div class="mb-3">
                                     <label for="productImages" class="form-label">Product Images (Max 10 images)</label>
@@ -697,9 +703,10 @@ setCacheHeaders($isLive);
         src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
     <!-- Custom JS -->
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
+    <!-- Script untuk bisa menggunakan baseUrl di javascript setelah script ini -->
     <script>
         const BASE_URL = '<?= $baseUrl ?>';
-    </script>
+    <!-- Ambil data tag dari database -->
     <!-- Script terkait dengan tagify -->
     <script>
         const TAGS_WHITELIST = [
