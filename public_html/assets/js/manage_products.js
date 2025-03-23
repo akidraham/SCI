@@ -569,12 +569,55 @@ function handleStatusUpdate(event) {
     });
 }
 
-// ==================== Event Listeners dan Inisialisasi ==================== //
+// ==================== Event Listeners and Initialization ==================== //
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Ambil halaman pertama saat halaman dimuat
+  /**
+   * Fetches and displays the first page of products when the page is loaded.
+   */
   fetchProducts(1);
 
-  // Event delegation untuk checkbox
+  /**
+   * Formats the input value as an Indonesian currency format while preserving cursor position.
+   * Also stores the raw numeric value in a dataset attribute.
+   *
+   * @param {Event} e - The input event object.
+   */
+  document.getElementById("productPriceAmount").addEventListener("input", function (e) {
+    // Save cursor position
+    let start = e.target.selectionStart;
+    let end = e.target.selectionEnd;
+
+    // Remove non-numeric characters
+    let value = e.target.value.replace(/[^\d]/g, "");
+    let numberValue = parseInt(value || 0);
+    let formatted = new Intl.NumberFormat("id-ID").format(numberValue);
+
+    // Update input value while keeping cursor position
+    e.target.value = formatted;
+    e.target.setSelectionRange(start, end);
+
+    // Store raw numeric value in dataset
+    e.target.dataset.rawValue = numberValue;
+  });
+
+  /**
+   * Ensures that the "productPriceAmount" field contains only the raw numeric value
+   * when submitting the "addProductForm" form.
+   *
+   * @event submit - Triggers when the form is submitted.
+   * @param {Event} e - The submit event object.
+   */
+  document.getElementById("addProductForm").addEventListener("submit", function (e) {
+    const input = document.getElementById("productPriceAmount");
+    // Set the input value to the raw numeric value before submission
+    input.value = input.dataset.rawValue || "0";
+  });
+
+  /**
+   * Event delegation for product checkboxes to update the delete button visibility.
+   * @param {Event} e - The change event.
+   */
   document.getElementById("productsTableBody")?.addEventListener("change", (e) => {
     if (e.target.classList.contains("product-checkbox")) {
       updateDeleteButtonVisibility();
@@ -585,6 +628,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectAllButton = document.getElementById("manage_products-selectAllButton");
   if (selectAllButton) {
     selectAllButton.addEventListener("click", () => {
+      /**
+       * Selects or deselects all product checkboxes and updates delete button visibility.
+       */
       const checkboxes = document.querySelectorAll(".product-checkbox");
       const isAnyUnchecked = [...checkboxes].some((cb) => !cb.checked);
       checkboxes.forEach((cb) => (cb.checked = isAnyUnchecked));
@@ -592,18 +638,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Delete Selected Button
+  /**
+   * Event listener for the "Delete Selected" button.
+   * Calls `deleteSelectedProducts` function when clicked.
+   */
   document.getElementById("confirmDeleteSelected")?.addEventListener("click", deleteSelectedProducts);
 
-  // Filter Category
+  /**
+   * Filters products by category when the category filter dropdown changes.
+   * @param {Event} e - The change event.
+   */
   document.getElementById("categoryFilter")?.addEventListener("change", (e) => {
     const categoryId = e.target.value || null;
     const keyword = document.getElementById("searchInput").value.trim();
-    searchProducts(keyword, 1, 10, categoryId); // Ambil halaman pertama dengan keyword dan filter kategori
+    searchProducts(keyword, 1, 10, categoryId);
   });
 
   // Search Bar
   const searchInput = document.getElementById("searchInput");
+
+  /**
+   * Debounced search function to reduce the number of API calls while typing.
+   */
   const debouncedSearch = debounce(() => {
     const keyword = searchInput.value.trim();
     const categoryId = document.getElementById("categoryFilter").value || null;
@@ -612,13 +668,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   searchInput?.addEventListener("input", debouncedSearch);
 
-  // Tagify
+  // Tagify Initialization
   $("#addProductModal").on("shown.bs.modal", initializeTagify);
+
+  /**
+   * Destroys Tagify instance when the "Add Product" modal is closed.
+   */
   $("#addProductModal").on("hidden.bs.modal", () => {
     if (tagify) tagify.destroy();
   });
 
-  // Maksimal 10 gambar
+  /**
+   * Limits the number of uploaded images to 10.
+   * @param {Event} event - The form submission event.
+   */
   document.getElementById("addProductForm").addEventListener("submit", function (event) {
     const files = document.getElementById("productImages").files;
     if (files.length > 10) {
@@ -627,7 +690,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Di bagian Event Listeners, tambahkan:
+  /**
+   * Toggles Bootstrap dropdowns when clicking on elements with `.dropdown-toggle`.
+   * @param {Event} e - The click event.
+   */
   document.addEventListener("click", function (e) {
     const toggle = e.target.closest(".dropdown-toggle");
     if (toggle) {
@@ -636,6 +702,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  /**
+   * Handles status update when clicking on a dropdown item inside the product table.
+   * @param {Event} e - The click event.
+   */
   document.getElementById("productsTableBody")?.addEventListener("click", (e) => {
     const dropdownItem = e.target.closest(".dropdown-item[data-product-id][data-new-status]");
     if (dropdownItem) {
@@ -643,4 +713,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-// ==================== Akhir Event Listeners dan Inisialisasi ==================== //
+
+// ==================== End of Event Listeners and Initialization ==================== //
