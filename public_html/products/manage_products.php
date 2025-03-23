@@ -523,8 +523,8 @@ setCacheHeaders($isLive);
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
-                                <!-- Tags -->
                                 </div>
+                                <!-- Tags -->
                                 <div class="mb-3">
                                     <label for="productTags" class="form-label">Tags</label>
                                     <input type="text" class="form-control" id="productTags" name="productTags"
@@ -532,11 +532,13 @@ setCacheHeaders($isLive);
                                     <!-- Datalist untuk autocomplete tags -->
                                     <datalist id="tagList">
                                         <?php foreach ($tags as $tag): ?>
-                                            <option value="<?php echo htmlspecialchars($tag['tag_name']); ?>">
-                                            <?php endforeach; ?>
+                                            <option
+                                                value="<?php echo htmlspecialchars($tag['tag_name']); ?>">
+                                            </option>
+                                        <?php endforeach; ?>
                                     </datalist>
-                                <!-- Bagian Harga -->
                                 </div>
+                                <!-- Bagian Harga -->
                                 <div class="mb-3">
                                     <label class="form-label">Harga</label>
                                     <div class="row g-2 align-items-end">
@@ -551,11 +553,15 @@ setCacheHeaders($isLive);
 
                                         <!-- Input Harga -->
                                         <div class="col-9">
-                                            <label for="productPriceAmount"
-                                                class="form-label small text-muted">Jumlah</label>
+                                            <label for="productPriceAmount" class="form-label small text-muted">Jumlah</label>
                                             <div class="input-group">
-                                                <input type="number" class="form-control" id="productPriceAmount"
-                                                    name="productPriceAmount" step="5000" min="0" placeholder="50000"
+                                                <input type="text"
+                                                    class="form-control"
+                                                    id="productPriceAmount"
+                                                    name="productPriceAmount"
+                                                    placeholder="50000"
+                                                    inputmode="numeric"
+                                                    pattern="[0-9.]*"
                                                     required>
                                                 <span class="input-group-text">,00</span>
                                             </div>
@@ -567,8 +573,8 @@ setCacheHeaders($isLive);
                                     <label for="productDescription" class="form-label">Description</label>
                                     <textarea class="form-control" id="productDescription" name="productDescription"
                                         rows="3"></textarea>
-                                <!-- Bagian Gambar Produk -->
                                 </div>
+                                <!-- Bagian Gambar Produk -->
                                 <div class="mb-3">
                                     <label for="productImages" class="form-label">Product Images (Max 10 images)</label>
                                     <input type="file" class="form-control" id="productImages" name="productImages[]"
@@ -706,8 +712,8 @@ setCacheHeaders($isLive);
     <!-- Script untuk bisa menggunakan baseUrl di javascript setelah script ini -->
     <script>
         const BASE_URL = '<?= $baseUrl ?>';
+    </script>
     <!-- Ambil data tag dari database -->
-    <!-- Script terkait dengan tagify -->
     <script>
         const TAGS_WHITELIST = [
             <?php foreach ($tags as $tag): ?> "<?php echo htmlspecialchars($tag['tag_name']); ?>",
