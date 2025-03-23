@@ -51,6 +51,15 @@ setCacheHeaders($isLive); // Set header no cache in local from config.php
     </div>
     <!--========== AKHIR AREA SCROLL TO TOP ==========-->
 
+    <!--================ AREA FOOTER =================-->
+    <?php include __DIR__ . '/../includes/footer.php'; ?>
+    <!--================ AKHIR AREA FOOTER =================-->
+
+    <!-- External JS libraries -->
+    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
+    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
+    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/slick.min.js"></script>
 </body>
 
 </html>
