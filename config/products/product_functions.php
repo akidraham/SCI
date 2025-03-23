@@ -716,12 +716,15 @@ function handleAddProductForm($config, $env)
             ];
 
             // Validate product price
-            if (!isset($_POST['productPriceAmount']) || !is_numeric($_POST['productPriceAmount'])) {
-                throw new Exception("Invalid price format");
+            $rawPrice = $_POST['productPriceAmount'] ?? '';
+            $cleanedPrice = str_replace(['.', ','], '', $rawPrice);
+
+            if (!is_numeric($cleanedPrice)) {
+                throw new Exception("Format harga tidak valid");
             }
 
             // Convert price to appropriate format using Money library
-            $money = Money::of($_POST['productPriceAmount'], $_POST['productCurrency'], null, RoundingMode::DOWN);
+            $money = Money::of($cleanedPrice, $_POST['productCurrency'], null, RoundingMode::DOWN);
             $productData['price_amount'] = $money->getAmount()->toInt();
             $productData['currency'] = $money->getCurrency()->getCurrencyCode();
 
