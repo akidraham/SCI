@@ -88,35 +88,53 @@ if (!empty($activeProducts)) {
     <!--========== AREA KONTEN PRODUCTS ==========-->
     <div class="area-konten-halaman-products">
         <div class="container">
-            <div class="row row-cols-1 row-cols-md-4 g-4 py-5">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4 py-5">
                 <?php if (!empty($productsData)) : ?>
                     <?php foreach ($productsData as $product) : ?>
                         <div class="col">
-                            <div class="card h-100 shadow-sm">
-                                <img src="<?php echo $baseUrl . $product['image']; ?>"
-                                    class="card-img-top"
-                                    alt="<?php echo $product['name']; ?>"
-                                    style="height: 200px; object-fit: cover;">
-                                <!-- Body card untuk informasi teks -->
-                                <div class="card-body">
+                            <div class="card h-100 shadow-lg-hover border-0 rounded-4 overflow-hidden transition-all">
+                                <!-- Gambar produk -->
+                                <div class="ratio ratio-1x1">
+                                    <img src="<?php echo $baseUrl . $product['image']; ?>"
+                                        class="card-img-top object-fit-cover"
+                                        alt="<?php echo $product['name']; ?>">
+                                </div>
+
+                                <!-- Body card -->
+                                <div class="card-body d-flex flex-column p-4">
                                     <!-- Nama produk -->
-                                    <h5 class="card-title"><?php echo $product['name']; ?></h5>
+                                    <h5 class="card-title fs-5 fw-bold mb-2 text-truncate">
+                                        <?php echo $product['name']; ?>
+                                    </h5>
+
                                     <!-- Deskripsi produk -->
-                                    <p class="card-text text-muted"><?php echo $product['description']; ?></p>
-                                    <!-- Harga produk -->
-                                    <p class="card-text text-success fw-bold mb-3">
-                                        <?php echo $product['price']; ?>
+                                    <p class="card-text text-secondary mb-3 line-clamp-3">
+                                        <?php echo $product['description']; ?>
                                     </p>
-                                    <!-- Tombol untuk melihat detail produk -->
-                                    <a href="#" class="btn btn-outline-primary">View Details</a>
+
+                                    <!-- Harga produk -->
+                                    <div class="mt-auto pt-2">
+                                        <p class="text-success fw-bold fs-5 mb-3">
+                                            <?php echo $product['price']; ?>
+                                        </p>
+                                        <!-- Tombol aksi -->
+                                        <a href="#" class="btn btn-primary w-100 rounded-3 py-2">
+                                            View Details
+                                            <i class="fas fa-arrow-right ms-2"></i>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 <?php else : ?>
-                    <!-- Tampilan jika tidak ada produk aktif yang ditemukan -->
+                    <!-- Tampilan kosong -->
                     <div class="col-12 text-center py-5">
-                        <p class="lead text-muted">No active products found.</p>
+                        <div class="py-5">
+                            <i class="fas fa-box-open fa-4x text-light mb-4"></i>
+                            <h3 class="h4 text-muted mb-3">No Products Available</h3>
+                            <p class="text-muted">We're preparing something amazing for you!</p>
+                        </div>
                     </div>
                 <?php endif; ?>
             </div>
