@@ -445,6 +445,47 @@ function getProductBySlugAndOptimus($slug, $encodedId, $config, $env)
 }
 
 /**
+ * Retrieves active products along with their associated images from the database.
+ *
+ * This function fetches product details such as product ID, name, slug, description, 
+ * price amount, and currency. Additionally, it retrieves all associated images 
+ * for each product using `GROUP_CONCAT`, ensuring that multiple images per product 
+ * are concatenated into a single string.
+ *
+ * @param array $config Database configuration settings.
+ * @param string $env Environment settings.
+ * @param int $limit Number of products to retrieve (default: 10).
+ * @param int $offset Offset for pagination (default: 0).
+ * @return array Returns an array of active products with their respective images.
+ */
+function getActiveProductsWithImages($config, $env, $limit = 10, $offset = 0)
+{
+    try {
+        $pdo = getPDOConnection($config, $env); // Establish database connection
+
+        $sql = "SELECT 
+                    p.product_id, p.product_name, p.slug, p.description, 
+                    p.price_amount, p.currency,
+                    GROUP_CONCAT(pi.image_path ORDER BY pi.image_id SEPARATOR ', ') AS images
+                FROM products p
+                LEFT JOIN product_images pi ON p.product_id = pi.product_id
+                WHERE p.active = 'active'
+                GROUP BY p.product_id
+                LIMIT :limit OFFSET :offset"; // Query to fetch active products with images
+
+        $stmt = $pdo->prepare($sql); // Prepare the SQL statement
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT); // Bind limit parameter
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT); // Bind offset parameter
+        $stmt->execute(); // Execute the query
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch and return results
+    } catch (Exception $e) {
+        handleError($e->getMessage(), $env); // Handle any errors that occur
+        return [];
+    }
+}
+
+/**
  * Retrieves the total number of products in the database.
  *
  * This function connects to the database using `getPDOConnection()`, prepares a query 
