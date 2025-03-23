@@ -72,7 +72,7 @@ setCacheHeaders($isLive);
 
 <body style="background-color: #f7f9fb;">
 
-    <!--========== INSERT HEADER.PHP ==========-->
+    <!--========== INSERT HEADER ==========-->
     <?php include __DIR__ . '/../includes/admin-navbar.php'; ?>
     <!--========== AKHIR INSERT HEADER.PHP ==========-->
 
@@ -88,9 +88,11 @@ setCacheHeaders($isLive);
     <!--========== AREA MANAGE PRODUCTS ==========-->
     <div class="area-konten-manage-products">
         <div class="container">
+            <!-- Judul Halaman -->
             <section class="judul-halaman-admin-dashboard">
-                <h2 class="fs-1 mb-5 text-center">Manage Products</h2>
+                <h2 class="fs-1 my-5 text-center fw-bold">Manage Products</h2>
             </section>
+
             <!-- User Info Section & Admin Navigation -->
             <div class="row mb-4">
                 <!-- User Info -->
@@ -355,7 +357,7 @@ setCacheHeaders($isLive);
             <!-- Price History and Recent Activity Section -->
             <div class="row g-4 my-4">
                 <!-- Recent Activity -->
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-transparent border-bottom px-4 py-3">
                             <h5 class="mb-0"><i class="fas fa-list-alt me-2 text-primary"></i>Recent Activity</h5>
@@ -412,7 +414,7 @@ setCacheHeaders($isLive);
                     </div>
                 </div>
 
-                <!-- Price History -->
+                <!-- Price History 
                 <div class="col-lg-6">
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-transparent border-bottom px-4 py-3">
@@ -469,258 +471,258 @@ setCacheHeaders($isLive);
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
-            <!-- Product Reviews Section -->
-            <div class="row my-4">
-                <!-- Product Reviews -->
-                <div class="col-md-12">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0">Product Reviews</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action">
-                                    Product A - 4.5 stars - "Great product!"
-                                </a>
-                                <a href="#" class="list-group-item list-group-item-action">
-                                    Product B - 3 stars - "Good value for money."
-                                </a>
+                <!-- Product Reviews Section -->
+                <div class="row my-4">
+                    <!-- Product Reviews -->
+                    <div class="col-md-12">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">Product Reviews</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        Product A - 4.5 stars - "Great product!"
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        Product B - 3 stars - "Good value for money."
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Add Product Modal -->
-            <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Form Produk Baru -->
-                            <form id="addProductForm" action="<?php echo $baseUrl; ?>manage_products" method="POST"
-                                enctype="multipart/form-data">
-                                <!-- Bagian Nama Produk -->
-                                <div class="mb-3">
-                                    <label for="productName" class="form-label">Product Name</label>
-                                    <input type="text" class="form-control" id="productName" name="productName"
-                                        required>
-                                </div>
-                                <!-- Bagian Kategori -->
-                                <div class="mb-3">
-                                    <label for="productCategory" class="form-label">Category</label>
-                                    <select class="form-select" id="productCategory" name="productCategory" required>
-                                        <option value="" selected disabled>Select Category</option>
-                                        <?php foreach ($categories as $category): ?>
-                                            <option value="<?php echo htmlspecialchars($category['category_id']); ?>">
-                                                <?php echo htmlspecialchars($category['category_name']); ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <!-- Tags -->
-                                <div class="mb-3">
-                                    <label for="productTags" class="form-label">Tags</label>
-                                    <input type="text" class="form-control" id="productTags" name="productTags"
-                                        placeholder="Input tag Anda. Tekan spasi untuk melihat daftar tag, pisahkan dengan koma.">
-                                    <!-- Datalist untuk autocomplete tags -->
-                                    <datalist id="tagList">
-                                        <?php foreach ($tags as $tag): ?>
-                                            <option
-                                                value="<?php echo htmlspecialchars($tag['tag_name']); ?>">
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </datalist>
-                                </div>
-                                <!-- Bagian Harga -->
-                                <div class="mb-3">
-                                    <label class="form-label">Harga</label>
-                                    <div class="row g-2 align-items-end">
-                                        <!-- Display Mata Uang -->
-                                        <div class="col-3">
-                                            <label class="form-label small text-muted">Mata Uang</label>
-                                            <select class="form-select" disabled>
-                                                <option selected>IDR</option>
-                                            </select>
-                                            <input type="hidden" name="productCurrency" value="IDR">
+                <!-- Add Product Modal -->
+                <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form Produk Baru -->
+                                <form id="addProductForm" action="<?php echo $baseUrl; ?>manage_products" method="POST"
+                                    enctype="multipart/form-data">
+                                    <!-- Bagian Nama Produk -->
+                                    <div class="mb-3">
+                                        <label for="productName" class="form-label">Product Name</label>
+                                        <input type="text" class="form-control" id="productName" name="productName"
+                                            required>
+                                    </div>
+                                    <!-- Bagian Kategori -->
+                                    <div class="mb-3">
+                                        <label for="productCategory" class="form-label">Category</label>
+                                        <select class="form-select" id="productCategory" name="productCategory" required>
+                                            <option value="" selected disabled>Select Category</option>
+                                            <?php foreach ($categories as $category): ?>
+                                                <option value="<?php echo htmlspecialchars($category['category_id']); ?>">
+                                                    <?php echo htmlspecialchars($category['category_name']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <!-- Tags -->
+                                    <div class="mb-3">
+                                        <label for="productTags" class="form-label">Tags</label>
+                                        <input type="text" class="form-control" id="productTags" name="productTags"
+                                            placeholder="Input tag Anda. Tekan spasi untuk melihat daftar tag, pisahkan dengan koma.">
+                                        <!-- Datalist untuk autocomplete tags -->
+                                        <datalist id="tagList">
+                                            <?php foreach ($tags as $tag): ?>
+                                                <option
+                                                    value="<?php echo htmlspecialchars($tag['tag_name']); ?>">
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </datalist>
+                                    </div>
+                                    <!-- Bagian Harga -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Harga</label>
+                                        <div class="row g-2 align-items-end">
+                                            <!-- Display Mata Uang -->
+                                            <div class="col-3">
+                                                <label class="form-label small text-muted">Mata Uang</label>
+                                                <select class="form-select" disabled>
+                                                    <option selected>IDR</option>
+                                                </select>
+                                                <input type="hidden" name="productCurrency" value="IDR">
+                                            </div>
+
+                                            <!-- Input Harga -->
+                                            <div class="col-9">
+                                                <label for="productPriceAmount" class="form-label small text-muted">Jumlah</label>
+                                                <div class="input-group">
+                                                    <input type="text"
+                                                        class="form-control"
+                                                        id="productPriceAmount"
+                                                        name="productPriceAmount"
+                                                        placeholder="50000"
+                                                        inputmode="numeric"
+                                                        pattern="[0-9.]*"
+                                                        required>
+                                                    <span class="input-group-text">,00</span>
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
+                                    <!-- Bagian Deskripsi Produk -->
+                                    <div class="mb-3">
+                                        <label for="productDescription" class="form-label">Description</label>
+                                        <textarea class="form-control" id="productDescription" name="productDescription"
+                                            rows="3"></textarea>
+                                    </div>
+                                    <!-- Bagian Gambar Produk -->
+                                    <div class="mb-3">
+                                        <label for="productImages" class="form-label">Product Images (Max 10 images)</label>
+                                        <input type="file" class="form-control" id="productImages" name="productImages[]"
+                                            accept="image/*" multiple>
+                                    </div>
+                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" id="saveProductBtn">Save
+                                            Product</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                        <!-- Input Harga -->
-                                        <div class="col-9">
-                                            <label for="productPriceAmount" class="form-label small text-muted">Jumlah</label>
-                                            <div class="input-group">
-                                                <input type="text"
-                                                    class="form-control"
-                                                    id="productPriceAmount"
-                                                    name="productPriceAmount"
-                                                    placeholder="50000"
-                                                    inputmode="numeric"
-                                                    pattern="[0-9.]*"
-                                                    required>
-                                                <span class="input-group-text">,00</span>
+                <!-- Delete Selected Modal -->
+                <div class="modal fade" id="deleteSelectedModal" tabindex="-1" aria-labelledby="deleteSelectedModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteSelectedModalLabel">Konfirmasi Penghapusan</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Apakah Anda yakin ingin menghapus produk yang dipilih?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-danger" id="confirmDeleteSelected">Hapus</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Details Modal -->
+                <div class="modal-halaman-admin-bagian-details modal fade" id="productDetailsModal" tabindex="-1"
+                    aria-labelledby="productDetailsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="productDetailsModalLabel">Product Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <!-- Carousel Container -->
+                                        <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                                            <div class="carousel-inner" id="detailProductImagesContainer"
+                                                style="max-height: 300px; overflow: hidden;">
+                                                <!-- Dynamic images will be inserted here -->
+                                            </div>
+
+                                            <!-- Carousel Controls -->
+                                            <button class="carousel-control-prev" type="button"
+                                                data-bs-target="#productImageCarousel" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button"
+                                                data-bs-target="#productImageCarousel" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-8">
+                                        <h3 id="detailProductName" class="mb-3"></h3>
+                                        <div class="mb-3">
+                                            <strong>Description:</strong>
+                                            <p id="detailProductDescription" class="text-muted"></p>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <strong>Price:</strong>
+                                                <div id="detailProductPrice" class="text-success fs-5"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong>Currency:</strong>
+                                                <div id="detailProductCurrency" class="text-muted"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <strong>Categories:</strong>
+                                                <div id="detailProductCategories" class="text-primary"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong>Tags:</strong>
+                                                <div id="detailProductTags" class="text-info"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <small class="text-muted">Created At: <span
+                                                        id="detailProductCreatedAt"></span></small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <small class="text-muted">Last Updated: <span
+                                                        id="detailProductUpdatedAt"></span></small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Bagian Deskripsi Produk -->
-                                <div class="mb-3">
-                                    <label for="productDescription" class="form-label">Description</label>
-                                    <textarea class="form-control" id="productDescription" name="productDescription"
-                                        rows="3"></textarea>
-                                </div>
-                                <!-- Bagian Gambar Produk -->
-                                <div class="mb-3">
-                                    <label for="productImages" class="form-label">Product Images (Max 10 images)</label>
-                                    <input type="file" class="form-control" id="productImages" name="productImages[]"
-                                        accept="image/*" multiple>
-                                </div>
-                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary" id="saveProductBtn">Save
-                                        Product</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Delete Selected Modal -->
-            <div class="modal fade" id="deleteSelectedModal" tabindex="-1" aria-labelledby="deleteSelectedModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteSelectedModalLabel">Konfirmasi Penghapusan</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Apakah Anda yakin ingin menghapus produk yang dipilih?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="button" class="btn btn-danger" id="confirmDeleteSelected">Hapus</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Details Modal -->
-            <div class="modal-halaman-admin-bagian-details modal fade" id="productDetailsModal" tabindex="-1"
-                aria-labelledby="productDetailsModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="productDetailsModalLabel">Product Details</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <!-- Carousel Container -->
-                                    <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
-                                        <div class="carousel-inner" id="detailProductImagesContainer"
-                                            style="max-height: 300px; overflow: hidden;">
-                                            <!-- Dynamic images will be inserted here -->
-                                        </div>
-
-                                        <!-- Carousel Controls -->
-                                        <button class="carousel-control-prev" type="button"
-                                            data-bs-target="#productImageCarousel" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Previous</span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button"
-                                            data-bs-target="#productImageCarousel" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Next</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-8">
-                                    <h3 id="detailProductName" class="mb-3"></h3>
-                                    <div class="mb-3">
-                                        <strong>Description:</strong>
-                                        <p id="detailProductDescription" class="text-muted"></p>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <strong>Price:</strong>
-                                            <div id="detailProductPrice" class="text-success fs-5"></div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <strong>Currency:</strong>
-                                            <div id="detailProductCurrency" class="text-muted"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <strong>Categories:</strong>
-                                            <div id="detailProductCategories" class="text-primary"></div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <strong>Tags:</strong>
-                                            <div id="detailProductTags" class="text-info"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <small class="text-muted">Created At: <span
-                                                    id="detailProductCreatedAt"></span></small>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <small class="text-muted">Last Updated: <span
-                                                    id="detailProductUpdatedAt"></span></small>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!--========== AKHIR AREA MANAGE PRODUCTS ==========-->
+        <!--========== AKHIR AREA MANAGE PRODUCTS ==========-->
 
-    <!--================ AREA FOOTER =================-->
-    <?php include __DIR__ . '/../includes/footer.php'; ?>
-    <!--================ AKHIR AREA FOOTER =================-->
+        <!--================ AREA FOOTER =================-->
+        <?php include __DIR__ . '/../includes/footer.php'; ?>
+        <!--================ AKHIR AREA FOOTER =================-->
 
-    <!-- External JS libraries -->
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/fusejs.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.min.js"></script>
-    <script type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
-    <!-- Custom JS -->
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
-    <!-- Script untuk bisa menggunakan baseUrl di javascript setelah script ini -->
-    <script>
-        const BASE_URL = '<?= $baseUrl ?>';
-    </script>
-    <!-- Ambil data tag dari database -->
-    <script>
-        const TAGS_WHITELIST = [
-            <?php foreach ($tags as $tag): ?> "<?php echo htmlspecialchars($tag['tag_name']); ?>",
-            <?php endforeach; ?>
-        ];
-    </script>
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/manage_products.js"></script>
+        <!-- External JS libraries -->
+        <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
+        <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
+        <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/fusejs.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.min.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+        <!-- Custom JS -->
+        <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
+        <!-- Script untuk bisa menggunakan baseUrl di javascript setelah script ini -->
+        <script>
+            const BASE_URL = '<?= $baseUrl ?>';
+        </script>
+        <!-- Ambil data tag dari database -->
+        <script>
+            const TAGS_WHITELIST = [
+                <?php foreach ($tags as $tag): ?> "<?php echo htmlspecialchars($tag['tag_name']); ?>",
+                <?php endforeach; ?>
+            ];
+        </script>
+        <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/manage_products.js"></script>
 </body>
 
 </html>
