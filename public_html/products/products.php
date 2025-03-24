@@ -142,6 +142,10 @@ if (!empty($activeProducts)) {
     </div>
     <!--========== AKHIR AREA KONTEN PRODUCTS ==========-->
 
+    <!--========== AREA PAGINATION PRODUCTS ==========-->
+    <!-- PLACEHOLDER -->
+    <!--========== AKHIR AREA PAGINATION PRODUCTS ==========-->
+
     <!--================ AREA FOOTER =================-->
     <?php include __DIR__ . '/../includes/footer.php'; ?>
     <!--================ AKHIR AREA FOOTER =================-->
