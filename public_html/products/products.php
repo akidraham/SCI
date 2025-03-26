@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/user_actions_config.php';
 require_once __DIR__ . '/../../config/products/product_functions.php';
+require_once __DIR__ . '/../../config/api/api_functions.php';
 
 // Mulai session jika belum dimulai
 startSession();
@@ -18,18 +19,23 @@ $isLiveEnvironment = ($config['BASE_URL'] === $_ENV['LIVE_URL']);
 setCacheHeaders($isLive);
 
 // Ambil data produk aktif
-$activeProducts = getActiveProductsWithImages($config, $env);
+$activeProducts = getFilteredActiveProducts(categoryNames: null, minPrice: null, maxPrice: null, sortBy: 'created', sortOrder: 'DESC');
+
+// Ambil daftar kategori
+$categories = getCategoriesWithActiveProducts($config, $env);
 
 // Proses data produk untuk ditampilkan
 $productsData = [];
 if (!empty($activeProducts)) {
     foreach ($activeProducts as $product) {
-        $images = explode(', ', $product['images']);
         $productsData[] = [
-            'image' => !empty($images[0]) ? $images[0] : $baseUrl . 'assets/images/default-product.png',
+            'image' => !empty($product['image_path']) ? $baseUrl . $product['image_path'] : $baseUrl . 'assets/images/default-product.png',
             'name' => htmlspecialchars($product['product_name']),
             'description' => htmlspecialchars($product['description']),
             'price' => $product['currency'] . ' ' . number_format($product['price_amount'], 0, ',', '.'),
+            // Tambahkan ini untuk kompatibilitas dengan AJAX
+            'product_name' => htmlspecialchars($product['product_name']),
+            'image_path' => !empty($product['image_path']) ? $baseUrl . $product['image_path'] : $baseUrl . 'assets/images/default-product.png'
         ];
     }
 }
@@ -82,7 +88,49 @@ if (!empty($activeProducts)) {
     <!--========== AKHIR AREA BANNER ==========-->
 
     <!--========== AREA FILTER PRODUCTS ==========-->
-    <!-- PLACEHOLDER -->
+    <div class="container my-4">
+        <div class="row g-3 align-items-end">
+            <!-- Kategori -->
+            <div class="col-md-3">
+                <label for="categoryFilter" class="form-label">Category</label>
+                <select class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <?php foreach ($categories as $category) : ?>
+                        <option value="<?= htmlspecialchars($category['category_name']) ?>">
+                            <?= htmlspecialchars($category['category_name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <!-- Harga -->
+            <div class="col-md-3">
+                <label for="minPrice" class="form-label">Min Price</label>
+                <input type="number" class="form-control" id="minPrice" placeholder="Min">
+            </div>
+            <div class="col-md-3">
+                <label for="maxPrice" class="form-label">Max Price</label>
+                <input type="number" class="form-control" id="maxPrice" placeholder="Max">
+            </div>
+
+            <!-- Sorting -->
+            <div class="col-md-2">
+                <label for="sortBy" class="form-label">Sort By</label>
+                <select class="form-select" id="sortBy">
+                    <option value="latest">Latest</option>
+                    <option value="price_low">Price: Low to High</option>
+                    <option value="price_high">Price: High to Low</option>
+                </select>
+            </div>
+
+            <!-- Tombol Filter -->
+            <div class="col-md-1">
+                <button class="btn btn-primary w-100" id="applyFilter">
+                    <i class="fas fa-filter me-2"></i>Apply
+                </button>
+            </div>
+        </div>
+    </div>
     <!--========== AKHIR AREA FILTER PRODUCTS ==========-->
 
     <!--========== AREA KONTEN PRODUCTS ==========-->
@@ -95,7 +143,7 @@ if (!empty($activeProducts)) {
                             <div class="card h-100 shadow-lg-hover border-0 rounded-4 overflow-hidden transition-all">
                                 <!-- Gambar produk -->
                                 <div class="ratio ratio-1x1">
-                                    <img src="<?php echo $baseUrl . $product['image']; ?>"
+                                    <img src="<?php echo $product['image']; ?>"
                                         class="card-img-top object-fit-cover"
                                         alt="<?php echo $product['name']; ?>">
                                 </div>
@@ -155,6 +203,93 @@ if (!empty($activeProducts)) {
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/slick.min.js"></script>
+    <script>
+        // Tambahkan BASE_URL global
+        const BASE_URL = '<?= $baseUrl ?>';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const applyFilter = document.getElementById('applyFilter');
+            let currentPage = 1;
+
+            // Fungsi untuk memuat produk
+            function loadProducts(page = 1) {
+                currentPage = page;
+                const params = new URLSearchParams({
+                    categories: document.getElementById('categoryFilter').value,
+                    min_price: document.getElementById('minPrice').value,
+                    max_price: document.getElementById('maxPrice').value,
+                    sort_by: document.getElementById('sortBy').value,
+                    limit: 12, // Sesuaikan dengan kebutuhan
+                    offset: (page - 1) * 12
+                });
+
+                fetch(`${BASE_URL}api/filter_products.php?${params}`)
+                    .then(handleResponse)
+                    .then(updateProducts)
+                    .catch(handleError);
+            }
+
+            // Event listener untuk filter
+            applyFilter.addEventListener('click', () => loadProducts(1));
+
+            // Fungsi untuk handle response
+            function handleResponse(response) {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            }
+
+            // Fungsi update produk (dioptimalkan)
+            function updateProducts(products) {
+                const container = document.querySelector('.area-konten-halaman-products .row');
+                container.innerHTML = products.length ?
+                    products.map(productTemplate).join('') :
+                    emptyStateTemplate();
+            }
+
+            // Template produk
+            function productTemplate(product) {
+                return `
+        <div class="col">
+            <div class="card h-100 shadow-lg-hover border-0 rounded-4 overflow-hidden transition-all">
+                <div class="ratio ratio-1x1">
+                    <img src="${product.image}" class="card-img-top object-fit-cover" alt="${product.name}">
+                </div>
+                <div class="card-body d-flex flex-column p-4">
+                    <h5 class="card-title fs-5 fw-bold mb-2">${product.name}</h5>
+                    <p class="card-text text-secondary mb-3 line-clamp-3">${product.description}</p>
+                    <div class="mt-auto pt-2">
+                        <p class="text-success fw-bold fs-5 mb-3">${product.price}</p>
+                        <a href="#" class="btn btn-primary w-100 rounded-3 py-2">
+                            View Details <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+            }
+
+            // Template kosong
+            function emptyStateTemplate() {
+                return `
+        <div class="col-12 text-center py-5">
+            <div class="py-5">
+                <i class="fas fa-box-open fa-4x text-light mb-4"></i>
+                <h3 class="h4 text-muted mb-3">No Products Found</h3>
+                <p class="text-muted">Try adjusting your filters.</p>
+            </div>
+        </div>`;
+            }
+
+            // Error handling
+            function handleError(error) {
+                console.error('Fetch error:', error);
+                // Tambahkan notifikasi error ke UI jika diperlukan
+            }
+
+            // Load inisial
+            loadProducts(1);
+        });
+    </script>
 </body>
 
 </html>

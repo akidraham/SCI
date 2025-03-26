@@ -15,6 +15,7 @@ $allowedActions = [
     'delete_selected_products' => '../api/delete_selected_products.php',
     'get_product_details' => '../api/get_product_details.php',
     'update_product_status' => '../api/update_product_status.php',
+    'filter_products' => '../api/filter_products.php'
 ];
 
 // Periksa apakah action valid
