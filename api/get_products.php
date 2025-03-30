@@ -6,6 +6,8 @@ require_once __DIR__ . '/../config/user_actions_config.php';
 require_once __DIR__ . '/../config/products/product_functions.php';
 require_once __DIR__ . '/../config/api/api_functions.php';
 
+header('Content-Type: application/json');
+
 startSession();
 $config = getEnvironmentConfig();
 
@@ -49,5 +51,4 @@ foreach ($products as $product) {
     ];
 }
 
-header('Content-Type: application/json');
 echo json_encode($response);

@@ -136,56 +136,29 @@ if (!empty($activeProducts)) {
     <!--========== AREA KONTEN PRODUCTS ==========-->
     <div class="area-konten-halaman-products">
         <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4 py-5">
-                <?php if (!empty($productsData)) : ?>
+            <?php if (!empty($productsData)) : ?>
+                <div id="halamanProductsContainer">
                     <?php foreach ($productsData as $product) : ?>
-                        <div class="col">
-                            <div class="card h-100 shadow-lg-hover border-0 rounded-4 overflow-hidden transition-all">
-                                <!-- Gambar produk -->
-                                <div class="ratio ratio-1x1">
-                                    <img src="<?php echo $product['image']; ?>"
-                                        class="card-img-top object-fit-cover"
-                                        alt="<?php echo $product['name']; ?>">
-                                </div>
-
-                                <!-- Body card -->
-                                <div class="card-body d-flex flex-column p-4">
-                                    <!-- Nama produk -->
-                                    <h5 class="card-title fs-5 fw-bold mb-2">
-                                        <?php echo $product['name']; ?>
-                                    </h5>
-
-                                    <!-- Deskripsi produk -->
-                                    <p class="card-text text-secondary mb-3 line-clamp-3">
-                                        <?php echo $product['description']; ?>
-                                    </p>
-
-                                    <!-- Harga produk -->
-                                    <div class="mt-auto pt-2">
-                                        <p class="text-success fw-bold fs-5 mb-3">
-                                            <?php echo $product['price']; ?>
-                                        </p>
-                                        <!-- Tombol aksi -->
-                                        <a href="#" class="btn btn-primary w-100 rounded-3 py-2">
-                                            View Details
-                                            <i class="fas fa-arrow-right ms-2"></i>
-                                        </a>
-                                    </div>
+                        <div class="col mb-4">
+                            <div class="card h-100">
+                                <img src="<?= $product['image'] ?>" class="card-img-top" alt="<?= $product['name'] ?>">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?= $product['name'] ?></h5>
+                                    <p class="card-text"><?= $product['description'] ?></p>
+                                    <p class="text-primary fw-bold"><?= $product['price'] ?></p>
+                                    <a href="#" class="btn btn-primary btn-sm mt-2">
+                                        <i class="fa-solid fa-circle-info me-1"></i> View Details
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
-                <?php else : ?>
-                    <!-- Tampilan kosong -->
-                    <div class="col-12 text-center py-5">
-                        <div class="py-5">
-                            <i class="fas fa-box-open fa-4x text-light mb-4"></i>
-                            <h3 class="h4 text-muted mb-3">No Products Available</h3>
-                            <p class="text-muted">We're preparing something amazing for you!</p>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            </div>
+                </div>
+            <?php else : ?>
+                <div class="alert alert-info" role="alert">
+                    No products found.
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     <!--========== AKHIR AREA KONTEN PRODUCTS ==========-->
@@ -206,88 +179,140 @@ if (!empty($activeProducts)) {
     <script>
         // Tambahkan BASE_URL global
         const BASE_URL = '<?= $baseUrl ?>';
+    </script>
+    <script>
+        $(document).ready(function() {
+            console.log("Document ready, initializing...");
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const applyFilter = document.getElementById('applyFilter');
-            let currentPage = 1;
+            // Inisialisasi container produk
+            const productContainer = $('#halamanProductsContainer');
 
-            // Fungsi untuk memuat produk
-            function loadProducts(page = 1) {
-                currentPage = page;
-                const params = new URLSearchParams({
-                    categories: document.getElementById('categoryFilter').value,
-                    min_price: document.getElementById('minPrice').value,
-                    max_price: document.getElementById('maxPrice').value,
-                    sort_by: document.getElementById('sortBy').value,
-                    limit: 12, // Sesuaikan dengan kebutuhan
-                    offset: (page - 1) * 12
+            // Fungsi untuk memuat produk berdasarkan filter
+            function loadProducts() {
+                console.log("loadProducts() called");
+
+                const category = $('#categoryFilter').val();
+                const minPrice = $('#minPrice').val() || null;
+                const maxPrice = $('#maxPrice').val() || null;
+                const sortBy = $('#sortBy').val();
+
+                console.log("Filter values:", {
+                    category,
+                    minPrice,
+                    maxPrice,
+                    sortBy
                 });
 
-                fetch(`${BASE_URL}api/filter_products.php?${params}`)
-                    .then(handleResponse)
-                    .then(updateProducts)
-                    .catch(handleError);
-            }
+                // Bangun URL dengan parameter untuk proxy
+                let url = new URL(BASE_URL + 'api-proxy.php');
+                url.searchParams.append('action', 'filter_products');
 
-            // Event listener untuk filter
-            applyFilter.addEventListener('click', () => loadProducts(1));
+                // Tambahkan parameter filter
+                if (category) url.searchParams.append('categories[]', category);
+                if (minPrice) url.searchParams.append('min_price', minPrice);
+                if (maxPrice) url.searchParams.append('max_price', maxPrice);
+                if (sortBy) url.searchParams.append('sort_by', sortBy);
 
-            // Fungsi untuk handle response
-            function handleResponse(response) {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            }
+                console.log("Fetching data from:", url.toString());
 
-            // Fungsi update produk (dioptimalkan)
-            function updateProducts(products) {
-                const container = document.querySelector('.area-konten-halaman-products .row');
-                container.innerHTML = products.length ?
-                    products.map(productTemplate).join('') :
-                    emptyStateTemplate();
-            }
-
-            // Template produk
-            function productTemplate(product) {
-                return `
-        <div class="col">
-            <div class="card h-100 shadow-lg-hover border-0 rounded-4 overflow-hidden transition-all">
-                <div class="ratio ratio-1x1">
-                    <img src="${product.image}" class="card-img-top object-fit-cover" alt="${product.name}">
-                </div>
-                <div class="card-body d-flex flex-column p-4">
-                    <h5 class="card-title fs-5 fw-bold mb-2">${product.name}</h5>
-                    <p class="card-text text-secondary mb-3 line-clamp-3">${product.description}</p>
-                    <div class="mt-auto pt-2">
-                        <p class="text-success fw-bold fs-5 mb-3">${product.price}</p>
-                        <a href="#" class="btn btn-primary w-100 rounded-3 py-2">
-                            View Details <i class="fas fa-arrow-right ms-2"></i>
-                        </a>
+                // Tampilkan loading state
+                productContainer.html(`
+                <div class="col-12 text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
+                    <p class="mt-2">Loading products...</p>
                 </div>
-            </div>
-        </div>`;
+            `);
+
+                fetch(url)
+                    .then(response => {
+                        console.log("Response received:", response);
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Data received:", data);
+
+                        // Kosongkan container sebelum mengisi ulang
+                        productContainer.empty();
+
+                        // Handle empty state
+                        if (!Array.isArray(data) || data.length === 0) {
+                            console.warn("No products found.");
+                            productContainer.html(`
+                            <div class="col-12 text-center py-5">
+                                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No products match your filter criteria.</p>
+                            </div>
+                        `);
+                            return;
+                        }
+
+                        // Bangun grid produk
+                        const productsGrid = $('<div class="row row-cols-1 row-cols-md-3 g-4"></div>');
+
+                        data.forEach(product => {
+                            console.log("Processing product:", product);
+
+                            const productCard = `
+                                <div class="col mb-4">
+                                    <div class="card h-100 shadow-sm">
+                                        <img src="${product.image}" class="card-img-top p-3" alt="${product.name}" style="height: 250px; object-fit: contain">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${product.name}</h5>
+                                            <p class="card-text text-muted">${product.description}</p>
+                                            <p class="text-primary fw-bold mb-0">${product.price}</p>                
+                                            <a href="#" class="btn btn-primary btn-sm mt-2">
+                                                <i class="fa-solid fa-circle-info me-1"></i> View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            productsGrid.append(productCard);
+                        });
+
+                        productContainer.append(productsGrid);
+                        console.log("Products displayed successfully.");
+                    })
+                    .catch(error => {
+                        console.error("Fetch Error:", error);
+                        productContainer.html(`
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                            <p class="text-danger">Error loading products. Please try again.</p>
+                        </div>
+                    `);
+                    });
             }
 
-            // Template kosong
-            function emptyStateTemplate() {
-                return `
-        <div class="col-12 text-center py-5">
-            <div class="py-5">
-                <i class="fas fa-box-open fa-4x text-light mb-4"></i>
-                <h3 class="h4 text-muted mb-3">No Products Found</h3>
-                <p class="text-muted">Try adjusting your filters.</p>
-            </div>
-        </div>`;
-            }
+            // Event handler untuk filter
+            $('#applyFilter').click(function(e) {
+                e.preventDefault();
+                console.log("Apply filter button clicked.");
+                loadProducts();
+            });
 
-            // Error handling
-            function handleError(error) {
-                console.error('Fetch error:', error);
-                // Tambahkan notifikasi error ke UI jika diperlukan
-            }
+            // Auto-filter saat perubahan input harga
+            $('#minPrice, #maxPrice').on('change', function() {
+                console.log("Price filter changed.");
 
-            // Load inisial
-            loadProducts(1);
+                // Validasi harga minimum tidak melebihi maksimum
+                const minVal = parseInt($('#minPrice').val());
+                const maxVal = parseInt($('#maxPrice').val());
+
+                if (minVal && maxVal && minVal > maxVal) {
+                    console.warn("Min price is greater than max price. Adjusting max price.");
+                    $('#maxPrice').val(minVal);
+                }
+
+                loadProducts();
+            });
+
+            // Inisialisasi pertama kali
+            console.log("Initializing product load...");
+            loadProducts();
         });
     </script>
 </body>

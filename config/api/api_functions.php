@@ -47,7 +47,6 @@ function getCategoriesWithActiveProducts($config, $env)
     }
 }
 
-
 /**
  * Retrieves active products filtered by category, price range, and sorting options.
  *
@@ -111,11 +110,14 @@ function getFilteredActiveProducts($categoryNames = null, $minPrice = null, $max
         // Category filter
         if ($categoryNames !== null) {
             if (is_array($categoryNames)) {
-                $placeholders = implode(',', array_fill(0, count($categoryNames), '?'));
-                $sql .= " AND pc.category_name IN ($placeholders)";
-                foreach ($categoryNames as $name) {
-                    $params[] = $name;
+                $categoryParams = [];
+                foreach ($categoryNames as $index => $name) {
+                    $paramName = ":category_" . $index;
+                    $categoryParams[] = $paramName;
+                    $params[$paramName] = $name;
                 }
+                $placeholders = implode(',', $categoryParams);
+                $sql .= " AND pc.category_name IN ($placeholders)";
             } else {
                 $sql .= " AND pc.category_name = :categoryName";
                 $params[':categoryName'] = $categoryNames;
@@ -150,14 +152,17 @@ function getFilteredActiveProducts($categoryNames = null, $minPrice = null, $max
 
         // Bind parameters with proper types
         foreach ($params as $key => $value) {
-            $paramType = PDO::PARAM_STR;
-            if ($key === ':limit' || $key === ':offset') {
-                $paramType = PDO::PARAM_INT;
-                $value = (int)$value;
-            } elseif (is_int($value)) {
-                $paramType = PDO::PARAM_INT;
+            if (is_int($key)) {
+                throw new Exception("Invalid parameter key: $key. Ensure all parameters use named placeholders.");
             }
+            $paramType = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
             $stmt->bindValue($key, $value, $paramType);
+        }
+
+        // Final debugging output (local only)
+        if ($env === 'local') {
+            error_log("[DEBUG] Final SQL Query: " . $sql);
+            error_log("[DEBUG] Parameters: " . print_r($params, true));
         }
 
         $stmt->execute();
