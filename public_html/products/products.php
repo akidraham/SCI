@@ -92,8 +92,8 @@ if (!empty($activeProducts)) {
         <div class="row g-3 align-items-end">
             <!-- Kategori -->
             <div class="col-md-3">
-                <label for="categoryFilter" class="form-label">Category</label>
-                <select class="form-select" id="categoryFilter">
+                <label for="halamanProductsCategoryFilter" class="form-label">Category</label>
+                <select class="form-select" id="halamanProductsCategoryFilter">
                     <option value="">All Categories</option>
                     <?php foreach ($categories as $category) : ?>
                         <option value="<?= htmlspecialchars($category['category_name']) ?>">
@@ -103,30 +103,39 @@ if (!empty($activeProducts)) {
                 </select>
             </div>
 
-            <!-- Harga -->
-            <div class="col-md-3">
-                <label for="minPrice" class="form-label">Min Price</label>
-                <input type="number" class="form-control" id="minPrice" placeholder="Min">
+            <!-- Min Price -->
+            <div class="col-md-2">
+                <label for="halamanProductsMinPrice" class="form-label">Min Price</label>
+                <input type="number" class="form-control" id="halamanProductsMinPrice" placeholder="Min">
             </div>
-            <div class="col-md-3">
-                <label for="maxPrice" class="form-label">Max Price</label>
-                <input type="number" class="form-control" id="maxPrice" placeholder="Max">
+
+            <!-- Max Price -->
+            <div class="col-md-2">
+                <label for="halamanProductsMaxPrice" class="form-label">Max Price</label>
+                <input type="number" class="form-control" id="halamanProductsMaxPrice" placeholder="Max">
             </div>
 
             <!-- Sorting -->
             <div class="col-md-2">
-                <label for="sortBy" class="form-label">Sort By</label>
-                <select class="form-select" id="sortBy">
+                <label for="halamanProductsSortBy" class="form-label">Sort By</label>
+                <select class="form-select" id="halamanProductsSortBy">
                     <option value="latest">Latest</option>
                     <option value="price_low">Price: Low to High</option>
                     <option value="price_high">Price: High to Low</option>
                 </select>
             </div>
 
-            <!-- Tombol Filter -->
-            <div class="col-md-1">
-                <button class="btn btn-primary w-100" id="applyFilter">
+            <!-- Apply Button -->
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" id="halamanProductsApplyFilter">
                     <i class="fas fa-filter me-2"></i>Apply
+                </button>
+            </div>
+
+            <!-- Clear Filter Button -->
+            <div class="col-md-1">
+                <button class="btn btn-outline-danger w-100" id="halamanProductsClearFilter">
+                    <i class="fas fa-times me-2"></i>Clear
                 </button>
             </div>
         </div>

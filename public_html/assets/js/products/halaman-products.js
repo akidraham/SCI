@@ -35,10 +35,10 @@ $(document).ready(function () {
   function loadProducts() {
     log("loadProducts() called");
 
-    const category = $("#categoryFilter").val();
-    const minPrice = $("#minPrice").val() || null;
-    const maxPrice = $("#maxPrice").val() || null;
-    const sortBy = $("#sortBy").val();
+    const category = $("#halamanProductsCategoryFilter").val();
+    const minPrice = $("#halamanProductsMinPrice").val() || null;
+    const maxPrice = $("#halamanProductsMaxPrice").val() || null;
+    const sortBy = $("#halamanProductsSortBy").val();
 
     log("Filter values:", { category, minPrice, maxPrice, sortBy });
 
@@ -134,7 +134,7 @@ $(document).ready(function () {
    * @param {Event} e - The click event object
    * @returns {void}
    */
-  $("#applyFilter").click(function (e) {
+  $("#halamanProductsApplyFilter").click(function (e) {
     e.preventDefault();
     log("Apply filter button clicked.");
 
@@ -147,6 +147,21 @@ $(document).ready(function () {
       $("#maxPrice").val(minVal);
     }
 
+    loadProducts();
+  });
+
+  // Tambahkan event handler untuk clear filter:
+  $("#halamanProductsClearFilter").click(function (e) {
+    e.preventDefault();
+    log("Clear filter button clicked.");
+
+    // Reset semua nilai filter ke default
+    $("#halamanProductsCategoryFilter").val("");
+    $("#halamanProductsMinPrice").val("");
+    $("#halamanProductsMaxPrice").val("");
+    $("#halamanProductsSortBy").val("latest");
+
+    // Memuat ulang produk dengan filter default
     loadProducts();
   });
 
