@@ -48,19 +48,30 @@ function getCategoriesWithActiveProducts($config, $env)
 }
 
 /**
- * Retrieves active products filtered by category, price range, and sorting options.
+ * Retrieves active products based on category, price range, sorting, and pagination.
  *
- * @param string|array|null $categoryNames Category name(s) to filter products
- * @param int|string|null $minPrice Minimum price filter
- * @param int|string|null $maxPrice Maximum price filter
- * @param string $sortBy Sorting column (price|created|updated)
- * @param string $sortOrder Sorting order (ASC|DESC)
- * @param int $limit Number of results per page
- * @param int $offset Results offset for pagination
- * @return array Filtered products
+ * This function queries the database to fetch active products, optionally filtering by category name(s),
+ * a price range, and sorting options. The function ensures that `minPrice` and `maxPrice` are integers
+ * and do not accept float values.
+ *
+ * @param string|array|null $categoryNames The category name(s) to filter products by.
+ * @param int|null $minPrice The minimum price filter (must be an integer).
+ * @param int|null $maxPrice The maximum price filter (must be an integer).
+ * @param string $sortBy The column to sort by (allowed: 'price', 'created', 'updated').
+ * @param string $sortOrder The sorting order ('ASC' or 'DESC').
+ * @param int $limit The number of results per page.
+ * @param int $offset The starting point for pagination.
+ * @return array An array of filtered products.
  */
-function getFilteredActiveProducts($categoryNames = null, $minPrice = null, $maxPrice = null, $sortBy = 'created', $sortOrder = 'DESC', $limit = 10, $offset = 0)
-{
+function getFilteredActiveProducts(
+    string|array|null $categoryNames = null,
+    ?int $minPrice = null,
+    ?int $maxPrice = null,
+    string $sortBy = 'created',
+    string $sortOrder = 'DESC',
+    int $limit = 10,
+    int $offset = 0
+): array {
     $config = getEnvironmentConfig();
     $env = isLive() ? 'live' : 'local';
     $pdo = getPDOConnection($config, $env);
@@ -70,30 +81,17 @@ function getFilteredActiveProducts($categoryNames = null, $minPrice = null, $max
         return [];
     }
 
-    // Debug input parameters (local only)
-    if ($env === 'local') {
-        error_log("[DEBUG] getFilteredActiveProducts called with parameters:");
-        error_log("Categories: " . print_r($categoryNames, true));
-        error_log("Price Range: $minPrice - $maxPrice");
-        error_log("Sorting: $sortBy $sortOrder");
-        error_log("Pagination: LIMIT $limit OFFSET $offset");
-    }
-
-    // Validate price range
+    // Validate the price range, ensuring minPrice is not greater than maxPrice
     if ($minPrice !== null && $maxPrice !== null && $minPrice > $maxPrice) {
         return [];
     }
 
-    // Convert prices to string to avoid precision issues
-    $minPrice = $minPrice !== null ? (string)$minPrice : null;
-    $maxPrice = $maxPrice !== null ? (string)$maxPrice : null;
-
     // Ensure pagination values are positive integers
-    $limit = max(1, (int)$limit);
-    $offset = max(0, (int)$offset);
+    $limit = max(1, $limit);
+    $offset = max(0, $offset);
 
     try {
-        // Base query
+        // Construct the base SQL query for selecting products
         $sql = "SELECT DISTINCT p.product_id, p.product_name, p.description, 
                 p.price_amount, p.currency, p.created_at, p.updated_at,
                 (SELECT pi.image_path FROM product_images pi 
@@ -107,9 +105,10 @@ function getFilteredActiveProducts($categoryNames = null, $minPrice = null, $max
 
         $params = [];
 
-        // Category filter
+        // Apply category filter if provided
         if ($categoryNames !== null) {
             if (is_array($categoryNames)) {
+                // If multiple categories are provided, use a dynamic placeholder list
                 $categoryParams = [];
                 foreach ($categoryNames as $index => $name) {
                     $paramName = ":category_" . $index;
@@ -124,45 +123,46 @@ function getFilteredActiveProducts($categoryNames = null, $minPrice = null, $max
             }
         }
 
-        // Price filters
+        // Apply minimum price filter if provided
         if ($minPrice !== null) {
             $sql .= " AND p.price_amount >= :minPrice";
             $params[':minPrice'] = $minPrice;
         }
+
+        // Apply maximum price filter if provided
         if ($maxPrice !== null) {
             $sql .= " AND p.price_amount <= :maxPrice";
             $params[':maxPrice'] = $maxPrice;
         }
 
-        // Sorting
+        // Define the valid sorting columns to prevent SQL injection
         $validSortColumns = [
             'price' => 'p.price_amount',
             'created' => 'p.created_at',
             'updated' => 'p.updated_at'
         ];
+
+        // Validate the sorting column, defaulting to 'created_at' if invalid
         $sortColumn = $validSortColumns[$sortBy] ?? 'p.created_at';
+
+        // Validate sorting order, ensuring it is either 'ASC' or 'DESC'
         $sortOrder = in_array(strtoupper($sortOrder), ['ASC', 'DESC']) ? $sortOrder : 'ASC';
 
+        // Append sorting and pagination to the SQL query
         $sql .= " ORDER BY $sortColumn $sortOrder LIMIT :limit OFFSET :offset";
         $params[':limit'] = $limit;
         $params[':offset'] = $offset;
 
-        // Prepare and execute
+        // Prepare and execute the query
         $stmt = $pdo->prepare($sql);
 
-        // Bind parameters with proper types
+        // Bind parameters dynamically based on their data type
         foreach ($params as $key => $value) {
             if (is_int($key)) {
                 throw new Exception("Invalid parameter key: $key. Ensure all parameters use named placeholders.");
             }
             $paramType = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
             $stmt->bindValue($key, $value, $paramType);
-        }
-
-        // Final debugging output (local only)
-        if ($env === 'local') {
-            error_log("[DEBUG] Final SQL Query: " . $sql);
-            error_log("[DEBUG] Parameters: " . print_r($params, true));
         }
 
         $stmt->execute();
