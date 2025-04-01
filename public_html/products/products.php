@@ -176,6 +176,7 @@ if (!empty($activeProducts)) {
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/slick.min.js"></script>
+    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
     <script>
         // Tambahkan BASE_URL global
         const BASE_URL = '<?= $baseUrl ?>';
