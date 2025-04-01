@@ -126,23 +126,19 @@ $(document).ready(function () {
   }
 
   /**
-   * Event handler for the apply filter button.
-   * Triggers the product loading function.
-   * @param {Event} e - Click event.
+   * Handles the click event for the apply filter button.
+   * Validates price range inputs and triggers product loading.
+   *
+   * @function
+   * @listens jQuery#click
+   * @param {Event} e - The click event object
+   * @returns {void}
    */
   $("#applyFilter").click(function (e) {
     e.preventDefault();
     log("Apply filter button clicked.");
-    loadProducts();
-  });
 
-  /**
-   * Event listener for price filter input changes.
-   * Ensures the minimum price does not exceed the maximum price and reloads products.
-   */
-  $("#minPrice, #maxPrice").on("change", function () {
-    log("Price filter changed.");
-
+    // Validate price range inputs
     const minVal = parseInt($("#minPrice").val());
     const maxVal = parseInt($("#maxPrice").val());
 
