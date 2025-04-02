@@ -1236,5 +1236,16 @@ section.judul-halaman-about .container h2 {
   padding: 1rem;
   background-color: #f8f9fa;
 }
+
+.filter-halaman-products input[type="number"]::-webkit-outer-spin-button,
+.filter-halaman-products input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.filter-halaman-products input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
 /* AKHIR AREA HALAMAN PRODUCTS
 ================================================================================ */

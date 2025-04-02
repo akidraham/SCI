@@ -88,7 +88,7 @@ if (!empty($activeProducts)) {
     <!--========== AKHIR AREA BANNER ==========-->
 
     <!--========== AREA FILTER PRODUCTS ==========-->
-    <div class="container my-4">
+    <div class="container my-4 filter-halaman-products">
         <div class="row g-3 align-items-end">
             <!-- Kategori -->
             <div class="col-md-3">
@@ -106,13 +106,21 @@ if (!empty($activeProducts)) {
             <!-- Min Price -->
             <div class="col-md-2">
                 <label for="halamanProductsMinPrice" class="form-label">Min Price</label>
-                <input type="number" class="form-control" id="halamanProductsMinPrice" placeholder="Min">
+                <input type="number"
+                    class="form-control"
+                    id="halamanProductsMinPrice"
+                    placeholder="Min"
+                    inputmode="numeric" pattern="[0-9]*">
             </div>
 
             <!-- Max Price -->
             <div class="col-md-2">
                 <label for="halamanProductsMaxPrice" class="form-label">Max Price</label>
-                <input type="number" class="form-control" id="halamanProductsMaxPrice" placeholder="Max">
+                <input type="number"
+                    class="form-control"
+                    id="halamanProductsMaxPrice"
+                    placeholder="Max"
+                    inputmode="numeric" pattern="[0-9]*">
             </div>
 
             <!-- Sorting -->
