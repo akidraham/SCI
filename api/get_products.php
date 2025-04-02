@@ -1,15 +1,17 @@
 <?php
-// filter_products.php
+// get_products.php
 
+// load configuration and functions
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/user_actions_config.php';
 require_once __DIR__ . '/../config/products/product_functions.php';
 require_once __DIR__ . '/../config/api/api_functions.php';
 
+// header untuk JSON response
 header('Content-Type: application/json');
 
-startSession();
-$config = getEnvironmentConfig();
+startSession(); // Mulai session jika belum dimulai from user_actions_config.php
+$config = getEnvironmentConfig(); // Load konfigurasi URL dinamis berdasarkan environment from config.php
 
 // Ambil parameter
 $categories = isset($_GET['categories']) ? (array)$_GET['categories'] : null;
@@ -31,7 +33,7 @@ if ($sortBy === 'price_low') {
 }
 
 // Get filtered products
-$products = getFilteredActiveProducts(
+$products = getFilteredActiveProducts( // from api_functions.php
     $categories,
     $minPrice,
     $maxPrice,
@@ -40,7 +42,7 @@ $products = getFilteredActiveProducts(
 );
 
 // Format response
-$baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']);
+$baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']); // from config.php
 $response = [];
 foreach ($products as $product) {
     $response[] = [
