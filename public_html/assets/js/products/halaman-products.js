@@ -101,8 +101,8 @@ $(document).ready(function () {
                                     <h5 class="card-title">${product.name}</h5>
                                     <p class="card-text text-muted">${product.description}</p>
                                     <p class="text-primary fw-bold mb-0">${product.price}</p>                
-                                    <a href="#" class="btn btn-primary btn-sm mt-2">
-                                        <i class="fa-solid fa-circle-info me-1"></i> View Details
+                                    <a href="${BASE_URL}products/${product.slug}/" class="btn btn-primary btn-sm mt-2">
+                                      <i class="fa-solid fa-circle-info me-1"></i> View Details
                                     </a>
                                 </div>
                             </div>

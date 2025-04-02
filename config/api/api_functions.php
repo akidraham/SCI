@@ -92,7 +92,7 @@ function getFilteredActiveProducts(
 
     try {
         // Construct the base SQL query for selecting products
-        $sql = "SELECT DISTINCT p.product_id, p.product_name, p.description, 
+        $sql = "SELECT DISTINCT p.product_id, p.product_name, p.description, p.slug, 
                 p.price_amount, p.currency, p.created_at, p.updated_at,
                 (SELECT pi.image_path FROM product_images pi 
                  WHERE pi.product_id = p.product_id 
@@ -169,6 +169,41 @@ function getFilteredActiveProducts(
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
         handleError("Database Query Error: " . $e->getMessage(), $env);
+        return [];
+    }
+}
+
+/**
+ * Retrieves an active product from the database based on the provided slug.
+ * 
+ * This function connects to the database, searches for an active product that matches the given slug,
+ * and returns the product details as an associative array. If no active product is found, an empty 
+ * array is returned. Error handling is implemented using `handleError`.
+ *
+ * @param string $slug The slug of the product to retrieve.
+ * @return array The product details as an associative array, or an empty array if not found.
+ * @throws Exception If an error occurs during the database operation.
+ */
+function getActiveProductBySlug(string $slug): array
+{
+    try {
+        $config = getEnvironmentConfig(); // Get database configuration settings
+        $pdo = getPDOConnection($config, isLive() ? 'live' : 'local'); // Establish a PDO connection
+        $env = isLive() ? 'live' : 'local'; // Determine the current environment (live or local)
+
+        // Prepare SQL query to fetch an active product by slug
+        $stmt = $pdo->prepare("
+            SELECT * FROM products 
+            WHERE slug = ? 
+            AND active = 'active'
+            LIMIT 1
+        ");
+        $stmt->execute([$slug]); // Execute the query with the provided slug
+        $product = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch product details
+
+        return $product ?: []; // Return the product data or an empty array if not found
+    } catch (Exception $e) {
+        handleError($e->getMessage(), $env); // Handle errors by logging and terminating based on environment
         return [];
     }
 }

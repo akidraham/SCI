@@ -50,6 +50,7 @@ foreach ($products as $product) {
         'name' => htmlspecialchars($product['product_name']),
         'description' => htmlspecialchars($product['description']),
         'price' => $product['currency'] . ' ' . number_format($product['price_amount'], 0, ',', '.'),
+        'slug' => htmlspecialchars($product['slug']),
     ];
 }
 

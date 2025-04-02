@@ -33,7 +33,7 @@ if (!empty($activeProducts)) {
             'name' => htmlspecialchars($product['product_name']),
             'description' => htmlspecialchars($product['description']),
             'price' => $product['currency'] . ' ' . number_format($product['price_amount'], 0, ',', '.'),
-            // Tambahkan ini untuk kompatibilitas dengan AJAX
+            'slug' => htmlspecialchars($product['slug']),
             'product_name' => htmlspecialchars($product['product_name']),
             'image_path' => !empty($product['image_path']) ? $baseUrl . $product['image_path'] : $baseUrl . 'assets/images/default-product.png'
         ];
@@ -163,7 +163,7 @@ if (!empty($activeProducts)) {
                                     <h5 class="card-title"><?= $product['name'] ?></h5>
                                     <p class="card-text"><?= $product['description'] ?></p>
                                     <p class="text-primary fw-bold"><?= $product['price'] ?></p>
-                                    <a href="#" class="btn btn-primary btn-sm mt-2">
+                                    <a href="<?php echo $baseUrl; ?>products/<?php echo $product['slug']; ?>/" class="btn btn-primary btn-sm mt-2">
                                         <i class="fa-solid fa-circle-info me-1"></i> View Details
                                     </a>
                                 </div>
