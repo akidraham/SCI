@@ -215,6 +215,7 @@ $(document).ready(function () {
     maxPrice: null,
     sortBy: "latest",
   };
+
   $("#halamanProductsClearFilter").click(function (e) {
     e.preventDefault();
 
@@ -225,12 +226,13 @@ $(document).ready(function () {
 
     currentFilters = { ...DEFAULT_FILTERS };
 
-    const $btn = $(this);
-    $btn.blur().addClass("btn-success").html('<i class="fas fa-check-circle me-1"></i> Filters Cleared!');
+    const $icon = $(this).find("i");
+    const originalIcon = $icon.attr("class");
+    $icon.attr("class", "fas fa-check me-1");
 
     setTimeout(() => {
-      $btn.removeClass("btn-success").html('<i class="fas fa-broom me-1"></i> Clear Filters');
-    }, 1500);
+      $icon.attr("class", originalIcon);
+    }, 800);
 
     loadProducts(1);
   });
