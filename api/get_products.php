@@ -1,57 +1,123 @@
 <?php
 // get_products.php
 
-// load configuration and functions
+// Load configuration and functions
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/user_actions_config.php';
 require_once __DIR__ . '/../config/products/product_functions.php';
 require_once __DIR__ . '/../config/api/api_functions.php';
 
-// header untuk JSON response
+// Debugging: Log errors to error_log only in local environment
+if (!isLive()) {
+    ini_set('log_errors', 1);
+}
+
+// Header for JSON response
 header('Content-Type: application/json');
 
-startSession(); // Mulai session jika belum dimulai from user_actions_config.php
-$config = getEnvironmentConfig(); // Load konfigurasi URL dinamis berdasarkan environment from config.php
+// Start session if not already started from user_actions_config.php
+startSession();
+// Retrieves the environment-specific configuration settings from config.php
+$config = getEnvironmentConfig();
 
-// Ambil parameter
-$categories = isset($_GET['categories']) ? (array)$_GET['categories'] : null;
-$minPrice = $_GET['min_price'] ?? null;
-$maxPrice = $_GET['max_price'] ?? null;
-$sortBy = $_GET['sort_by'] ?? 'created';
-$sortOrder = $_GET['sort_order'] ?? 'DESC';
+// Get parameters
+$categories = isset($_GET['categories']) ? array_map('sanitize_input', (array)$_GET['categories']) : null;
+$minPrice = isset($_GET['min_price']) ? (int)sanitize_input($_GET['min_price']) : null;
+$maxPrice = isset($_GET['max_price']) ? (int)sanitize_input($_GET['max_price']) : null;
+$sortBy = isset($_GET['sort_by']) ? sanitize_input($_GET['sort_by']) : 'latest';
+$sortOrder = isset($_GET['sort_order']) ? sanitize_input($_GET['sort_order']) : 'DESC';
 
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
-$offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+// Pagination parameters with defaults and validation
+$limit = isset($_GET['limit']) ? max(1, (int)sanitize_input($_GET['limit'])) : 10;
+$offset = isset($_GET['offset']) ? max(0, (int)sanitize_input($_GET['offset'])) : 0;
 
-// Mapping sorting
-if ($sortBy === 'price_low') {
-    $sortBy = 'price';
-    $sortOrder = 'ASC';
-} elseif ($sortBy === 'price_high') {
-    $sortBy = 'price';
-    $sortOrder = 'DESC';
+// Validate price range
+if ($minPrice !== null && $maxPrice !== null && $minPrice > $maxPrice) {
+    http_response_code(400);
+    echo json_encode([
+        'error' => true,
+        'message' => 'Invalid price range: min price cannot be greater than max price'
+    ]);
+    exit;
 }
 
-// Get filtered products
-$products = getFilteredActiveProducts( // from api_functions.php
-    $categories,
-    $minPrice,
-    $maxPrice,
-    $sortBy,
-    $sortOrder
-);
+// Mapping sorting options
+$sortMapping = [
+    'price_low' => ['field' => 'price_amount', 'order' => 'ASC'],
+    'price_high' => ['field' => 'price_amount', 'order' => 'DESC'],
+    'latest' => ['field' => 'created_at', 'order' => 'DESC'],
+    'oldest' => ['field' => 'created_at', 'order' => 'ASC']
+];
 
-// Format response
-$baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']); // from config.php
-$response = [];
-foreach ($products as $product) {
-    $response[] = [
-        'image' => $product['image_path'] ? $baseUrl . $product['image_path'] : $baseUrl . 'assets/images/default-product.png',
-        'name' => htmlspecialchars($product['product_name']),
-        'description' => htmlspecialchars($product['description']),
-        'price' => $product['currency'] . ' ' . number_format($product['price_amount'], 0, ',', '.'),
-        'slug' => htmlspecialchars($product['slug']),
-    ];
+// Apply sorting from mapping if exists, otherwise use default
+if (array_key_exists($sortBy, $sortMapping)) {
+    $sortField = $sortMapping[$sortBy]['field'];
+    $sortDirection = $sortMapping[$sortBy]['order'];
+} else {
+    // Default sorting
+    $sortField = 'created_at';
+    $sortDirection = 'DESC';
 }
 
-echo json_encode($response);
+// Debug output (remove in production)
+if (!isLive()) {
+    error_log("Sorting Parameters - Field: $sortField, Direction: $sortDirection");
+}
+
+// Get filtered products with pagination
+try {
+    $products = getFilteredActiveProducts( // from api_functions.php
+        $categories,
+        $minPrice,
+        $maxPrice,
+        $sortField,
+        $sortDirection,
+        $limit,
+        $offset
+    );
+
+    $totalProducts = getFilteredActiveProductsCount($categories, $minPrice, $maxPrice); // from api_functions.php
+
+    // Calculate pagination details
+    $currentPage = $offset / $limit + 1;
+    $totalPages = ceil($totalProducts / $limit);
+
+    // Format response
+    $baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']); // from config.php
+    $formattedProducts = [];
+
+    foreach ($products as $product) {
+        $formattedProducts[] = [
+            'image' => $product['image_path'] ? $baseUrl . $product['image_path'] : $baseUrl . 'assets/images/default-product.png',
+            'name' => htmlspecialchars($product['product_name'], ENT_QUOTES, 'UTF-8'),
+            'description' => htmlspecialchars($product['description'], ENT_QUOTES, 'UTF-8'),
+            'price' => $product['currency'] . ' ' . number_format($product['price_amount'], 0, ',', '.'),
+            'slug' => htmlspecialchars($product['slug'], ENT_QUOTES, 'UTF-8'),
+            'product_id' => (int)$product['product_id']
+        ];
+    }
+
+    // Return complete response with pagination info
+    echo json_encode([
+        'success' => true,
+        'data' => $formattedProducts,
+        'pagination' => [
+            'total_items' => $totalProducts,
+            'items_per_page' => $limit,
+            'current_page' => $currentPage,
+            'total_pages' => $totalPages,
+            'has_previous' => $currentPage > 1,
+            'has_next' => $currentPage < $totalPages
+        ]
+    ]);
+} catch (Exception $e) {
+    if (!isLive()) {
+        error_log('Error in get_products.php: ' . $e->getMessage());
+    }
+    http_response_code(500);
+    echo json_encode([
+        'error' => true,
+        'message' => 'An error occurred while fetching products',
+        'details' => isLive() ? null : $e->getMessage()
+    ]);
+}

@@ -50,24 +50,20 @@ function getCategoriesWithActiveProducts($config, $env)
 /**
  * Retrieves active products based on category, price range, sorting, and pagination.
  *
- * This function queries the database to fetch active products, optionally filtering by category name(s),
- * a price range, and sorting options. The function ensures that `minPrice` and `maxPrice` are integers
- * and do not accept float values.
- *
- * @param string|array|null $categoryNames The category name(s) to filter products by.
- * @param int|null $minPrice The minimum price filter (must be an integer).
- * @param int|null $maxPrice The maximum price filter (must be an integer).
- * @param string $sortBy The column to sort by (allowed: 'price', 'created', 'updated').
- * @param string $sortOrder The sorting order ('ASC' or 'DESC').
- * @param int $limit The number of results per page.
- * @param int $offset The starting point for pagination.
- * @return array An array of filtered products.
+ * @param string|array|null $categoryNames The category name(s) to filter products by
+ * @param int|null $minPrice The minimum price filter (integer)
+ * @param int|null $maxPrice The maximum price filter (integer)
+ * @param string $sortBy The column to sort by (allowed: 'price_amount', 'created_at', 'updated_at')
+ * @param string $sortOrder The sorting order ('ASC' or 'DESC')
+ * @param int $limit Number of results per page
+ * @param int $offset The starting point for pagination
+ * @return array An array of filtered products
  */
 function getFilteredActiveProducts(
     string|array|null $categoryNames = null,
     ?int $minPrice = null,
     ?int $maxPrice = null,
-    string $sortBy = 'created',
+    string $sortBy = 'created_at',
     string $sortOrder = 'DESC',
     int $limit = 10,
     int $offset = 0
@@ -137,16 +133,16 @@ function getFilteredActiveProducts(
 
         // Define the valid sorting columns to prevent SQL injection
         $validSortColumns = [
-            'price' => 'p.price_amount',
-            'created' => 'p.created_at',
-            'updated' => 'p.updated_at'
+            'price_amount' => 'p.price_amount',
+            'created_at' => 'p.created_at',
+            'updated_at' => 'p.updated_at'
         ];
 
         // Validate the sorting column, defaulting to 'created_at' if invalid
         $sortColumn = $validSortColumns[$sortBy] ?? 'p.created_at';
 
         // Validate sorting order, ensuring it is either 'ASC' or 'DESC'
-        $sortOrder = in_array(strtoupper($sortOrder), ['ASC', 'DESC']) ? $sortOrder : 'ASC';
+        $sortOrder = in_array(strtoupper($sortOrder), ['ASC', 'DESC']) ? $sortOrder : 'DESC';
 
         // Append sorting and pagination to the SQL query
         $sql .= " ORDER BY $sortColumn $sortOrder LIMIT :limit OFFSET :offset";
@@ -170,6 +166,99 @@ function getFilteredActiveProducts(
     } catch (PDOException $e) {
         handleError("Database Query Error: " . $e->getMessage(), $env);
         return [];
+    }
+}
+
+/**
+ * Retrieves the count of active products filtered by category names and price range.
+ * 
+ * This function counts the number of active products in the database, 
+ * optionally filtering them by one or multiple category names and a price range.
+ * 
+ * @param string|array|null $categoryNames The name(s) of the category to filter products. Can be a string or an array of strings. If null, no category filter is applied.
+ * @param int|null $minPrice The minimum price threshold. If null, no lower price limit is applied.
+ * @param int|null $maxPrice The maximum price threshold. If null, no upper price limit is applied.
+ * 
+ * @return int The count of active products matching the provided filters.
+ */
+function getFilteredActiveProductsCount(
+    string|array|null $categoryNames = null,
+    ?int $minPrice = null,
+    ?int $maxPrice = null
+): int {
+    // Retrieve environment configuration
+    $config = getEnvironmentConfig(); // retrieves the environment-specific configuration settings
+    $env = isLive() ? 'live' : 'local'; // Determine the environment (live/local)
+    $pdo = getPDOConnection($config, $env); // Establish a database connection
+
+    // If database connection fails, log an error and return 0
+    if (!$pdo) {
+        handleError("Database connection failed in getActiveProductsCount", $env);
+        return 0;
+    }
+
+    // Validate price range: if minPrice is greater than maxPrice, return 0
+    if ($minPrice !== null && $maxPrice !== null && $minPrice > $maxPrice) {
+        return 0;
+    }
+
+    try {
+        // Base SQL query to count distinct active products
+        $sql = "SELECT COUNT(DISTINCT p.product_id) as total
+                FROM products p
+                JOIN product_category_mapping pcm ON p.product_id = pcm.product_id
+                JOIN product_categories pc ON pcm.category_id = pc.category_id
+                WHERE p.active = 'active'";
+
+        $params = []; // Array to store bound parameters
+
+        // Filter by category names (if provided)
+        if ($categoryNames !== null) {
+            if (is_array($categoryNames)) {
+                // If multiple categories are provided, create named placeholders
+                $categoryParams = [];
+                foreach ($categoryNames as $index => $name) {
+                    $paramName = ":category_" . $index;
+                    $categoryParams[] = $paramName;
+                    $params[$paramName] = $name;
+                }
+                $placeholders = implode(',', $categoryParams);
+                $sql .= " AND pc.category_name IN ($placeholders)";
+            } else {
+                // If a single category is provided, use a single placeholder
+                $sql .= " AND pc.category_name = :categoryName";
+                $params[':categoryName'] = $categoryNames;
+            }
+        }
+
+        // Filter by minimum price (if provided)
+        if ($minPrice !== null) {
+            $sql .= " AND p.price_amount >= :minPrice";
+            $params[':minPrice'] = $minPrice;
+        }
+
+        // Filter by maximum price (if provided)
+        if ($maxPrice !== null) {
+            $sql .= " AND p.price_amount <= :maxPrice";
+            $params[':maxPrice'] = $maxPrice;
+        }
+
+        $stmt = $pdo->prepare($sql); // Prepare the SQL statement
+
+        // Bind parameters dynamically
+        foreach ($params as $key => $value) {
+            $paramType = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $stmt->bindValue($key, $value, $paramType);
+        }
+
+        $stmt->execute(); // Execute the statement
+        $result = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch the result
+
+        return (int) $result['total']; // Return the total count as an integer
+    } catch (PDOException $e) {
+        // Handle any database query errors
+        handleError("Database Query Error: " . $e->getMessage(), $env);
+        return 0;
     }
 }
 

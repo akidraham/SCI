@@ -181,7 +181,11 @@ if (!empty($activeProducts)) {
     <!--========== AKHIR AREA KONTEN PRODUCTS ==========-->
 
     <!--========== AREA PAGINATION PRODUCTS ==========-->
-    <!-- PLACEHOLDER -->
+    <section class="halamanProductsPagination">
+        <div class="container my-4">
+            <div id="paginationContainer"></div>
+        </div>
+    </section>
     <!--========== AKHIR AREA PAGINATION PRODUCTS ==========-->
 
     <!--================ AREA FOOTER =================-->

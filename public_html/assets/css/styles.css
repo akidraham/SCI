@@ -1247,5 +1247,19 @@ section.judul-halaman-about .container h2 {
   appearance: textfield;
   -moz-appearance: textfield;
 }
+
+.halamanProductsPagination .pagination {
+  margin: 20px 0;
+}
+
+.halamanProductsPagination .page-item.active .page-link {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.halamanProductsPagination .page-link {
+  color: #007bff;
+  cursor: pointer;
+}
 /* AKHIR AREA HALAMAN PRODUCTS
 ================================================================================ */
