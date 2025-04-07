@@ -5,8 +5,14 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/products/product_functions.php';
 require_once __DIR__ . '/../../config/api/api_functions.php';
 
-$config = getEnvironmentConfig(); // Load konfigurasi URL dinamis berdasarkan environment from config.php
-$baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']); // retrieves the appropriate base URL based on the environment from config.php
+// Start session if not already started, from config.php
+startSession();
+
+// Load konfigurasi URL dinamis berdasarkan environment
+$config = getEnvironmentConfig(); // Load dynamic URL configuration based on the environment, from config.php
+$baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']); // retrieves the appropriate base URL based on the environment, from config.php
+$isLiveEnvironment = isLive(); // Check if the environment is live, from config.php
+setCacheHeaders($isLiveEnvironment); // Set cache headers based on the environment, from config.php
 
 $slug = $_GET['slug'] ?? null;
 
@@ -15,7 +21,7 @@ if (!$slug) {
     exit("Produk tidak ditemukan");
 }
 
-// Koneksi database dan query from api_functions.php
+// Retrieves an active product from the database based on the slug, function from api_functions.php
 $product = getActiveProductBySlug($slug);
 
 if (!$product) {
