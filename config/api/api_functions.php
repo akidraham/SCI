@@ -296,3 +296,76 @@ function getActiveProductBySlug(string $slug): array
         return [];
     }
 }
+
+/**
+ * Retrieves detailed information of an active product by its slug.
+ * 
+ * This function fetches product details including price, images, description,
+ * categories, tags, product name, and creation date. It combines data from
+ * multiple related tables using JOIN operations.
+ *
+ * @param string $slug The slug of the product to retrieve.
+ * @return array Associative array containing product details or empty array if not found.
+ * @throws Exception If a database error occurs.
+ */
+function getActiveProductInfoBySlug(string $slug): array
+{
+    try {
+        $config = getEnvironmentConfig();
+        $pdo = getPDOConnection($config, isLive() ? 'live' : 'local');
+        $env = isLive() ? 'live' : 'local';
+
+        // SQL query with JOINs and GROUP_CONCAT to aggregate related data
+        $sql = "
+            SELECT 
+                p.product_name,
+                p.description,
+                p.created_at,
+                p.price_amount,
+                p.currency,
+                GROUP_CONCAT(DISTINCT pc.category_name) AS categories,
+                GROUP_CONCAT(DISTINCT t.tag_name) AS tags,
+                GROUP_CONCAT(DISTINCT pi.image_path) AS images
+            FROM products p
+            LEFT JOIN product_category_mapping pcm ON p.product_id = pcm.product_id
+            LEFT JOIN product_categories pc ON pcm.category_id = pc.category_id
+            LEFT JOIN product_tag_mapping ptm ON p.product_id = ptm.product_id
+            LEFT JOIN tags t ON ptm.tag_id = t.tag_id
+            LEFT JOIN product_images pi ON p.product_id = pi.product_id
+            WHERE p.slug = ? 
+                AND p.active = 'active'
+            GROUP BY p.product_id
+            LIMIT 1
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$slug]);
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$product) {
+            return [];
+        }
+
+        // Process aggregated data into arrays
+        $categories = !empty($product['categories']) ? explode(',', $product['categories']) : [];
+        $tags = !empty($product['tags']) ? explode(',', $product['tags']) : [];
+        $images = !empty($product['images']) ? explode(',', $product['images']) : [];
+
+        // Structure the final output
+        return [
+            'product_name' => $product['product_name'],
+            'description' => $product['description'],
+            'price' => [
+                'amount' => (int)$product['price_amount'], // Convert to integer if needed
+                'currency' => $product['currency']
+            ],
+            'created_at' => $product['created_at'],
+            'categories' => $categories,
+            'tags' => $tags,
+            'images' => $images
+        ];
+    } catch (Exception $e) {
+        handleError($e->getMessage(), $env);
+        return [];
+    }
+}

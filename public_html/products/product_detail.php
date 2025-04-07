@@ -21,10 +21,10 @@ if (!$slug) {
     exit("Produk tidak ditemukan");
 }
 
-// Retrieves an active product from the database based on the slug, function from api_functions.php
-$product = getActiveProductBySlug($slug);
+// Retrieves an active product information from the database based on the slug, function from api_functions.php
+$productInfo = getActiveProductInfoBySlug($slug);
 
-if (!$product) {
+if (!$productInfo) {
     header("HTTP/1.0 404 Not Found");
     exit("Produk tidak ditemukan");
 }
@@ -36,7 +36,7 @@ if (!$product) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($product['product_name']) ?></title>
+    <title><?= htmlspecialchars($productInfo['product_name']) ?></title>
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>favicon.ico" />
     <!-- Bootstrap css -->
@@ -46,15 +46,125 @@ if (!$product) {
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/css/styles.css" />
+
+    <!-- Structured Data for SEO -->
+    <?php if ($productInfo): ?>
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org/",
+                "@type": "Product",
+                "name": "<?= htmlspecialchars($productInfo['product_name']) ?>",
+                "description": "<?= htmlspecialchars(strip_tags($productInfo['description'])) ?>",
+                "image": [
+                    <?= implode(',', array_map(function ($image) use ($baseUrl) {
+                        return '"' . $baseUrl . htmlspecialchars($image) . '"';
+                    }, $productInfo['images'])) ?>
+                ],
+                "offers": {
+                    "@type": "Offer",
+                    "priceCurrency": "<?= $productInfo['price']['currency'] ?>",
+                    "price": "<?= $productInfo['price']['amount'] ?>"
+                }
+            }
+        </script>
+    <?php endif; ?>
 </head>
 
 <body>
-    <!-- PLACEHOLDER -->
-    <h1 class="fs-1"><?= htmlspecialchars($product['product_name']) ?></h1>
-
     <!--========== INSERT HEADER ==========-->
     <?php include __DIR__ . '/../includes/header.php'; ?>
     <!--========== AKHIR INSERT HEADER ==========-->
+
+    <!--========== AREA KONTEN DETAIL PRODUK ==========-->
+    <div id="halamanDetailProduk-<?= htmlspecialchars($slug) ?>" class="container py-5 jarak-kustom">
+        <div class="row g-5">
+            <!-- Kolom Gambar -->
+            <div class="col-lg-6">
+                <div id="productCarousel-<?= htmlspecialchars($slug) ?>" class="carousel slide shadow-lg rounded-3" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <?php foreach ($productInfo['images'] as $index => $image): ?>
+                            <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                                <img src="<?= $baseUrl . htmlspecialchars($image) ?>"
+                                    class="d-block w-100 img-fluid py-3 px-3"
+                                    alt="<?= htmlspecialchars($productInfo['product_name']) ?>"
+                                    style="max-height: 600px; object-fit: contain;">
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <?php if (count($productInfo['images']) > 1): ?>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Kolom Deskripsi -->
+            <div class="col-lg-6">
+                <div class="d-flex flex-column h-100">
+                    <h1 id="productTitle-<?= htmlspecialchars($slug) ?>" class="display-5 fw-bold mb-3"><?= htmlspecialchars($productInfo['product_name']) ?></h1>
+
+                    <div class="mb-4">
+                        <span class="display-6 text-primary fw-bold">
+                            <?= $productInfo['price']['currency'] ?>
+                            <?= number_format($productInfo['price']['amount'], 0, ',', '.') ?>
+                        </span>
+                    </div>
+
+                    <?php if (!empty($productInfo['categories'])): ?>
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="me-2 text-secondary">Kategori:</span>
+                            <div class="d-flex flex-wrap gap-2">
+                                <?php foreach ($productInfo['categories'] as $category): ?>
+                                    <span class="badge bg-primary bg-gradient text-white rounded-pill px-3">
+                                        <?= htmlspecialchars($category) ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($productInfo['tags'])): ?>
+                        <div class="d-flex align-items-center mb-4">
+                            <span class="me-2 text-secondary">Tag:</span>
+                            <div class="d-flex flex-wrap gap-2">
+                                <?php foreach ($productInfo['tags'] as $tag): ?>
+                                    <span class="badge bg-success bg-gradient text-white rounded-pill px-3">
+                                        <?= htmlspecialchars($tag) ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="card border-0 shadow-sm mb-4" id="productDescriptionCard-<?= htmlspecialchars($slug) ?>">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Deskripsi Produk</h5>
+                            <div class="text-secondary lh-lg" id="productDescription-<?= htmlspecialchars($slug) ?>">
+                                <?= nl2br(htmlspecialchars($productInfo['description'])) ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                Ditambahkan: <?= date('d M Y', strtotime($productInfo['created_at'])) ?>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--========== AKHIR AREA KONTEN DETAIL PRODUK ==========-->
 
     <!--========== AREA SCROLL TO TOP ==========-->
     <div class="scroll">
