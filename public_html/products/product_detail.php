@@ -51,6 +51,34 @@ if (!$product) {
 <body>
     <!-- PLACEHOLDER -->
     <h1 class="fs-1"><?= htmlspecialchars($product['product_name']) ?></h1>
+
+    <!--========== INSERT HEADER ==========-->
+    <?php include __DIR__ . '/../includes/header.php'; ?>
+    <!--========== AKHIR INSERT HEADER ==========-->
+
+    <!--========== AREA SCROLL TO TOP ==========-->
+    <div class="scroll">
+        <!-- Scroll to Top Button -->
+        <a href="#" class="scroll-to-top" id="scrollToTopBtn">
+            <i class="fa-solid fa-angles-up"></i>
+        </a>
+    </div>
+    <!--========== AKHIR AREA SCROLL TO TOP ==========-->
+
+    <!--================ AREA FOOTER =================-->
+    <?php include __DIR__ . '/../includes/footer.php'; ?>
+    <!--================ AKHIR AREA FOOTER =================-->
+
+    <!-- External JS libraries -->
+    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
+    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
+    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/slick.min.js"></script>
+    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
+    <script>
+        // Tambahkan BASE_URL global
+        const BASE_URL = '<?= $baseUrl ?>';
+    </script>
 </body>
 
 </html>
