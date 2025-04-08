@@ -51,19 +51,27 @@ if (!$productInfo) {
     <?php if ($productInfo): ?>
         <script type="application/ld+json">
             {
-                "@context": "https://schema.org/",
-                "@type": "Product",
+                "@context": "https://schema.org",
+                "@type": "Service",
                 "name": "<?= htmlspecialchars($productInfo['product_name']) ?>",
                 "description": "<?= htmlspecialchars(strip_tags($productInfo['description'])) ?>",
-                "image": [
-                    <?= implode(',', array_map(function ($image) use ($baseUrl) {
-                        return '"' . $baseUrl . htmlspecialchars($image) . '"';
-                    }, $productInfo['images'])) ?>
+                "provider": {
+                    "@type": "Organization",
+                    "name": "Sarjana Canggih",
+                    "url": "https://sarjanacanggihindonesia.com"
+                },
+                "areaServed": {
+                    "@type": "Country",
+                    "name": "Indonesia"
+                },
+                "category": [
+                    <?= implode(',', array_map(fn($cat) => '"' . htmlspecialchars($cat) . '"', $productInfo['categories'])) ?>
                 ],
                 "offers": {
                     "@type": "Offer",
-                    "priceCurrency": "<?= $productInfo['price']['currency'] ?>",
-                    "price": "<?= $productInfo['price']['amount'] ?>"
+                    "priceCurrency": "<?= isset($productInfo['price']['currency']) ? htmlspecialchars($productInfo['price']['currency']) : 'IDR' ?>",
+                    "price": "<?= isset($productInfo['price']['amount']) ? htmlspecialchars($productInfo['price']['amount']) : '0' ?>",
+                    "availability": "https://schema.org/InStock"
                 }
             }
         </script>
