@@ -85,6 +85,14 @@ if (!$productInfo) {
 
     <!--========== AREA KONTEN DETAIL PRODUK ==========-->
     <div id="halamanDetailProduk-<?= htmlspecialchars($slug) ?>" class="container py-5 jarak-kustom">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="<?= $baseUrl ?>">Home</a></li>
+                <li class="breadcrumb-item"><a href="<?= $baseUrl ?>products">Produk</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($productInfo['product_name']) ?></li>
+            </ol>
+        </nav>
+
         <div class="row g-5">
             <!-- Kolom Gambar -->
             <div class="col-lg-6">
@@ -111,6 +119,16 @@ if (!$productInfo) {
                         </button>
                     <?php endif; ?>
                 </div>
+                <div class="d-flex gap-2 mt-3">
+                    <?php foreach ($productInfo['images'] as $index => $image): ?>
+                        <img src="<?= $baseUrl . htmlspecialchars($image) ?>"
+                            class="img-thumbnail" role="img"
+                            style="width: 75px; height: 75px; object-fit: cover; cursor: pointer;"
+                            onclick="document.querySelector('#productCarousel-<?= htmlspecialchars($slug) ?> .carousel-item.active').classList.remove('active'); 
+                      document.querySelectorAll('#productCarousel-<?= htmlspecialchars($slug) ?> .carousel-item')[<?= $index ?>].classList.add('active');" />
+                    <?php endforeach; ?>
+                </div>
+
             </div>
 
             <!-- Kolom Deskripsi -->
@@ -160,6 +178,19 @@ if (!$productInfo) {
                         </div>
                     </div>
 
+                    <!-- Button Add to Cart & Contact Us -->
+                    <div class="d-flex gap-3 mb-4">
+                        <button type="button"
+                            class="btn btn-primary btn-lg flex-grow-1"
+                            onclick="addToCart('#')">
+                            <i class="fas fa-cart-shopping me-2"></i>Add to Cart
+                        </button>
+                        <a href="#"
+                            class="btn btn-outline-primary btn-lg flex-grow-1">
+                            <i class="fas fa-headset me-2"></i>Contact Us
+                        </a>
+                    </div>
+
                     <div class="mt-auto">
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
@@ -196,6 +227,20 @@ if (!$productInfo) {
     <script>
         // Tambahkan BASE_URL global
         const BASE_URL = '<?= $baseUrl ?>';
+    </script>
+    <script>
+        function addToCart(productId) {
+            const button = event.currentTarget;
+            button.disabled = true;
+            button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menambahkan...';
+
+            // Simulasi proses (ganti dengan request async jika sudah tersedia)
+            setTimeout(() => {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-cart-shopping me-2"></i> Add to Cart';
+                alert('Produk berhasil ditambahkan ke keranjang!');
+            }, 1200);
+        }
     </script>
 </body>
 
