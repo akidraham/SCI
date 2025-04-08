@@ -97,6 +97,7 @@ if (!$productInfo) {
             <!-- Kolom Gambar -->
             <div class="col-lg-6">
                 <div id="productCarousel-<?= htmlspecialchars($slug) ?>" class="carousel slide shadow-lg rounded-3" data-bs-ride="carousel">
+                    <!-- Bagian carousel -->
                     <div class="carousel-inner">
                         <?php foreach ($productInfo['images'] as $index => $image): ?>
                             <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
@@ -108,6 +109,7 @@ if (!$productInfo) {
                         <?php endforeach; ?>
                     </div>
 
+                    <!-- Tombol navigasi carousel hanya ditampilkan jika ada lebih dari satu gambar -->
                     <?php if (count($productInfo['images']) > 1): ?>
                         <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel-<?= htmlspecialchars($slug) ?>" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
@@ -119,6 +121,8 @@ if (!$productInfo) {
                         </button>
                     <?php endif; ?>
                 </div>
+
+                <!-- Thumbnail Gambar di Bawah Carousel -->
                 <div class="d-flex gap-2 mt-3">
                     <?php foreach ($productInfo['images'] as $index => $image): ?>
                         <img src="<?= $baseUrl . htmlspecialchars($image) ?>"
@@ -136,6 +140,7 @@ if (!$productInfo) {
                 <div class="d-flex flex-column h-100">
                     <h1 id="productTitle-<?= htmlspecialchars($slug) ?>" class="display-5 fw-bold mb-3"><?= htmlspecialchars($productInfo['product_name']) ?></h1>
 
+                    <!-- Bagian harga -->
                     <div class="mb-4">
                         <span class="display-6 text-primary fw-bold">
                             <?= $productInfo['price']['currency'] ?>
@@ -143,33 +148,44 @@ if (!$productInfo) {
                         </span>
                     </div>
 
-                    <?php if (!empty($productInfo['categories'])): ?>
-                        <div class="d-flex align-items-center mb-3">
-                            <span class="me-2 text-secondary">Kategori:</span>
-                            <div class="d-flex flex-wrap gap-2">
+                    <!-- Bagian Kategori -->
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="me-2 text-secondary">Kategori:</span>
+                        <div class="d-flex flex-wrap gap-2">
+                            <?php if (!empty($productInfo['categories'])): ?>
                                 <?php foreach ($productInfo['categories'] as $category): ?>
                                     <span class="badge bg-primary bg-gradient text-white rounded-pill px-3">
                                         <?= htmlspecialchars($category) ?>
                                     </span>
                                 <?php endforeach; ?>
-                            </div>
+                            <?php else: ?>
+                                <span class="badge bg-secondary bg-gradient text-white rounded-pill px-3">
+                                    Tidak ada kategori
+                                </span>
+                            <?php endif; ?>
                         </div>
-                    <?php endif; ?>
+                    </div>
 
-                    <?php if (!empty($productInfo['tags'])): ?>
-                        <div class="d-flex align-items-center mb-4">
-                            <span class="me-2 text-secondary">Tag:</span>
-                            <div class="d-flex flex-wrap gap-2">
+                    <!-- Bagian Tag -->
+                    <div class="d-flex align-items-center mb-4">
+                        <span class="me-2 text-secondary">Tag:</span>
+                        <div class="d-flex flex-wrap gap-2">
+                            <?php if (!empty($productInfo['tags'])): ?>
                                 <?php foreach ($productInfo['tags'] as $tag): ?>
                                     <span class="badge bg-success bg-gradient text-white rounded-pill px-3">
                                         <?= htmlspecialchars($tag) ?>
                                     </span>
                                 <?php endforeach; ?>
-                            </div>
+                            <?php else: ?>
+                                <span class="badge bg-secondary bg-gradient text-white rounded-pill px-3">
+                                    Tidak ada tag
+                                </span>
+                            <?php endif; ?>
                         </div>
-                    <?php endif; ?>
+                    </div>
 
-                    <div class="card border-0 shadow-sm mb-4" id="productDescriptionCard-<?= htmlspecialchars($slug) ?>">
+                    <!-- Bagian Deskripsi Produk -->
+                    <div class="card border-0 shadow mb-4" id="productDescriptionCard-<?= htmlspecialchars($slug) ?>">
                         <div class="card-body">
                             <h5 class="card-title mb-3">Deskripsi Produk</h5>
                             <div class="text-secondary lh-lg" id="productDescription-<?= htmlspecialchars($slug) ?>">
@@ -191,6 +207,7 @@ if (!$productInfo) {
                         </a>
                     </div>
 
+                    <!-- Bagian Tanggal Produk Dibuat -->
                     <div class="mt-auto">
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
