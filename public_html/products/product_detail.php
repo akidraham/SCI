@@ -101,7 +101,7 @@ if (!$productInfo) {
                         <?php foreach ($productInfo['images'] as $index => $image): ?>
                             <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
                                 <img src="<?= $baseUrl . htmlspecialchars($image) ?>"
-                                    class="d-block w-100 img-fluid py-3 px-3"
+                                    class="d-block w-100 img-fluid py-3 px-3" role="img"
                                     alt="<?= htmlspecialchars($productInfo['product_name']) ?>"
                                     style="max-height: 600px; object-fit: contain;">
                             </div>
@@ -109,11 +109,11 @@ if (!$productInfo) {
                     </div>
 
                     <?php if (count($productInfo['images']) > 1): ?>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel-<?= htmlspecialchars($slug) ?>" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel-<?= htmlspecialchars($slug) ?>" data-bs-slide="next">
                             <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
