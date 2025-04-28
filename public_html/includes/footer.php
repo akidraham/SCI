@@ -66,8 +66,11 @@ $baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']);
 
                         <!-- Column 2 -->
                         <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
-                            <h6 class="text-uppercase fw-bold"><a href="<?php echo $baseUrl; ?>products"
-                                    style="text-decoration: none; color:inherit;">Products</a></h6>
+                            <h6 class="text-uppercase fw-bold">
+                                <a href="<?php echo rtrim($baseUrl, '/'); ?>/products" style="text-decoration: none; color: inherit;">
+                                    Products
+                                </a>
+                            </h6>
                             <hr class="mb-4 mt-0 d-inline-block mx-auto"
                                 style="width: 60px; background-color: #7c4dff; height: 2px;">
                             <p><a href="<?php echo $baseUrl; ?>products/" class="text-white">Desain PPT</a></p>
