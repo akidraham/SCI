@@ -28,6 +28,35 @@ if (!$productInfo) {
     header("HTTP/1.0 404 Not Found");
     exit("Produk tidak ditemukan");
 }
+
+// Build WhatsApp link
+$phoneNumber = $_ENV['PHONE_NUMBER'] ?? '';
+// Get current page URL dengan encoding yang tepat
+$currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")
+    . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+// message template untuk WhatsApp
+$messageTemplate = <<<MSG
+Halo kak 👋,
+
+Setelah membaca informasi di website, saya tertarik untuk memesan produk:
+%s
+
+URL produk: 
+%s
+
+Mohon info lebih lanjut 🙏
+MSG;
+// Membuat pesan untuk WhatsApp
+$messageText = sprintf($messageTemplate, $productInfo['product_name'], $currentUrl);
+$encodedMessage = rawurlencode($messageText);
+$whatsappLink = "https://wa.me/{$phoneNumber}?text={$encodedMessage}";
+// Error handling untuk nomor telepon
+if (empty($phoneNumber)) {
+    error_log("PHONE_NUMBER not set in .env");
+    $whatsappLink = 'javascript:void(0);';
+    $whatsappError = true;
+}
 ?>
 
 <!DOCTYPE html>
@@ -196,15 +225,29 @@ if (!$productInfo) {
 
                     <!-- Button Add to Cart & Contact Us -->
                     <div class="d-flex gap-3 mb-4">
+                        <!-- Add to Cart -->
                         <button type="button"
                             class="btn btn-primary btn-lg flex-grow-1"
                             onclick="addToCart('#')">
                             <i class="fas fa-cart-shopping me-2"></i>Add to Cart
                         </button>
-                        <a href="#"
-                            class="btn btn-outline-primary btn-lg flex-grow-1">
+                        <!-- Contact Us -->
+                        <!-- Button Contact Us -->
+                        <a href="<?= $whatsappLink ?>"
+                            class="btn btn-outline-primary btn-lg flex-grow-1 <?= isset($whatsappError) ? 'disabled' : '' ?>"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Hubungi kami via WhatsApp"
+                            <?= isset($whatsappError) ? 'tabindex="-1"' : '' ?>>
                             <i class="fas fa-headset me-2"></i>Contact Us
                         </a>
+
+                        <?php if (isset($whatsappError)): ?>
+                            <div class="mt-2 text-danger small">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Nomor WhatsApp belum terkonfigurasi
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- Bagian Tanggal Produk Dibuat -->
