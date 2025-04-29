@@ -17,7 +17,6 @@ $user_input = $_GET['input'] ?? '';
 $sanitized_input = sanitize_input($user_input);
 
 validateReCaptchaEnvVariables();
-redirect_if_logged_in();
 
 // Ambil token dari URL
 $token = $_GET['hash'] ?? '';
