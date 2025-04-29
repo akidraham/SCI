@@ -31,7 +31,6 @@ try {
     // Set flash message sukses
     $_SESSION['success_message'] = "User berhasil dihapus!";
     $_SESSION['form_success'] = true;
-
 } catch (Exception $e) {
     // Handle error dan set flash message
     $_SESSION['error_message'] = $e->getMessage();
@@ -44,5 +43,5 @@ try {
 }
 
 // Redirect kembali
-header("Location: " . $baseUrl . "admin/manage_users.php");
+header("Location: " . $baseUrl . "manage_users");
 exit();
