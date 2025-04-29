@@ -666,23 +666,23 @@ function registerUser($username, $email, $password, $env, $config)
     try {
         /** Validate username */
         $usernameViolations = validateUsername($username);
-        if (count($usernameViolations) > 0) {
+        if ($usernameViolations->count() > 0) {
             $pdo->rollBack();
-            return $usernameViolations[0]->getMessage();
+            return $usernameViolations->get(0)->getMessage();
         }
 
         /** Validate email */
         $emailViolations = validateEmail($email);
-        if (count($emailViolations) > 0) {
+        if ($emailViolations->count() > 0) {
             $pdo->rollBack();
-            return $emailViolations[0]->getMessage();
+            return $emailViolations->get(0)->getMessage();
         }
 
         /** Validate password */
         $passwordViolations = validatePassword($password);
-        if (count($passwordViolations) > 0) {
+        if ($passwordViolations->count() > 0) {
             $pdo->rollBack();
-            return $passwordViolations[0]->getMessage();
+            return $passwordViolations->get(0)->getMessage();
         }
 
         /** Check if username or email already exists */
@@ -882,7 +882,7 @@ function processLoginForm($env, $baseUrl, $config)
         $errorType = 'Username';
     }
 
-    if (count($violations) > 0) {
+    if ($violations->count() > 0) {
         $_SESSION['error_message'] = $errorType . ' tidak valid.';
         header("Location: " . $baseUrl . "login");
         exit();
@@ -890,7 +890,7 @@ function processLoginForm($env, $baseUrl, $config)
 
     // Validate password
     $passwordViolations = validatePassword($password);
-    if (count($passwordViolations) > 0) {
+    if ($passwordViolations->count() > 0) {
         $_SESSION['error_message'] = 'Password tidak valid.';
         header("Location: " . $baseUrl . "login");
         exit();
@@ -1104,7 +1104,7 @@ function processPasswordResetRequest($email_or_username, $recaptcha_response, $c
     $isEmail = filter_var($email_or_username, FILTER_VALIDATE_EMAIL);
     $violations = $isEmail ? validateEmail($email_or_username) : validateUsername($email_or_username);
 
-    if (count($violations) > 0) {
+    if ($violations->count() > 0) {
         $errorMessages = [];
         foreach ($violations as $violation) {
             $errorMessages[] = $violation->getMessage();
@@ -1345,8 +1345,8 @@ function changeEmail($userId, $newEmail, $config, $env)
 {
     // Validate the new email address
     $emailViolations = validateEmail($newEmail);
-    if (count($emailViolations) > 0) {
-        return $emailViolations[0]->getMessage();
+    if ($emailViolations->count() > 0) {
+        return $emailViolations->get(0)->getMessage();
     }
 
     // Establish a database connection
