@@ -113,10 +113,10 @@ redirect_if_logged_in();
               </div>
             </div>
             <!-- Remember Me Checkbox -->
-            <div class="form-check">
+            <!-- <div class="form-check">
               <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe" <?php echo isset($_COOKIE['username']) ? 'checked' : ''; ?>>
               <label class="form-check-label" for="rememberMe">Remember Me</label>
-            </div>
+            </div> -->
             <br>
             <!-- Honeypot Field -->
             <input type="text" name="honeypot" class="honeypot" style="display: none;">
