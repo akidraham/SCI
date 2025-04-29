@@ -195,3 +195,20 @@ input[type="number"] {
 }
 /* AKHIR AREA HALAMAN EDIT PRODUCTS
 ================================================================================ */
+
+/* AREA HALAMAN EDIT PRODUCTS
+================================================================================ */
+.area-konten-manage-users .btn-reset-password {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.area-konten-manage-users .btn-reset-password:hover {
+  background-color: #45a049;
+}
+/* AKHIR AREA HALAMAN EDIT PRODUCTS
+================================================================================ */

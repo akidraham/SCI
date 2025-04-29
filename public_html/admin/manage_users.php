@@ -303,7 +303,7 @@ if (isset($_SESSION['flash_message'])) {
                         if ($result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
                                 echo
-                                    "<tr>
+                                "<tr>
                                         <td>{$row['user_id']}</td>
                                         <td>{$row['username']}</td>
                                         <td>{$row['email']}</td>
@@ -325,7 +325,20 @@ if (isset($_SESSION['flash_message'])) {
                                 }
                                 echo "</td>                                
                                     <td class='action-buttons'>
+                                        <!-- Delete Button -->    
                                         <button onclick='confirmDelete({$row['user_id']})'>Delete</button>
+                                        
+                                        <!-- Reset Password -->
+                                        <form action='" . $baseUrl . "admin-reset-password' method='POST' style='display:inline;'>
+                                            <input type='hidden' name='user_id' value='{$row['user_id']}'>
+                                            <input type='hidden' name='email' value='{$row['email']}'>
+                                            <input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') . "'>
+                                            <button type='submit' 
+                                                onclick='return confirm(\"Kirim reset password ke {$row['email']}?\")'
+                                                class='btn-reset-password'>
+                                            Reset Password
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>";
                             }
@@ -354,7 +367,9 @@ if (isset($_SESSION['flash_message'])) {
         src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
     <!-- Custom JS -->
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
-    <script> const BASE_URL = '<?= $baseUrl ?>';</script>
+    <script>
+        const BASE_URL = '<?= $baseUrl ?>';
+    </script>
 </body>
 
 </html>
