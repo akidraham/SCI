@@ -1244,7 +1244,7 @@ function validateResetToken($token, $pdo)
             JOIN users u ON pr.user_id = u.user_id
             WHERE pr.hash = :hash 
               AND pr.completed = 0 
-              AND pr.expires_at > NOW()";
+              AND pr.expires_at > UTC_TIMESTAMP()";
     $stmt = $pdo->prepare($sql); // Prepare the SQL statement
     $stmt->execute(['hash' => $token]); // Execute the statement with the provided token
     return $stmt->fetch(PDO::FETCH_ASSOC); // Fetch the result as an associative array
