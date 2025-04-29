@@ -729,6 +729,14 @@ function registerUser($username, $email, $password, $env, $config)
             return 'Internal server error. Please try again later.';
         }
 
+        // Send activation email
+        $emailResult = sendActivationEmail($email, $activationCode, $username);
+        if ($emailResult !== true) {
+            // Log the error but don't return it to user
+            handleError('Email sending failed: ' . $emailResult, $env);
+            // You might want to queue the email for retry here
+        }
+
         return 'Registration successful. Please activate your account via email.';
     } catch (PDOException $e) {
         /** Rollback transaction if an error occurs */
