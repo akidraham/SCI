@@ -1095,10 +1095,6 @@ function activateAccount($activationCode, $env, $config)
  */
 function processPasswordResetRequest($email_or_username, $recaptcha_response, $csrf_token, HttpClientInterface $httpClient, $config, $baseUrl)
 {
-    // Set the default timezone to Asia/Jakarta using Carbon
-    Carbon::setToStringFormat('Y-m-d H:i:s');
-    Carbon::setTestNow(Carbon::now('Asia/Jakarta'));
-
     // Set environment type based on host
     $env = ($_SERVER['HTTP_HOST'] === 'localhost') ? 'local' : 'live';
 
@@ -1143,16 +1139,25 @@ function processPasswordResetRequest($email_or_username, $recaptcha_response, $c
     $userEmail = $user['email'];
     $resetHash = generateActivationCode($userEmail);
 
-    // Set expiration time using Carbon
-    $expiresAt = Carbon::now('Asia/Jakarta')->addHour();
+    // Set expiration time in UTC
+    $expiresAt = Carbon::now('UTC')->addHour();
+    $expiresAtFormatted = $expiresAt->format('Y-m-d H:i:s');
 
-    // Clear expired reset tokens for the user
-    $stmt = $pdo->prepare("DELETE FROM password_resets WHERE user_id = :user_id OR expires_at <= NOW()");
-    $stmt->execute(['user_id' => $userId]);
+    // Clear expired reset tokens for the user using UTC
+    $currentUtcTime = Carbon::now('UTC')->format('Y-m-d H:i:s');
+    $stmt = $pdo->prepare("DELETE FROM password_resets WHERE user_id = :user_id OR expires_at <= :now");
+    $stmt->execute([
+        'user_id' => $userId,
+        'now' => $currentUtcTime
+    ]);
 
-    // Save the new reset token in the database
+    // Save the new reset token in the database using UTC
     $stmt = $pdo->prepare("INSERT INTO password_resets (user_id, hash, expires_at) VALUES (:user_id, :hash, :expires_at)");
-    if (!$stmt->execute(['user_id' => $userId, 'hash' => $resetHash, 'expires_at' => $expiresAt])) {
+    if (!$stmt->execute([
+        'user_id' => $userId,
+        'hash' => $resetHash,
+        'expires_at' => $expiresAtFormatted
+    ])) {
         $errorMessage = "Failed to save reset token to database for user ID: $userId";
         handleError($errorMessage, $env);
         return ['status' => 'error', 'message' => 'Failed to process your request. Please try again later.'];
