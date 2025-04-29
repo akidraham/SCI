@@ -9,6 +9,13 @@ use Carbon\Carbon;
 startSession();
 validateAdminRole();
 
+$config = getEnvironmentConfig();
+$baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']);
+$isLive = $config['is_live'];
+$env = ($_SERVER['HTTP_HOST'] === 'localhost') ? 'local' : 'live';
+
+setCacheHeaders($isLive);
+
 // 2. CSRF Validation
 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
     die("Invalid CSRF token");
@@ -58,5 +65,5 @@ try {
     ];
 }
 
-header("Location: " . getBaseUrl($config, $env) . "admin/manage_users.php");
+header("Location: " . $baseUrl . "manage_users");
 exit();
