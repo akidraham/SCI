@@ -12,9 +12,12 @@
 <body>
     <!--========== Area Testimoni ==========-->
     <section class="area-testimoni">
-        <div class="heading_2">
-            <h2>Testimoni</h2>
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold mb-3">Testimoni</h2>
+            </div>
         </div>
+
         <div class="row">
             <div class="col-sm-3">
                 <!-- PLACEHOLDER -->
