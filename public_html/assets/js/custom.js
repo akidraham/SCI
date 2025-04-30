@@ -43,7 +43,58 @@ $(function () {
 });
 // ==================== AKHIR JS UNTUK NAVBAR BERUBAH WARNA ==================== //
 
-// ==================== JS UNTUK successModal-forgotpassword ==================== //
+// ==================== JS UNTUK FILTER PRODUK ==================== //
+const productCards = document.querySelectorAll(".product-card");
+const applyFiltersButton = document.getElementById("apply-filters");
+const productsContainer = document.getElementById("products-container");
+
+// Fungsi untuk menerapkan filter kategori
+function applyCategoryFilter() {
+  // Ambil semua kategori yang dipilih dari checkbox
+  const selectedCategories = Array.from(document.querySelectorAll(".product-filter:checked")).map(
+    (input) => input.value,
+  );
+
+  let productsFound = false;
+
+  // Iterasi setiap produk dan sesuaikan visibilitasnya berdasarkan kategori yang dipilih
+  productCards.forEach((card) => {
+    const productCategory = card.getAttribute("data-category"); // Ambil data kategori dari atribut
+
+    // Sesuaikan visibilitas produk
+    const shouldDisplay = selectedCategories.length === 0 || selectedCategories.includes(productCategory);
+    card.style.display = shouldDisplay ? "block" : "none";
+    if (shouldDisplay) {
+      productsFound = true;
+    }
+  });
+
+  // Tangani tampilan pesan "Produk tidak ditemukan"
+  let noProductsMessage = document.getElementById("no-products-message");
+
+  if (!noProductsMessage) {
+    // Jika elemen pesan belum ada, tambahkan
+    noProductsMessage = document.createElement("p");
+    noProductsMessage.id = "no-products-message";
+    noProductsMessage.textContent = "Produk tidak ditemukan.";
+    noProductsMessage.style.display = "none"; // Sembunyikan secara default
+    productsContainer.appendChild(noProductsMessage);
+  }
+
+  // Tampilkan atau sembunyikan pesan berdasarkan hasil filter
+  noProductsMessage.style.display = productsFound ? "none" : "block";
+}
+
+// Cek apakah tombol apply-filters ada
+if (applyFiltersButton) {
+  // Menambahkan event listener pada tombol apply filter
+  applyFiltersButton.addEventListener("click", applyCategoryFilter);
+} else {
+  console.log("Tombol apply-filters tidak ditemukan, pengaplikasian filter dibatalkan.");
+}
+// ==================== AKHIR JS UNTUK FILTER PRODUK ====================//
+
+// ====================JS untuk successModal-forgotpassword==================== //
 document.addEventListener("DOMContentLoaded", function () {
   var successModalElement = document.getElementById("successModal-forgotpassword");
 
@@ -54,4 +105,4 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Script untuk successModal-forgotpassword dinonaktifkan karena elemen tidak ditemukan.");
   }
 });
-// ==================== AKHIR JS UNTUK successModal-forgotpassword ==================== //
+// ====================Akhir JS untuk successModal-forgotpassword==================== //
