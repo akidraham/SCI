@@ -1,4 +1,4 @@
-// ====================Scroll to top==================== //
+// ==================== JS UNTUK SCROLL TO TOP ==================== //
 document.addEventListener("DOMContentLoaded", function () {
   const scrollToTopBtn = document.getElementById("scrollToTopBtn");
 
@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Elemen scrollToTopBtn tidak ditemukan, kode JavaScript dinonaktifkan.");
   }
 });
-// ====================Akhir Scroll to top==================== //
+// ==================== AKHIR JS UNTUK SCROLL TO TOP ==================== //
 
-// ====================JS untuk Navigasi Bar berubah warna==================== //
+// ==================== JS UNTUK NAVBAR BERUBAH WARNA ==================== //
 $(function () {
   const navbar = $(".navbar");
 
@@ -41,41 +41,7 @@ $(function () {
     console.log("Elemen navbar tidak ditemukan, kode JavaScript dinonaktifkan.");
   }
 });
-// ====================Akhir JS untuk Navigasi Bar berubah warna==================== //
-
-// ====================JS untuk ourteknologi==================== //
-$(function () {
-  const techLogos = $(".tech-logos");
-
-  if (techLogos.length) {
-    techLogos.slick({
-      slidesToShow: 6,
-      slidesToScroll: 1,
-      autoplay: true,
-      autoplaySpeed: 1500,
-      arrows: false,
-      dots: false,
-      pauseOnHover: false,
-      responsive: [
-        {
-          breakpoint: 768,
-          settings: {
-            slidesToShow: 4,
-          },
-        },
-        {
-          breakpoint: 578,
-          settings: {
-            slidesToShow: 2,
-          },
-        },
-      ],
-    });
-  } else {
-    console.log("Elemen .tech-logos tidak ditemukan, Slick carousel dinonaktifkan.");
-  }
-});
-// ====================Akhir JS untuk ourteknologi==================== //
+// ==================== AKHIR JS UNTUK NAVBAR BERUBAH WARNA ==================== //
 
 // ==================== JS UNTUK successModal-forgotpassword ==================== //
 document.addEventListener("DOMContentLoaded", function () {
