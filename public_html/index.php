@@ -225,7 +225,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
   <!--========== AKHIR AREA KENAPA KAMI ==========-->
 
   <!--========== AREA WUWG ==========-->
-  <section class="features-wuwg">
+  <section class="features-wuwg pb-5">
     <div class="container">
       <div class="row">
         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -325,15 +325,15 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
   <!--========== AKHIR AREA WUWG ==========-->
 
   <!--========== Area Our Technologies ==========-->
-  <section class="ourteknologi">
-    <div class="container-fluid">
+  <section class="ourteknologi pb-5">
+    <div class="container">
       <div class="row">
         <div class="col-md-2">
           <!-- placeholder -->
         </div>
         <div class="col-md-8">
-          <div class="heading_2">
-            <h2>Our Technologies</h2>
+          <div class="text-center mb-5">
+            <h2 class=" display-5 fw-bold mb-3">Our Technologies</h2>
           </div>
         </div>
         <div class="col-md-2">
