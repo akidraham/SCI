@@ -112,7 +112,6 @@ $kenapaKamiProps = [
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="display-5 fw-bold mb-3">Kenapa Memilih Kami?</h2>
-            <p class="text-muted">Keunggulan yang membuat kami berbeda</p>
         </div>
 
         <!-- Mobile (XS-MD) -->
