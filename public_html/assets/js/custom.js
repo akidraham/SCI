@@ -1,4 +1,4 @@
-// ==================== JS UNTUK SCROLL TO TOP ==================== //
+// ====================Scroll to top==================== //
 document.addEventListener("DOMContentLoaded", function () {
   const scrollToTopBtn = document.getElementById("scrollToTopBtn");
 
@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Elemen scrollToTopBtn tidak ditemukan, kode JavaScript dinonaktifkan.");
   }
 });
-// ==================== AKHIR JS UNTUK SCROLL TO TOP ==================== //
+// ====================Akhir Scroll to top==================== //
 
-// ==================== JS UNTUK NAVBAR BERUBAH WARNA ==================== //
+// ====================JS untuk Navigasi Bar berubah warna==================== //
 $(function () {
   const navbar = $(".navbar");
 
@@ -41,7 +41,41 @@ $(function () {
     console.log("Elemen navbar tidak ditemukan, kode JavaScript dinonaktifkan.");
   }
 });
-// ==================== AKHIR JS UNTUK NAVBAR BERUBAH WARNA ==================== //
+// ====================Akhir JS untuk Navigasi Bar berubah warna==================== //
+
+// ====================JS untuk ourteknologi==================== //
+$(function () {
+  const techLogos = $(".tech-logos");
+
+  if (techLogos.length) {
+    techLogos.slick({
+      slidesToShow: 6,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 1500,
+      arrows: false,
+      dots: false,
+      pauseOnHover: false,
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 4,
+          },
+        },
+        {
+          breakpoint: 578,
+          settings: {
+            slidesToShow: 2,
+          },
+        },
+      ],
+    });
+  } else {
+    console.log("Elemen .tech-logos tidak ditemukan, Slick carousel dinonaktifkan.");
+  }
+});
+// ====================Akhir JS untuk ourteknologi==================== //
 
 // ==================== JS UNTUK FILTER PRODUK ==================== //
 const productCards = document.querySelectorAll(".product-card");
