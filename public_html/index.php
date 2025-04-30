@@ -221,46 +221,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
   <!--========== AKHIR AREA CAROUSEL ==========-->
 
   <!--========== AREA KENAPA KAMI ==========-->
-  <section class="kenapakami">
-    <div class="container-fluid">
-      <div class="heading_2">
-        <h2 class="mt-5 mt-sm-5 mt-md-0">Kenapa Memilih Sarjana Canggih Indonesia</h2>
-      </div>
-      <div class="row kenapa_inner">
-        <div class="col-lg-3">
-          <div class="kenapa_item">
-            <img src=" <?php echo $baseUrl; ?>assets/images/knp/1.webp" alt="" />
-            <h4>Pilihan paket terlengkap.</h4>
-            <p>Dari paket basic hingga unlimited, semua ada!</p>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="kenapa_item">
-            <img src=" <?php echo $baseUrl; ?>assets/images/knp/2.webp" alt="" />
-            <h4>Layanan prima.</h4>
-            <p>Kami dukung penuh proses penelitian kamu hingga selesai. Rasi kami siap menjawab pertanyaan kamu.</p>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="kenapa_item">
-            <img src=" <?php echo $baseUrl; ?>assets/images/knp/3.webp" alt="" />
-            <h4>Dipercaya di Indonesia hingga UK.</h4>
-            <p>
-              Kami telah membantu peneliti di berbagai kota dan lintas benua untuk menyelesaikan tugas akhirnya,
-              bahkan mempublikasi hingga SINTA 1.
-            </p>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="kenapa_item">
-            <img src=" <?php echo $baseUrl; ?>assets/images/knp/4.webp" alt="" />
-            <h4>Pioneer paket unlimited dan video penjelasan.</h4>
-            <p>Kami memberikan layanan yang paling spesial untuk memastikan kesiapan kamu.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <?php include __DIR__ . '/includes/components/kenapaKami.php'; ?>
   <!--========== AKHIR AREA KENAPA KAMI ==========-->
 
   <!--========== AREA WUWG ==========-->
