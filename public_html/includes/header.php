@@ -214,7 +214,7 @@ $profileImageUrl = default_profile_image($profileImage, $baseUrl, $config);
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-primary text-white" href="<?php echo $baseUrl; ?>login">
+                        <a class="nav-link" href="<?php echo $baseUrl; ?>login">
                             <i class="fa-solid fa-sign-in-alt"></i> Login
                         </a>
                     </li>
