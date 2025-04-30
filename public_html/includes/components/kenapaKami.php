@@ -26,7 +26,7 @@ $kenapaKamiProps = [
 
 <style>
     /* Modern Styling */
-    .kenapa-card {
+    .kenapakami .kenapa-card {
         background: white;
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -35,19 +35,19 @@ $kenapaKamiProps = [
         height: 100%;
     }
 
-    .kenapa-card:hover {
+    .kenapakami .kenapa-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
     }
 
-    .card-image-container {
+    .kenapakami .card-image-container {
         position: relative;
         padding-top: 70%;
         /* Aspect ratio 1:1.4 */
         overflow: hidden;
     }
 
-    .card-image {
+    .kenapakami .card-image {
         position: absolute;
         top: 0;
         left: 0;
@@ -57,26 +57,26 @@ $kenapaKamiProps = [
         transition: transform 0.3s ease;
     }
 
-    .card-content {
+    .kenapakami .card-content {
         padding: 1.5rem;
         text-align: center;
     }
 
-    .card-content h4 {
+    .kenapakami .card-content h4 {
         color: #2A2A2A;
         font-weight: 600;
         margin-bottom: 1rem;
         font-size: 1.25rem;
     }
 
-    .card-content p {
+    .kenapakami .card-content p {
         color: #666;
         font-size: 0.95rem;
         line-height: 1.6;
     }
 
     /* Carousel Customization */
-    .carousel-indicators [data-bs-target] {
+    .kenapakami .carousel-indicators [data-bs-target] {
         width: 10px;
         height: 10px;
         border-radius: 50%;
@@ -85,23 +85,23 @@ $kenapaKamiProps = [
         border: none;
     }
 
-    .carousel-indicators .active {
+    .kenapakami .carousel-indicators .active {
         background-color: #007bff;
         width: 30px;
         border-radius: 5px;
     }
 
-    .carousel-control-prev,
-    .carousel-control-next {
+    .kenapakami .carousel-control-prev,
+    .kenapakami .carousel-control-next {
         width: 8%;
     }
 
     @media (max-width: 991.98px) {
-        .kenapa-card {
+        .kenapakami .kenapa-card {
             margin: 0 10px;
         }
 
-        .card-content {
+        .kenapakami .card-content {
             padding: 1.25rem;
         }
     }
@@ -116,7 +116,7 @@ $kenapaKamiProps = [
 
         <!-- Mobile (XS-MD) -->
         <div class="d-block d-md-none">
-            <div id="mobileCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div id="mobileCarousel" class="carousel slide" data-bs-interval="false">
                 <div class="carousel-indicators">
                     <?php foreach ($kenapaKamiProps as $i => $item): ?>
                         <button type="button"
@@ -158,7 +158,7 @@ $kenapaKamiProps = [
 
         <!-- Tablet (MD-LG) -->
         <div class="d-none d-md-block d-lg-none">
-            <div id="tabletCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div id="tabletCarousel" class="carousel slide" data-bs-interval="false">
                 <div class="carousel-indicators">
                     <?php $chunks = array_chunk($kenapaKamiProps, 2); ?>
                     <?php foreach ($chunks as $i => $chunk): ?>
