@@ -116,7 +116,7 @@ redirect_if_logged_in();
                                 <input type="hidden" name="full_phone" id="full_phone">
                                 <div class="invalid-feedback">
                                     Nomor HP diperlukan.
-                                </div>                                
+                                </div>
                             </div>
                         </div>
 
