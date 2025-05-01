@@ -48,6 +48,8 @@ redirect_if_logged_in();
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/vendor/css/bootstrap.min.css" />
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <!-- CSS intl-tel-input -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/css/intlTelInput.css">
     <!-- Custom Styles CSS -->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/css/styles.css">
     <!-- Google reCAPTCHA -->
@@ -105,6 +107,17 @@ redirect_if_logged_in();
                             </div>
                         </div>
 
+                        <!-- Phone number -->
+                        <div class="form-group">
+                            <label for="phone">Nomor Telepon</label>
+                            <div style="position: relative;">
+                                <input type="tel" id="phone" name="phone" class="form-control" required>
+                                <div class="invalid-feedback">
+                                    Nomor telepon diperlukan.
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Password -->
                         <div class="form-group">
                             <label for="register_password">Password</label>
@@ -157,8 +170,29 @@ redirect_if_logged_in();
 <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
 <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
 <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
+<!-- JS intl-tel-input -->
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/intlTelInput.min.js"></script>
 <!-- Custom JS -->
 <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
 <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/register.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.querySelector("#phone");
+        window.intlTelInput(input, {
+            allowDropdown: true,
+            containerClass: "w-100",
+            formatAsYouType: true,
+            formatOnDisplay: true,
+            initialCountry: "id",
+            separateDialCode: true,
+            strictMode: true,
+            hiddenInput: (telInputName) => ({
+                phone: "full_phone",
+                country: "country_code",
+            }),
+            loadUtils: () => import("https://cdn.jsdelivr.net/npm/intl-tel-input@25.3.1/build/js/utils.js"),
+        });
+    });
+</script>
 
 </html>
