@@ -48,8 +48,6 @@ redirect_if_logged_in();
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/vendor/css/bootstrap.min.css" />
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-    <!-- intl-tel-input -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <!-- Custom Styles CSS -->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/css/styles.css">
     <!-- Google reCAPTCHA -->
@@ -107,19 +105,6 @@ redirect_if_logged_in();
                             </div>
                         </div>
 
-                        <!-- Phone Numbers -->
-                        <div class="form-group">
-                            <label for="phone">Nomor HP</label>
-                            <div style="position: relative"> <!-- Tambahkan div wrapper ini -->
-                                <input type="tel" id="phone" name="phone" class="form-control" required
-                                    style="padding-right: 60px;"> <!-- Tambahkan padding untuk flag dropdown -->
-                                <input type="hidden" name="full_phone" id="full_phone">
-                                <div class="invalid-feedback">
-                                    Nomor HP diperlukan.
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Password -->
                         <div class="form-group">
                             <label for="register_password">Password</label>
@@ -172,36 +157,8 @@ redirect_if_logged_in();
 <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
 <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
 <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <!-- Custom JS -->
 <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
 <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/register.js"></script>
-<!-- JS untuk Phone Numbers Validation -->
-<script>
-    const phoneInput = document.querySelector("#phone");
-    const iti = window.intlTelInput(phoneInput, {
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-        preferredCountries: ['id'],
-        separateDialCode: true,
-        initialCountry: 'auto',
-        geoIpLookup: function(callback) {
-            fetch('https://ipapi.co/json/')
-                .then(res => res.json())
-                .then(data => callback(data.country_code))
-                .catch(() => callback('id'));
-        }
-    });
-
-    // Validasi sebelum submit
-    document.querySelector('form').addEventListener('submit', function(e) {
-        const phone = iti.getNumber();
-        if (!phone || !iti.isValidNumber()) {
-            e.preventDefault();
-            alert('Nomor HP tidak valid');
-            return;
-        }
-        document.getElementById('full_phone').value = phone;
-    });
-</script>
 
 </html>
