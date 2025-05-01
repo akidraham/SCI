@@ -86,23 +86,28 @@ redirect_if_logged_in();
 
                     <!-- Bagian Form -->
                     <form action="" method="POST" class="halaman-register" novalidate="">
+                        <!-- Username -->
                         <div class="form-group">
                             <label for="username">Username</label>
                             <input type="text" id="register_username" name="username" class="form-control" required
                                 autofocus>
                             <div class="invalid-feedback">
-                                Username is required
+                                Username diperlukan.
                             </div>
                         </div>
 
+                        <!-- Email -->
                         <div class="form-group">
                             <label for="email">E-Mail Address</label>
                             <input type="email" id="register_email" name="email" class="form-control" required>
                             <div class="invalid-feedback">
-                                Email is required
+                                Email diperlukan.
+                            </div>
+                        </div>
                             </div>
                         </div>
 
+                        <!-- Password -->
                         <div class="form-group">
                             <label for="register_password">Password</label>
                             <div style="position:relative" id="posisi_register_password_0">
@@ -116,6 +121,7 @@ redirect_if_logged_in();
                             </div>
                         </div>
 
+                        <!-- Confirm Password -->
                         <div class="form-group">
                             <label for="register_confirm_password">Konfirmasi Password</label>
                             <div style="position:relative" id="posisi_register_password_1">
@@ -130,7 +136,7 @@ redirect_if_logged_in();
                         </div>
 
                         <br>
-                        <!-- Honeypot Field -->
+
                         <input type="text" name="honeypot" id="register_honeypot" class="honeypot"
                             style="display: none;">
                         <input type="hidden" name="csrf_token" id="register_csrf_token"
