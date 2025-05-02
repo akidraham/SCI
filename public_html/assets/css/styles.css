@@ -921,47 +921,48 @@ body.login-page {
 }
 
 .area-konten-halaman-products .card {
-  height: 100%;
-  transition: transform 0.3s ease;
-  min-height: 415px;
-  display: flex;
-  flex-direction: column;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-.area-konten-halaman-products .card-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
+.area-konten-halaman-products .card:hover {
+  transform: translateY(-2px);
+  background-color: #f8f9fa !important;
+}
+
+.area-konten-halaman-products .card:hover .text-dark {
+  color: #2563eb !important;
 }
 
 .area-konten-halaman-products .card-title {
-  font-size: 1.1rem;
   line-height: 1.3;
-  margin-bottom: 0.5rem;
+}
+
+.area-konten-halaman-products .card-text {
+  line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.area-konten-halaman-products .card-text {
-  flex: 1;
-  overflow: hidden;
-  margin-bottom: 0.5rem;
-  transition: min-height 0.2s ease;
-}
+@media (min-width: 1400px) {
+  .area-konten-halaman-products .container {
+    max-width: 1540px; /* Sesuaikan lebar container untuk 5 card */
+  }
 
-.area-konten-halaman-products .card-img-top {
-  object-fit: contain;
-  padding: 1rem;
-  background-color: #f8f9fa;
-}
+  .area-konten-halaman-products .card-img-top-container {
+    height: 200px !important; /* Tinggi gambar lebih proporsional */
+  }
 
-.area-konten-halaman-products .text-primary {
-  margin-top: auto; /* Anchor price di bawah */
-  padding-top: 0.5rem;
+  .area-konten-halaman-products .card-title {
+    font-size: 1.1rem !important;
+  }
+
+  .area-konten-halaman-products .card-text {
+    font-size: 0.95rem !important;
+  }
 }
 
 .filter-halaman-products input[type="number"]::-webkit-outer-spin-button,
