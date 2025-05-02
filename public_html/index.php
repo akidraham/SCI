@@ -77,7 +77,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
       <!-- Konten Carousel -->
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk1.webp" class="d-block w-100" alt="Slide 1" />
+          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk1.webp" class="d-block w-100" alt="Slide 1" width="1920" height="1080" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Capai yang terbaik</h4>
             <p class="my-sm-5">Jangan tunda lagi, selesaikan tugas akhirmu bersama Penelitian Kita</p>
@@ -99,7 +99,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
         </div>
         <div class="carousel-item">
           <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk2.webp" class="d-block w-100" alt="Slide 2"
-            loading="lazy" />
+            loading="lazy" width="1920" height="1080" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Kami adalah safe space-mu.</h4>
             <p class="my-sm-5">Rasi kami selalu siap sedia menjawab pertanyaan penelitian kamu.</p>
@@ -121,7 +121,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
         </div>
         <div class="carousel-item">
           <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk3.webp" class="d-block w-100" alt="Slide 3"
-            loading="lazy" />
+            loading="lazy" width="1920" height="1080" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Banyak promosi dan layanan spesial untukmu!</h4>
             <p class="my-sm-5">Eksplor layanan tugas akhir dan jurnal Penelitian Kita.</p>
@@ -143,7 +143,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
         </div>
         <div class="carousel-item">
           <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk4.webp" class="d-block w-100" alt="Slide 4"
-            loading="lazy" />
+            loading="lazy" width="1920" height="1080" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Paham sepenuhnya dengan video penjelasan.</h4>
             <p class="my-sm-5">Layanan paling lengkap ini tersedia di Paket Prime.</p>
@@ -165,7 +165,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
         </div>
         <div class="carousel-item">
           <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk5.webp" class="d-block w-100" alt="Slide 5"
-            loading="lazy" />
+            loading="lazy" width="1920" height="1080" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Kejar deadline mepet tepat waktu.</h4>
             <p class="my-sm-5">Kami Menyediakan Layanan Percepatan untuk Tugas Akhir.</p>
@@ -187,7 +187,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
         </div>
         <div class="carousel-item">
           <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk6.webp" class="d-block w-100" alt="Slide 6"
-            loading="lazy" />
+            loading="lazy" width="1920" height="1080" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Masuk bareng, lulus juga bareng!</h4>
             <p class="my-sm-5">Dapatkan promosi spesial untuk tugas akhir bersama teman-teman kamu.</p>
