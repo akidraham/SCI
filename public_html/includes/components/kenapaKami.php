@@ -215,7 +215,10 @@ $kenapaKamiProps = [
                             <div class="card-image-container">
                                 <img src="<?= $baseUrl . $item['image'] ?>"
                                     class="card-image"
-                                    alt="<?= htmlspecialchars($item['title']) ?>">
+                                    alt="<?= htmlspecialchars($item['title']) ?>"
+                                    width="306"
+                                    height="214"
+                                    loading="lazy">
                             </div>
                             <div class="card-content">
                                 <h4><?= htmlspecialchars($item['title']) ?></h4>
