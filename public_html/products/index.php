@@ -143,7 +143,7 @@ if (!empty($activeProducts)) {
             <!-- Clear Filter Button -->
             <div class="col-md-1">
                 <button class="btn btn-outline-danger w-100" id="halamanProductsClearFilter">
-                    <i class="fas fa-times me-2"></i>Clear
+                    <i class="fas fa-times me-2 d-inline d-sm-inline d-md-none d-lg-inline"></i>Clear
                 </button>
             </div>
         </div>
@@ -156,18 +156,23 @@ if (!empty($activeProducts)) {
             <?php if (!empty($productsData)) : ?>
                 <div id="halamanProductsContainer">
                     <?php foreach ($productsData as $product) : ?>
-                        <div class="col mb-4">
-                            <div class="card h-100">
-                                <img src="<?= $product['image'] ?>" class="card-img-top" alt="<?= $product['name'] ?>">
-                                <div class="card-body">
-                                    <h5 class="card-title"><?= $product['name'] ?></h5>
-                                    <p class="card-text"><?= $product['description'] ?></p>
-                                    <p class="text-primary fw-bold"><?= $product['price'] ?></p>
-                                    <a href="<?php echo $baseUrl; ?>products/<?php echo $product['slug']; ?>/" class="btn btn-primary btn-sm mt-2">
-                                        <i class="fa-solid fa-circle-info me-1"></i> View Details
-                                    </a>
+                        <div class="col mb-3">
+                            <a href="<?= $baseUrl ?>products/<?= $product['slug'] ?>/"
+                                class="card h-100 bg-white border border-gray-200 rounded-lg shadow-sm text-decoration-none">
+                                <div class="card-img-top-container position-relative"
+                                    style="height: 180px; background-color: #f8f9fa">
+                                    <img src="<?= $product['image'] ?>"
+                                        class="h-100 w-100 object-fit-cover p-2"
+                                        alt="<?= $product['name'] ?>">
                                 </div>
-                            </div>
+                                <div class="card-body p-3 d-flex flex-column">
+                                    <h5 class="card-title mb-1 fs-5 fw-bold text-dark"><?= $product['name'] ?></h5>
+                                    <p class="card-text text-secondary mb-2 fs-6"><?= $product['description'] ?></p>
+                                    <div class="mt-auto">
+                                        <p class="text-primary fw-semibold fs-6 mb-0"><?= $product['price'] ?></p>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -196,7 +201,7 @@ if (!empty($activeProducts)) {
     <script type="text/javascript" src="<?= $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
     <script type="text/javascript" src="<?= $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
     <script type="text/javascript" src="<?= $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/slick.min.js"></script>
+    <script type="text/javascript" src="<?= $baseUrl ?>assets/vendor/js/ellipsed.umd.js"></script>
     <script type="text/javascript" src="<?= $baseUrl; ?>assets/js/custom.js"></script>
     <script>
         // Tambahkan BASE_URL global

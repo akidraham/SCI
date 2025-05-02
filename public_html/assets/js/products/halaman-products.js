@@ -1,11 +1,34 @@
 $(document).ready(function () {
   // 1. Initial Configuration and Constants
   const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+  /** Container element that holds the product cards */
   const productContainer = $("#halamanProductsContainer");
+
+  /** Number of items to display per page */
   const itemsPerPage = 10;
+
+  /** Current pagination page */
   let currentPage = 1;
+
+  /** Total number of pagination pages */
   let totalPages = 1;
 
+  // Ellipsed Configuration
+  const ellipsedInstances = [];
+
+  /** Configuration object for Ellipsed.js, controlling line truncation behavior */
+  const ELLIPSED_CONFIG = {
+    lines: 3,
+    ellipsis: "…",
+    responsive: true,
+    break: "word",
+    onChange: (isTruncated) => {
+      if (isLocal && isTruncated) log("Text truncated");
+    },
+  };
+
+  /** Stores the current filter state for fetching product data */
   let currentFilters = {
     category: "",
     minPrice: null,
@@ -14,28 +37,21 @@ $(document).ready(function () {
   };
 
   // 2. Utility Functions
-  /**
-   * Logs messages to the console only in a local environment.
-   * @param {...any} args - Messages to log.
-   */
+
+  /** Logs messages to the console only in local development */
   const log = (...args) => isLocal && console.log(...args);
 
-  /**
-   * Logs warnings to the console only in a local environment.
-   * @param {...any} args - Warnings to log.
-   */
+  /** Logs warnings to the console only in local development */
   const warn = (...args) => isLocal && console.warn(...args);
 
-  /**
-   * Logs errors to the console only in a local environment.
-   * @param {...any} args - Errors to log.
-   */
+  /** Logs errors to the console only in local development */
   const error = (...args) => isLocal && console.error(...args);
 
   // 3. Core Product Loading Functions
+
   /**
-   * Loads products based on the current filters and pagination.
-   * @param {number} [page=1] - The page number to load.
+   * Fetches and loads products based on current filters and page.
+   * @param {number} page - The page number to load.
    */
   function loadProducts(page = 1) {
     currentPage = page;
@@ -50,12 +66,14 @@ $(document).ready(function () {
     url.searchParams.append("limit", itemsPerPage);
     url.searchParams.append("offset", offset);
 
+    // Execute the request and chain the response handlers
     fetch(url).then(handleResponse).then(handleData).catch(handleError);
   }
 
   // 4. UI State Management
+
   /**
-   * Displays a message when no products match the filters.
+   * Displays a user-friendly message when no products match the filter criteria.
    */
   function showNoProductsMessage() {
     productContainer.html(`
@@ -68,10 +86,11 @@ $(document).ready(function () {
   }
 
   // 5. Data Handling Functions
+
   /**
-   * Handles the response from the fetch API.
-   * @param {Response} response - The fetch response object.
-   * @returns {Promise<Object>} - Parsed JSON data.
+   * Validates the response status and parses JSON data.
+   * @param {Response} response
+   * @returns {Promise<Object>}
    */
   function handleResponse(response) {
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -79,11 +98,12 @@ $(document).ready(function () {
   }
 
   /**
-   * Processes and displays the fetched product data.
-   * @param {Object} data - The response containing product data.
+   * Handles the parsed product data, renders product cards and pagination.
+   * @param {Object} data - The product data object from the API.
    */
   function handleData(data) {
     productContainer.empty();
+    destroyEllipsedInstances();
 
     if (!data.data || data.data.length === 0) {
       showNoProductsMessage();
@@ -93,11 +113,12 @@ $(document).ready(function () {
     totalPages = data.totalPages || 1;
     renderProducts(data.data);
     renderPagination();
+    initEllipsed();
   }
 
   /**
-   * Handles errors when fetching products.
-   * @param {Error} err - The error object.
+   * Handles errors encountered during product fetch operations.
+   * @param {Error} err
    */
   function handleError(err) {
     error("Fetch Error:", err);
@@ -111,36 +132,44 @@ $(document).ready(function () {
   }
 
   // 6. Rendering Functions
+
   /**
-   * Renders product cards on the page.
-   * @param {Array} products - Array of product objects.
+   * Renders product cards using the data received from the API.
+   * @param {Array<Object>} products - Array of product objects.
    */
   function renderProducts(products) {
-    const productsGrid = $('<div class="row row-cols-1 row-cols-md-3 g-4"></div>');
+    const productsGrid = $('<div class="row row-cols-2 row-cols-lg-5 g-3"></div>');
 
     products.forEach((product) => {
       productsGrid.append(`
-        <div class="col mb-4">
-          <div class="card h-100 shadow-sm">
-            <img src="${product.image}" class="card-img-top p-3" alt="${product.name}" style="height: 250px; object-fit: contain">
-            <div class="card-body">
-              <h5 class="card-title">${product.name}</h5>
-              <p class="card-text text-muted">${product.description}</p>
-              <p class="text-primary fw-bold mb-0">${product.price}</p>                
-              <a href="${BASE_URL}products/${product.slug}/" class="btn btn-primary btn-sm mt-2">
-                <i class="fa-solid fa-circle-info me-1"></i> View Details
-              </a>
+            <div class="col mb-3">
+                <a href="${BASE_URL}products/${product.slug}/" 
+                   class="card h-100 border-0 bg-transparent text-decoration-none">
+                    <div class="card-img-top-container position-relative" 
+                         style="height: 180px; background-color: #f8f9fa">
+                        <img src="${product.image}" 
+                             class="h-100 w-100 object-fit-cover p-2" 
+                             alt="${product.name}">
+                    </div>
+                    <div class="card-body p-3 d-flex flex-column">
+                        <h5 class="card-title mb-1 fs-5 fw-bold text-dark">${product.name}</h5>
+                        <div class="flex-grow-1">
+                            <p class="card-text text-secondary mb-2 fs-6 product-description">${product.description}</p>
+                        </div>
+                        <div class="mt-auto">
+                            <p class="text-primary fw-semibold fs-6 mb-0">${product.price}</p>
+                        </div>
+                    </div>
+                </a>
             </div>
-          </div>
-        </div>
-      `);
+        `);
     });
 
     productContainer.append(productsGrid);
   }
 
   /**
-   * Renders pagination controls.
+   * Renders pagination controls based on the current page and total pages.
    */
   function renderPagination() {
     if (totalPages <= 1) {
@@ -182,9 +211,42 @@ $(document).ready(function () {
     $("#paginationContainer").html(html);
   }
 
-  // 7. Filter Management
+  // 7. Ellipsed Functions
+
   /**
-   * Updates filter values based on user input.
+   * Initializes line clamping for product descriptions using Ellipsed.
+   */
+  function initEllipsed() {
+    $(".product-description").each(function () {
+      const EllipsedClass = typeof Ellipsed !== "undefined" ? Ellipsed : window.Ellipsed;
+      const instance = new EllipsedClass(this, ELLIPSED_CONFIG);
+      ellipsedInstances.push(instance);
+    });
+  }
+
+  /**
+   * Destroys all active Ellipsed instances to avoid memory leaks.
+   */
+  function destroyEllipsedInstances() {
+    ellipsedInstances.forEach((instance) => instance.destroy());
+    ellipsedInstances.length = 0;
+  }
+
+  // 8. Window Resize Handler
+
+  // Update ellipsed content after resizing with delay (debounce)
+  let resizeTimer;
+  $(window).on("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      ellipsedInstances.forEach((instance) => instance.update());
+    }, 250);
+  });
+
+  // 9. Filter Management
+
+  /**
+   * Reads the filter form inputs and updates `currentFilters`.
    */
   function updateFilterValues() {
     currentFilters = {
@@ -196,13 +258,16 @@ $(document).ready(function () {
     log("Filters updated (not applied yet):", currentFilters);
   }
 
-  // 8. Event Handlers
+  // 10. Event Handlers
+
+  // Apply filters and fetch new products
   $("#halamanProductsApplyFilter").click(function (e) {
     e.preventDefault();
     updateFilterValues();
     loadProducts(1);
   });
 
+  // Update filters on input change (without reloading data)
   $("#halamanProductsCategoryFilter, #halamanProductsMinPrice, #halamanProductsMaxPrice, #halamanProductsSortBy").on(
     "change input",
     updateFilterValues,
@@ -216,6 +281,7 @@ $(document).ready(function () {
     sortBy: "latest",
   };
 
+  // Reset all filters to their default state
   $("#halamanProductsClearFilter").click(function (e) {
     e.preventDefault();
 
@@ -237,16 +303,18 @@ $(document).ready(function () {
     loadProducts(1);
   });
 
+  // Handle pagination click
   $(document).on("click", ".page-link", function (e) {
     e.preventDefault();
     const page = $(this).data("page");
     if (page >= 1 && page <= totalPages) {
       loadProducts(page);
+      // Scroll to product container after loading
       $("html, body").animate({ scrollTop: productContainer.offset().top - 20 }, 300);
     }
   });
 
-  // 9. Initialization
-  updateFilterValues();
-  loadProducts(1);
+  // 11. Initialization
+  updateFilterValues(); // Sync filters with UI
+  loadProducts(1); // Initial product load
 });
