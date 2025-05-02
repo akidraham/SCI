@@ -128,9 +128,9 @@ if (empty($phoneNumber)) {
                 <div id="productCarousel-<?= htmlspecialchars($slug) ?>" class="carousel slide shadow-lg rounded-3" data-bs-ride="carousel">
                     <!-- Bagian carousel -->
                     <div class="carousel-inner">
-                        <?php foreach ($productInfo['images'] as $index => $image): ?>
+                        <?php foreach ($productInfo['images'] as $index => $images): ?>
                             <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                                <img src="<?= $baseUrl . htmlspecialchars($image) ?>"
+                                <img src="<?= $baseUrl . htmlspecialchars($images) ?>"
                                     class="d-block w-100 img-fluid py-3 px-3" role="img"
                                     alt="<?= htmlspecialchars($productInfo['product_name']) ?>"
                                     style="max-height: 600px; object-fit: contain;">
@@ -153,8 +153,8 @@ if (empty($phoneNumber)) {
 
                 <!-- Thumbnail Gambar di Bawah Carousel -->
                 <div class="d-flex gap-2 mt-3">
-                    <?php foreach ($productInfo['images'] as $index => $image): ?>
-                        <img src="<?= $baseUrl . htmlspecialchars($image) ?>"
+                    <?php foreach ($productInfo['images'] as $index => $images): ?>
+                        <img src="<?= $baseUrl . htmlspecialchars($images) ?>"
                             class="img-thumbnail" role="img"
                             style="width: 75px; height: 75px; object-fit: cover; cursor: pointer;"
                             onclick="document.querySelector('#productCarousel-<?= htmlspecialchars($slug) ?> .carousel-item.active').classList.remove('active'); 
