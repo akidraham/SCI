@@ -49,14 +49,14 @@ if (!empty($activeProducts)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products - Sarjana Canggih Indonesia</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="<?= $baseUrl; ?>favicon.ico" />
     <!-- Bootstrap css -->
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/vendor/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?= $baseUrl; ?>assets/vendor/css/bootstrap.min.css" />
     <!-- Font Awesome -->
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
     <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="<?= $baseUrl; ?>assets/css/styles.css" />
 </head>
 
 <body style="background-color: #f7f9fb;">
@@ -193,17 +193,17 @@ if (!empty($activeProducts)) {
     <!--================ AKHIR AREA FOOTER =================-->
 
     <!-- External JS libraries -->
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="<?= $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
+    <script type="text/javascript" src="<?= $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
+    <script type="text/javascript" src="<?= $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/slick.min.js"></script>
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
+    <script type="text/javascript" src="<?= $baseUrl; ?>assets/js/custom.js"></script>
     <script>
         // Tambahkan BASE_URL global
         const BASE_URL = '<?= $baseUrl ?>';
     </script>
     <!-- Custom JS -->
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/products/halaman-products.js"></script>
+    <script type="text/javascript" src="<?= $baseUrl; ?>assets/js/products/halaman-products.js"></script>
 </body>
 
 </html>
