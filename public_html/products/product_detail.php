@@ -37,15 +37,16 @@ $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" 
 
 // message template untuk WhatsApp
 $messageTemplate = <<<MSG
-Halo kak 👋,
+Dear Admin SCI! 
 
-Setelah membaca informasi di website, saya tertarik untuk memesan produk:
+Saya tertarik dengan produk:
 %s
 
-URL produk: 
+Link produk: 
 %s
 
-Mohon info lebih lanjut 🙏
+Mohon info lebih lanjut! Terima kasih.
+#website
 MSG;
 // Membuat pesan untuk WhatsApp
 $messageText = sprintf($messageTemplate, $productInfo['product_name'], $currentUrl);
