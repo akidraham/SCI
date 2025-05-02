@@ -888,28 +888,37 @@ function handleAddProductForm($config, $env)
 function handleProductImagesUpload($files)
 {
     if (!isset($files) || empty($files['name']))
-        return []; // Return an empty array if no files are uploaded
+        return [];
 
     $uploadDir = __DIR__ . '/../../public_html/uploads/products/';
     if (!file_exists($uploadDir))
-        mkdir($uploadDir, 0755, true); // Ensure the upload directory exists
+        mkdir($uploadDir, 0755, true);
 
-    $validationResults = validateProductImages($files); // Validate uploaded images
+    // Siapkan folder dan file untuk log error
+    $logDir = __DIR__ . '/../../public_html/uploads/logs/';
+    if (!file_exists($logDir))
+        mkdir($logDir, 0755, true);
+    $logFile = $logDir . 'error.log';
+
+    $validationResults = validateProductImages($files);
     $uploadedImages = [];
 
     foreach ($validationResults as $result) {
         if ($result['error'])
-            continue; // Skip invalid images
+            continue;
 
-        $filename = uniqid('product_', true) . '.' . $result['data']['extension']; // Generate a unique filename
-        $destinationPath = $uploadDir . $filename; // Define the final file path
+        $filename = uniqid('product_', true) . '.' . $result['data']['extension'];
+        $destinationPath = $uploadDir . $filename;
 
         if (move_uploaded_file($result['data']['tmp_path'], $destinationPath)) {
-            $uploadedImages[] = '/uploads/products/' . $filename; // Store the relative file path
+            $uploadedImages[] = '/uploads/products/' . $filename;
+        } else {
+            error_log("Gagal memindahkan file ke: $destinationPath\n", 3, $logFile);
+            error_log("Tmp path: " . $result['data']['tmp_path'] . "\n", 3, $logFile);
         }
     }
 
-    return $uploadedImages; // Return an array of successfully uploaded image paths
+    return $uploadedImages;
 }
 
 /**
