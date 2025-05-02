@@ -2,6 +2,16 @@
 // ================== COMPONENT DATA PROPS ==================
 $kenapaKamiProps = [
     [
+        'image' => 'assets/images/knp/3.webp',
+        'title' => 'Dipercaya di Indonesia hingga UK.',
+        'description' => 'Kami telah membantu peneliti di berbagai kota dan lintas benua untuk menyelesaikan tugas akhirnya, bahkan mempublikasi hingga SINTA 1.'
+    ],
+    [
+        'image' => 'assets/images/knp/4.webp',
+        'title' => 'Pioneer paket unlimited dan video penjelasan.',
+        'description' => 'Kami memberikan layanan yang paling spesial untuk memastikan kesiapan kamu.'
+    ],
+    [
         'image' => 'assets/images/knp/1.webp',
         'title' => 'Pilihan paket terlengkap.',
         'description' => 'Dari paket basic hingga unlimited, semua ada!'
@@ -11,16 +21,6 @@ $kenapaKamiProps = [
         'title' => 'Layanan prima.',
         'description' => 'Kami dukung penuh proses penelitian kamu hingga selesai. Rasi kami siap menjawab pertanyaan kamu.'
     ],
-    [
-        'image' => 'assets/images/knp/3.webp',
-        'title' => 'Dipercaya di Indonesia hingga UK.',
-        'description' => 'Kami telah membantu peneliti di berbagai kota dan lintas benua untuk menyelesaikan tugas akhirnya, bahkan mempublikasi hingga SINTA 1.'
-    ],
-    [
-        'image' => 'assets/images/knp/4.webp',
-        'title' => 'Pioneer paket unlimited dan video penjelasan.',
-        'description' => 'Kami memberikan layanan yang paling spesial untuk memastikan kesiapan kamu.'
-    ]
 ];
 ?>
 
