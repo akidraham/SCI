@@ -266,6 +266,9 @@ function processLogin($login_id, $password, $config, $env)
             session_start();
         }
 
+        session_regenerate_id(true);
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
         // Set session variables
         $_SESSION['user_logged_in'] = true; // Set session flag indicating successful login
         $_SESSION['username'] = $login_result['user']['username']; // Store the username in the session
