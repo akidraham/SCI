@@ -10,6 +10,12 @@ use Symfony\Component\HttpClient\HttpClient;
 // Start the session and generate a CSRF token
 startSession();
 
+if (!empty($_POST['honeypot'])) {
+    http_response_code(403);
+    exit('403 Forbidden: Bot detected.');
+}
+
+
 // Load environment configuration
 $config = getEnvironmentConfig();
 $env = ($_SERVER['HTTP_HOST'] === 'localhost') ? 'local' : 'live';
