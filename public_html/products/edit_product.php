@@ -380,9 +380,10 @@ setCacheHeaders($isLive);
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/fusejs.js"></script>
     <!-- Custom JS -->
-    <script> const BASE_URL = '<?= $baseUrl ?>';</script>
+    <script>
+        const BASE_URL = '<?= $baseUrl ?>';
+    </script>
     <script>
         function handleClose() {
             if (confirm('Apakah Anda yakin ingin menutup tab ini?')) {
@@ -391,7 +392,7 @@ setCacheHeaders($isLive);
         }
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // ==================== FUNGSI UPLOAD GAMBAR ==================== //
             const fileInput = document.getElementById('image');
             const fileUploadArea = document.querySelector('.file-upload-area');
@@ -510,7 +511,7 @@ setCacheHeaders($isLive);
             }
 
             // Fungsi hapus preview
-            window.removePreview = function (button) {
+            window.removePreview = function(button) {
                 const previewContainer = button.closest('div');
                 previewContainer.remove();
 
