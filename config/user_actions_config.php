@@ -902,19 +902,13 @@ function handleRegistration($client, $baseUrl, $config, $env)
  */
 function processLoginForm($env, $baseUrl, $config)
 {
-    // Honeypot check
-    if (!empty($_POST['honeypot'])) {
-        $_SESSION['error_message'] = 'Bot detected. Submission rejected.';
-        header("Location: " . $baseUrl . "login");
-        exit();
-    }
-
     // Validate CSRF and reCAPTCHA
     $client = HttpClient::create();
     $error_message = validateCsrfAndRecaptcha($_POST, $client);
 
     if ($error_message !== true) {
-        $_SESSION['error_message'] = $error_message; // Error reCAPTCHA/CSRF
+        // Set pesan kesalahan generik
+        $_SESSION['error_message'] = 'Terjadi kesalahan, hapus cache dan muat ulang halaman.';
         header("Location: " . $baseUrl . "login");
         exit();
     }
@@ -965,6 +959,11 @@ function processLoginForm($env, $baseUrl, $config)
             'invalid_credentials' => 'Username/Email atau Password tidak sesuai.',
             'error' => 'Terjadi kesalahan sistem. Silakan coba lagi nanti.'
         ];
+
+        // Regenerate CSRF token after failed login
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+        // Set error message based on login result
         $_SESSION['error_message'] = $error_messages[$login_result] ?? 'Login gagal. Silakan coba lagi.';
         header("Location: " . $baseUrl . "login");
         exit();
