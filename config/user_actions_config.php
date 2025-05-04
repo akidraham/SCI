@@ -266,7 +266,9 @@ function processLogin($login_id, $password, $config, $env)
             session_start();
         }
 
+        // Regenerate session ID for security
         session_regenerate_id(true);
+        // Generate a new CSRF token for the session
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
         // Set session variables
