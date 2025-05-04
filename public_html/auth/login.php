@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../config/user_actions_config.php'; // Include user 
 
 startSession(); // Start the session and generate a CSRF token
 
-// Retrieve error from session (if any)
+// Retrieve error from session (if any) and unset after displaying
 $error_message = '';
 if (isset($_SESSION['error_message'])) {
   $error_message = $_SESSION['error_message'];
@@ -24,7 +24,7 @@ $user_input = $_GET['input'] ?? ''; // Get user input from the query string
 $sanitized_input = sanitize_input($user_input); // Sanitize the user input to prevent XSS
 
 // Perform auto-login if applicable
-autoLogin($config, $env);
+// autoLogin($config, $env);
 
 // Validate reCAPTCHA environment variables
 validateReCaptchaEnvVariables();
@@ -39,6 +39,7 @@ redirect_if_logged_in();
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store" />
   <title>Login - Sarjana Canggih Indonesia</title>
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>favicon.ico" />
@@ -74,8 +75,10 @@ redirect_if_logged_in();
           <h4 class="card-title">Masuk</h4>
           <!-- Menampilkan Pesan Kesalahan -->
           <?php if (!empty($error_message)): ?>
-            <div class="alert alert-danger">
+            <div class="alert alert-danger position-relative pe-5" id="error-message">
               <?php echo $error_message; ?>
+              <button type="button" class="btn-close position-absolute top-0 end-0 mt-2 me-2"
+                aria-label="Close" onclick="clearErrorMessage()"></button>
             </div>
           <?php endif; ?>
           <!-- Bagian Form -->
@@ -90,12 +93,6 @@ redirect_if_logged_in();
               <div class="invalid-feedback">Username atau Email diperlukan</div>
             </div>
 
-            <!-- Pesan error -->
-            <?php if (!empty($error_message)): ?>
-              <div class="alert alert-danger">
-                <?php echo $error_message; ?>
-              </div>
-            <?php endif; ?>
             <!-- Input Password -->
             <div class="form-group">
               <div class="d-flex justify-content-between">
@@ -147,6 +144,18 @@ redirect_if_logged_in();
   <!-- Custom JS scripts -->
   <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
   <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/login.js"></script>
+  <script type="text/javascript">
+    function clearErrorMessage() {
+      // Menghapus elemen pesan kesalahan
+      var errorMessage = document.getElementById('error-message');
+      if (errorMessage) {
+        errorMessage.style.display = 'none'; // Menyembunyikan elemen
+      }
+
+      // Melakukan hard refresh halaman
+      location.reload(true); // true untuk memastikan hard refresh
+    }
+  </script>
 </body>
 
 </html>
