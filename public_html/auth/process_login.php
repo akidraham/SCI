@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../config/auth/validate.php';
 // Start the session and generate a CSRF token
 startSession();
 
+// Check honeypot field to prevent spam bots
 if (!empty($_POST['honeypot'])) {
     http_response_code(403);
     exit('403 Forbidden: Bot detected.');
