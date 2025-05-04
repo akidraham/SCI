@@ -5,8 +5,6 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/user_actions_config.php';
 require_once __DIR__ . '/../../config/auth/validate.php';
 
-use Symfony\Component\HttpClient\HttpClient;
-
 // Start the session and generate a CSRF token
 startSession();
 
@@ -14,7 +12,6 @@ if (!empty($_POST['honeypot'])) {
     http_response_code(403);
     exit('403 Forbidden: Bot detected.');
 }
-
 
 // Load environment configuration
 $config = getEnvironmentConfig();
