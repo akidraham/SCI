@@ -60,11 +60,16 @@ $modalMessage = $isLogoutSuccessful ? htmlspecialchars($logoutMessage) : 'An err
                     <?php echo $modalMessage; ?>
                 </div>
                 <div class="modal-footer">
-                    <a href="<?php echo $baseUrl; ?>login" type="button" class="btn btn-secondary">
+                    <a href="<?php echo $baseUrl; ?>login"
+                        type="button"
+                        class="btn btn-secondary"
+                        onclick="navigateWithForcedReload(this.href); return false;">
                         <i class="fa fa-user"></i> Login
                     </a>
                     <?php if ($isLogoutSuccessful): ?>
-                        <a href="<?php echo $baseUrl; ?>" class="btn btn-primary">
+                        <a href="<?php echo $baseUrl; ?>"
+                            class="btn btn-primary"
+                            onclick="navigateWithForcedReload(this.href); return false;">
                             <i class="fa fa-home"></i> Homepage
                         </a>
                     <?php else: ?>
@@ -80,10 +85,19 @@ $modalMessage = $isLogoutSuccessful ? htmlspecialchars($logoutMessage) : 'An err
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
     <script>
         // Show the modal once the page has loaded
-        window.onload = function () {
+        window.onload = function() {
             var modalId = '<?php echo $isLogoutSuccessful ? "logoutModalSuccess" : "logoutModalFailed"; ?>';
             var myModal = new bootstrap.Modal(document.getElementById(modalId));
             myModal.show();
+        }
+    </script>
+    <script>
+        function navigateWithForcedReload(url) {
+            // Tambahkan parameter unik ke URL (hanya di memori, tidak terlihat di address bar)
+            const freshUrl = url + (url.includes('?') ? '&' : '?') + 'nocache=' + Date.now();
+
+            // Redirect dengan location.replace() untuk menghindari history tambahan
+            window.location.replace(freshUrl);
         }
     </script>
 </body>
