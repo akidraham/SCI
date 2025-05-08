@@ -26,7 +26,9 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sarjana Canggih Indonesia</title>
+  <title>Sarjana Canggih Indonesia | Bimbingan & Asistensi Akademik Profesional</title>
+  <meta name="description" content="Sarjana Canggih Indonesia adalah platform bimbingan dan asistensi akademik serta profesional, mendukung pemahaman materi dan pengembangan keterampilan.">
+  <meta name="keywords" content="bimbingan akademik, asistensi tugas, sarjana canggih, bantuan kuliah, analisis data, jasa edukasi, profesional, belajar online">
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>favicon.ico" />
   <!-- Bootstrap css -->
@@ -37,6 +39,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
   <!-- Font Awesome -->
   <link rel="stylesheet" type="text/css"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <!-- Preload Large Image -->
+  <link rel="preload" as="image" href="<?php echo $baseUrl; ?>assets/images/carousel/pk1.webp" />
   <!-- Custom CSS -->
   <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/css/styles.css" />
 </head>
@@ -77,7 +81,13 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
       <!-- Konten Carousel -->
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk1.webp" class="d-block w-100" alt="Slide 1" width="1920" height="1080" />
+          <img
+            src="<?php echo $baseUrl; ?>assets/images/carousel/pk1.webp"
+            class="d-block w-100"
+            alt="Slide 1"
+            width="1920"
+            height="1080"
+            fetchpriority="high" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Capai yang terbaik</h4>
             <p class="my-sm-5">Jangan tunda lagi, selesaikan tugas akhirmu bersama Penelitian Kita</p>
@@ -246,8 +256,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
             <div class="w-layout-grid grid">
               <div class="pointcontentwrapper light">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #1</div>
                 </div>
                 <h4 class="pointtitle">Berbagai pilihan alat analisis data.</h4>
@@ -258,8 +268,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
               </div>
               <div class="pointcontentwrapper light">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #2</div>
                 </div>
                 <h4 class="pointtitle">Referensi berkualitas.</h4>
@@ -270,8 +280,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
               </div>
               <div class="pointcontentwrapper light">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #3</div>
                 </div>
                 <h4 class="pointtitle">Jaminan anti plagiasi dengan batasan Turnitin &lt;30%.</h4>
@@ -282,8 +292,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
               </div>
               <div class="pointcontentwrapper light">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #4</div>
                 </div>
                 <h4 class="pointtitle">Hasil karya orisinal, bukan copy paste.</h4>
@@ -294,8 +304,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
               </div>
               <div class="pointcontentwrapper light">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #5</div>
                 </div>
                 <h4 class="pointtitle">Unlimited revisi dan konsultasi (khusus paket unlimited dan Prime).</h4>
@@ -305,8 +315,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
               </div>
               <div class="pointcontentwrapper light" style="padding-bottom: 4rem">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #6</div>
                 </div>
                 <h4 class="pointtitle">Video penjelasan (khusus paket Prime)</h4>
@@ -349,37 +359,37 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
         <div class="col-md-8">
           <section class="tech-logos slider">
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/EViews.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/EViews.webp" alt="EViews Logo" width="143" height="50" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/IBMSPSS.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/IBMSPSS.webp" alt="IBM SPSS Logo" width="143" height="107" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Mendeley.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Mendeley.webp" alt="Mendeley Logo" width="143" height="143" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/NVIVO.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/NVIVO.webp" alt="Nvivo Logo" width="143" height="74" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/POP.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/POP.webp" alt="Publish or Perish Logo" width="143" height="74" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Python.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Python.webp" alt="Python Logo" width="143" height="80" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/R.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/R.webp" alt="R Programming Language Logo" width="143" height="110" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/SmartPLS.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/SmartPLS.webp" alt="SmartPLS Logo" width="143" height="89" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Turnitin.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Turnitin.webp" alt="Turnitin Logo" width="143" height="143" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/VOSViewer.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/VOSViewer.webp" alt="VOSViewer Logo" width="143" height="26" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Zotero.webp" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Zotero.webp" alt="Zotero Logo" width="143" height="143" />
             </div>
           </section>
         </div>
