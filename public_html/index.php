@@ -246,8 +246,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
             <div class="w-layout-grid grid">
               <div class="pointcontentwrapper light">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #1</div>
                 </div>
                 <h4 class="pointtitle">Berbagai pilihan alat analisis data.</h4>
@@ -258,8 +258,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
               </div>
               <div class="pointcontentwrapper light">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #2</div>
                 </div>
                 <h4 class="pointtitle">Referensi berkualitas.</h4>
@@ -270,8 +270,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
               </div>
               <div class="pointcontentwrapper light">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #3</div>
                 </div>
                 <h4 class="pointtitle">Jaminan anti plagiasi dengan batasan Turnitin &lt;30%.</h4>
@@ -282,8 +282,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
               </div>
               <div class="pointcontentwrapper light">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #4</div>
                 </div>
                 <h4 class="pointtitle">Hasil karya orisinal, bukan copy paste.</h4>
@@ -294,8 +294,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
               </div>
               <div class="pointcontentwrapper light">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #5</div>
                 </div>
                 <h4 class="pointtitle">Unlimited revisi dan konsultasi (khusus paket unlimited dan Prime).</h4>
@@ -305,8 +305,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
               </div>
               <div class="pointcontentwrapper light" style="padding-bottom: 4rem">
                 <div class="pointnumber">
-                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon"
-                    class="hero-check" />
+                  <img src=" <?php echo $baseUrl; ?>assets/images/path.svg" loading="lazy" alt="Checkmark icon" width="16" height="13
+                    class=" hero-check" />
                   <div class="pointnumbertxt">You Will Get #6</div>
                 </div>
                 <h4 class="pointtitle">Video penjelasan (khusus paket Prime)</h4>
