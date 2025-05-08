@@ -65,8 +65,9 @@ $profileImageUrl = default_profile_image($profileImage, $baseUrl, $config);
                 <img src="<?php echo $baseUrl; ?>assets/images/logoscblue.png" alt="Sarjana Canggih Indonesia"
                     width="64px" height="64px" />
             </a>
+            <!-- Button untuk Navbar Toggle Mobile -->
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-                aria-controls="offcanvasNavbar">
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation menu">
                 <i class="fa-solid fa-bars"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
