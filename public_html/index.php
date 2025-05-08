@@ -26,7 +26,9 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sarjana Canggih Indonesia</title>
+  <title>Sarjana Canggih Indonesia | Bimbingan & Asistensi Akademik Profesional</title>
+  <meta name="description" content="Sarjana Canggih Indonesia adalah platform bimbingan dan asistensi akademik serta profesional, mendukung pemahaman materi dan pengembangan keterampilan.">
+  <meta name="keywords" content="bimbingan akademik, asistensi tugas, sarjana canggih, bantuan kuliah, analisis data, jasa edukasi, profesional, belajar online">
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>favicon.ico" />
   <!-- Bootstrap css -->
