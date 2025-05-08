@@ -111,12 +111,11 @@ Thumbs.db
 .env.local
 .env.production
 *.env
-dist/
 *.idea/
 test_connection.php
 psal.xml
 test.php
-*/public_html/uploads/products/*
+/public_html/uploads/products/*
 
 # --------------------------------------------------------
 # BEGIN Explictly Allowed Files (i.e. do NOT ignore these)
