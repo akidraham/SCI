@@ -63,7 +63,7 @@ $profileImageUrl = default_profile_image($profileImage, $baseUrl, $config);
         <div class="container">
             <a class="navbar-brand mx-auto" href="<?php echo $baseUrl; ?>">
                 <img src="<?php echo $baseUrl; ?>assets/images/logoscblue.png" alt="Sarjana Canggih Indonesia"
-                    width="64px" height="auto" />
+                    width="64px" height="64px" />
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
                 aria-controls="offcanvasNavbar">
