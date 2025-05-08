@@ -351,37 +351,37 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
         <div class="col-md-8">
           <section class="tech-logos slider">
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/EViews.webp" alt="EViews Logo" width="256" height="91" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/EViews.webp" alt="EViews Logo" width="143" height="50" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/IBMSPSS.webp" alt="IBM SPSS Logo" width="256" height="192" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/IBMSPSS.webp" alt="IBM SPSS Logo" width="143" height="107" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Mendeley.webp" alt="Mendeley Logo" width="256" height="256" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Mendeley.webp" alt="Mendeley Logo" width="143" height="143" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/NVIVO.webp" alt="Nvivo Logo" width="256" height="133" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/NVIVO.webp" alt="Nvivo Logo" width="143" height="74" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/POP.webp" alt="Publish or Perish Logo" width="256" height="144" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/POP.webp" alt="Publish or Perish Logo" width="143" height="74" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Python.webp" alt="Python Logo" width="256" height="144" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Python.webp" alt="Python Logo" width="143" height="80" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/R.webp" alt="R Programming Language Logo" width="256" height="198" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/R.webp" alt="R Programming Language Logo" width="143" height="110" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/SmartPLS.webp" alt="SmartPLS Logo" width="256" height="160" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/SmartPLS.webp" alt="SmartPLS Logo" width="143" height="89" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Turnitin.webp" alt="Turnitin Logo" width="256" height="256" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Turnitin.webp" alt="Turnitin Logo" width="143" height="143" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/VOSViewer.webp" alt="VOSViewer Logo" width="256" height="47" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/VOSViewer.webp" alt="VOSViewer Logo" width="143" height="26" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Zotero.webp" alt="Zotero Logo" width="256" height="256" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Zotero.webp" alt="Zotero Logo" width="143" height="143" />
             </div>
           </section>
         </div>
