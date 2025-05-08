@@ -25,19 +25,19 @@ $baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']);
                         <span>Get connected with us on social networks:</span>
                     </div>
                     <div>
-                        <a href="<?php echo $_ENV['SOCIAL_FACEBOOK']; ?>" class="text-white me-4"
+                        <a href="<?php echo $_ENV['SOCIAL_FACEBOOK']; ?>" class="text-white me-4" aria-label="Link Facebook Sarjana Canggih Indonesia"
                             style="text-decoration: none;"> <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="<?php echo $_ENV['SOCIAL_TWITTER']; ?>" class="text-white me-4"
+                        <a href="<?php echo $_ENV['SOCIAL_TWITTER']; ?>" class="text-white me-4" aria-label="Link Twitter / X Sarjana Canggih Indonesia"
                             style="text-decoration: none;"><i class="fab fa-twitter"></i>
                         </a>
-                        <a href="<?php echo $_ENV['SOCIAL_INSTAGRAM']; ?>" class="text-white me-4"
+                        <a href="<?php echo $_ENV['SOCIAL_INSTAGRAM']; ?>" class="text-white me-4" aria-label="Link Instagram Sarjana Canggih Indonesia"
                             style="text-decoration: none;"><i class="fab fa-instagram"></i>
                         </a>
-                        <a href="<?php echo $_ENV['SOCIAL_LINKEDIN']; ?>" class="text-white me-4"
+                        <a href="<?php echo $_ENV['SOCIAL_LINKEDIN']; ?>" class="text-white me-4" aria-label="Link LinkedIn Sarjana Canggih Indonesia"
                             style="text-decoration: none;"><i class="fab fa-linkedin"></i>
                         </a>
-                        <a href="<?php echo $_ENV['SOCIAL_GITHUB']; ?>" class="text-white me-4"
+                        <a href="<?php echo $_ENV['SOCIAL_GITHUB']; ?>" class="text-white me-4" aria-label="Link Github Sarjana Canggih Indonesia"
                             style="text-decoration: none;"><i class="fab fa-github"></i>
                         </a>
                     </div>
