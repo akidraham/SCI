@@ -39,6 +39,8 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
   <!-- Font Awesome -->
   <link rel="stylesheet" type="text/css"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <!-- Preload Large Image -->
+  <link rel="preload" as="image" href="<?php echo $baseUrl; ?>assets/images/carousel/pk1.webp" />
   <!-- Custom CSS -->
   <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/css/styles.css" />
 </head>
@@ -79,7 +81,13 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
       <!-- Konten Carousel -->
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk1.webp" class="d-block w-100" alt="Slide 1" width="1920" height="1080" />
+          <img
+            src="<?php echo $baseUrl; ?>assets/images/carousel/pk1.webp"
+            class="d-block w-100"
+            alt="Slide 1"
+            width="1920"
+            height="1080"
+            fetchpriority="high" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Capai yang terbaik</h4>
             <p class="my-sm-5">Jangan tunda lagi, selesaikan tugas akhirmu bersama Penelitian Kita</p>
