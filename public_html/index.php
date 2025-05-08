@@ -32,7 +32,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>favicon.ico" />
   <!-- Bootstrap css -->
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/vendor/css/bootstrap.min.css" />
   <!-- Slick Slider css -->
   <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/vendor/css/slick.min.css" />
   <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/vendor/css/slick-theme.min.css" />
