@@ -1,12 +1,9 @@
 <?php
-// index.php
-
 // Memuat config dan dependensi
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../application/config/bootstrap.php';
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/user_actions_config.php';
-
-use Carbon\Carbon;
 
 // Memulai sesi apabila tidak ada
 startSession();
