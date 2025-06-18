@@ -76,11 +76,12 @@ function getBaseUrl($config, $liveUrl)
  */
 function getEnvironmentConfig()
 {
-    $env = ($_SERVER['HTTP_HOST'] === 'localhost') ? 'local' : 'live';
+    $env = $_ENV['APP_ENV'] ?? 'live'; // fallback to 'live' if APP_ENV is not set
+
     return [
         'local' => [
             'is_live' => false,
-            'BASE_URL' => $_ENV['LOCAL_URL'],
+            'BASE_URL' => $_ENV['APP_URL'],
             'DB_HOST' => $_ENV['DB_HOST'],
             'DB_USER' => $_ENV['DB_USER'],
             'DB_PASS' => $_ENV['DB_PASS'],
@@ -95,18 +96,18 @@ function getEnvironmentConfig()
         ],
         'live' => [
             'is_live' => true,
-            'BASE_URL' => $_ENV['LIVE_URL'],
-            'DB_HOST' => $_ENV['LIVE_DB_HOST'],
-            'DB_USER' => $_ENV['LIVE_DB_USER'],
-            'DB_PASS' => $_ENV['LIVE_DB_PASS'],
-            'DB_NAME' => $_ENV['LIVE_DB_NAME'],
-            'RECAPTCHA_SITE_KEY' => $_ENV['LIVE_RECAPTCHA_SITE_KEY'],
-            'RECAPTCHA_SECRET_KEY' => $_ENV['LIVE_RECAPTCHA_SECRET_KEY'],
-            'MAIL_HOST' => $_ENV['LIVE_MAIL_HOST'],
-            'MAIL_USERNAME' => $_ENV['LIVE_MAIL_USERNAME'],
-            'MAIL_PASSWORD' => $_ENV['LIVE_MAIL_PASSWORD'],
-            'MAIL_PORT' => $_ENV['LIVE_MAIL_PORT'],
-            'MAIL_ENCRYPTION' => $_ENV['LIVE_MAIL_ENCRYPTION'],
+            'BASE_URL' => $_ENV['APP_URL'],
+            'DB_HOST' => $_ENV['DB_HOST'],
+            'DB_USER' => $_ENV['DB_USER'],
+            'DB_PASS' => $_ENV['DB_PASS'],
+            'DB_NAME' => $_ENV['DB_NAME'],
+            'RECAPTCHA_SITE_KEY' => $_ENV['RECAPTCHA_SITE_KEY'],
+            'RECAPTCHA_SECRET_KEY' => $_ENV['RECAPTCHA_SECRET_KEY'],
+            'MAIL_HOST' => $_ENV['MAIL_HOST'],
+            'MAIL_USERNAME' => $_ENV['MAIL_USERNAME'],
+            'MAIL_PASSWORD' => $_ENV['MAIL_PASSWORD'],
+            'MAIL_PORT' => $_ENV['MAIL_PORT'],
+            'MAIL_ENCRYPTION' => $_ENV['MAIL_ENCRYPTION'],
         ]
     ][$env];
 }

@@ -82,12 +82,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
       <div class="carousel-inner">
         <div class="carousel-item active">
           <img
-            src="<?php echo $baseUrl; ?>assets/images/carousel/pk1.webp"
-            class="d-block w-100"
-            alt="Slide 1"
-            width="1920"
-            height="1080"
-            fetchpriority="high" />
+            src="<?php echo $baseUrl; ?>assets/images/carousel/pk1.webp" class="d-block w-100" alt="Slide 1" fetchpriority="high" loading="eager" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Capai yang terbaik</h4>
             <p class="my-sm-5">Jangan tunda lagi, selesaikan tugas akhirmu bersama Penelitian Kita</p>
@@ -108,8 +103,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
           </div>
         </div>
         <div class="carousel-item">
-          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk2.webp" class="d-block w-100" alt="Slide 2"
-            loading="lazy" width="1920" height="1080" />
+          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk2.webp" class="d-block w-100" alt="Slide 2" loading="lazy" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Kami adalah safe space-mu.</h4>
             <p class="my-sm-5">Rasi kami selalu siap sedia menjawab pertanyaan penelitian kamu.</p>
@@ -130,8 +124,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
           </div>
         </div>
         <div class="carousel-item">
-          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk3.webp" class="d-block w-100" alt="Slide 3"
-            loading="lazy" width="1920" height="1080" />
+          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk3.webp" class="d-block w-100" alt="Slide 3" loading="lazy" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Banyak promosi dan layanan spesial untukmu!</h4>
             <p class="my-sm-5">Eksplor layanan tugas akhir dan jurnal Penelitian Kita.</p>
@@ -152,8 +145,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
           </div>
         </div>
         <div class="carousel-item">
-          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk4.webp" class="d-block w-100" alt="Slide 4"
-            loading="lazy" width="1920" height="1080" />
+          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk4.webp" class="d-block w-100" alt="Slide 4" loading="lazy" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Paham sepenuhnya dengan video penjelasan.</h4>
             <p class="my-sm-5">Layanan paling lengkap ini tersedia di Paket Prime.</p>
@@ -174,8 +166,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
           </div>
         </div>
         <div class="carousel-item">
-          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk5.webp" class="d-block w-100" alt="Slide 5"
-            loading="lazy" width="1920" height="1080" />
+          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk5.webp" class="d-block w-100" alt="Slide 5" loading="lazy" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Kejar deadline mepet tepat waktu.</h4>
             <p class="my-sm-5">Kami Menyediakan Layanan Percepatan untuk Tugas Akhir.</p>
@@ -196,8 +187,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
           </div>
         </div>
         <div class="carousel-item">
-          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk6.webp" class="d-block w-100" alt="Slide 6"
-            loading="lazy" width="1920" height="1080" />
+          <img src=" <?php echo $baseUrl; ?>assets/images/carousel/pk6.webp" class="d-block w-100" alt="Slide 6" loading="lazy" />
           <div class="carousel-caption">
             <h4 class="my-sm-3">Masuk bareng, lulus juga bareng!</h4>
             <p class="my-sm-5">Dapatkan promosi spesial untuk tugas akhir bersama teman-teman kamu.</p>
@@ -242,7 +232,7 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
           <div class="floatingheader">
             <h3 class="wuwg-h3-alt">
               What
-              <font color="#ffc300">You Will Get</font>
+              <font color="#18181b">You Will Get</font>
             </h3>
             <h3 class="feature-wuwg-h3 leftalligned">
               Mengerjakan tugas akhir, menganalisis data maupun membuat jurnal menggunakan layanan kami bakalan anti
@@ -359,37 +349,37 @@ setCacheHeaders($isLive); // Set header no cache saat local environment
         <div class="col-md-8">
           <section class="tech-logos slider">
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/EViews.webp" alt="EViews Logo" width="143" height="50" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/EViews.webp" alt="EViews Logo" width="143" height="50" loading="lazy" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/IBMSPSS.webp" alt="IBM SPSS Logo" width="143" height="107" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/IBMSPSS.webp" alt="IBM SPSS Logo" width="143" height="107" loading="lazy" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Mendeley.webp" alt="Mendeley Logo" width="143" height="143" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Mendeley.webp" alt="Mendeley Logo" width="143" height="143" loading="lazy" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/NVIVO.webp" alt="Nvivo Logo" width="143" height="74" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/NVIVO.webp" alt="Nvivo Logo" width="143" height="74" loading="lazy" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/POP.webp" alt="Publish or Perish Logo" width="143" height="74" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/POP.webp" alt="Publish or Perish Logo" width="143" height="74" loading="lazy" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Python.webp" alt="Python Logo" width="143" height="80" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Python.webp" alt="Python Logo" width="143" height="80" loading="lazy" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/R.webp" alt="R Programming Language Logo" width="143" height="110" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/R.webp" alt="R Programming Language Logo" width="143" height="110" loading="lazy" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/SmartPLS.webp" alt="SmartPLS Logo" width="143" height="89" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/SmartPLS.webp" alt="SmartPLS Logo" width="143" height="89" loading="lazy" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Turnitin.webp" alt="Turnitin Logo" width="143" height="143" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Turnitin.webp" alt="Turnitin Logo" width="143" height="143" loading="lazy" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/VOSViewer.webp" alt="VOSViewer Logo" width="143" height="26" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/VOSViewer.webp" alt="VOSViewer Logo" width="143" height="26" loading="lazy" />
             </div>
             <div class="slide">
-              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Zotero.webp" alt="Zotero Logo" width="143" height="143" />
+              <img src=" <?php echo $baseUrl; ?>assets/images/logo/Zotero.webp" alt="Zotero Logo" width="143" height="143" loading="lazy" />
             </div>
           </section>
         </div>

@@ -368,6 +368,18 @@ body.login-page {
   color: #fff;
 }
 
+.navbar-brand img {
+  width: 32px;
+  height: 32px;
+}
+
+@media (min-width: 768px) {
+  .navbar-brand img {
+    width: 64px;
+    height: 64px;
+  }
+}
+
 /* Change navbar styling on scroll */
 .navbar.active {
   background: #fff;
@@ -833,7 +845,7 @@ body.login-page {
   border-radius: 50%;
 }
 
-.testimoni-nama {
+.testimoni-inner-upperarea p {
   margin: 0;
   font-size: 12px;
 }

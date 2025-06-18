@@ -25,9 +25,9 @@
             <div class="col-sm-6">
                 <div class="testimoni-inner p-4 mb-4 shadow rounded-4 border-1">
                     <div class="testimoni-inner-upperarea mb-2">
-                        <img class="testimoni-profilepicture" src="./assets/images/profilepictures/female.svg" alt=""
+                        <img class="testimoni-profilepicture" src="./assets/images/profilepictures/female.svg" alt="" loading="lazy"
                             height="32" width="32" />
-                        <h5 class="testimoni-nama">Klien I******</h5>
+                        <p>Klien I******</p>
                     </div>
                     <div class="testimoni-starandtitle mb-2">
                         <div class="testimoni-stars">
@@ -57,9 +57,9 @@
                 </div>
                 <div class="testimoni-inner p-4 mb-4 shadow rounded-4 border-1">
                     <div class="testimoni-inner-upperarea mb-2">
-                        <img class="testimoni-profilepicture" src="./assets/images/profilepictures/female.svg" alt=""
+                        <img class="testimoni-profilepicture" src="./assets/images/profilepictures/female.svg" alt="" loading="lazy"
                             height="32" width="32" />
-                        <h5 class="testimoni-nama">Klien A******</h5>
+                        <p>Klien A******</p>
                     </div>
                     <div class="testimoni-starandtitle mb-2">
                         <div class="testimoni-stars">
@@ -87,9 +87,9 @@
                 </div>
                 <div class="testimoni-inner p-4 mb-4 shadow rounded-4 border-1">
                     <div class="testimoni-inner-upperarea mb-2">
-                        <img class="testimoni-profilepicture" src="./assets/images/profilepictures/female.svg" alt=""
+                        <img class="testimoni-profilepicture" src="./assets/images/profilepictures/female.svg" alt="" loading="lazy"
                             height="32" width="32" />
-                        <h5 class="testimoni-nama">Klien E******</h5>
+                        <p>Klien E******</p>
                     </div>
                     <div class="testimoni-starandtitle mb-2">
                         <div class="testimoni-stars">
