@@ -174,7 +174,7 @@ header("X-XSS-Protection: 1; mode=block");
                             <div class="row g-2">
                                 <div class="col-6 mb-2">
                                     <a href="<?php echo $baseUrl; ?>admin-dashboard"
-                                        onclick="if(document.referrer) { if(confirm('Kembali ke halaman Admin Dashboard?')) { history.back(); } return false; }"
+                                        onclick="if(confirm('Kembali ke halaman Admin Dashboard?')) { window.location.href='<?php echo $baseUrl; ?>admin-dashboard'; return false; } else { return false; }"
                                         class="btn btn-light w-100 h-100 p-3 text-start border-hover">
                                         <div class="d-flex align-items-center">
                                             <i class="fa-solid fa-arrow-left fs-4 text-secondary me-2"></i>
