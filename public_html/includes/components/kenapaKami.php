@@ -32,7 +32,7 @@ $kenapaKamiProps = [
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         overflow: hidden;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        height: 100%;
+        height: auto;
     }
 
     .kenapakami .kenapa-card:hover {
@@ -105,6 +105,52 @@ $kenapaKamiProps = [
             padding: 1.25rem;
         }
     }
+
+    /* Mobile-specific styles */
+    @media (max-width: 767.98px) {
+        .kenapakami .carousel-item {
+            padding: 0 10px;
+            /* Tambahkan padding samping */
+        }
+
+        .kenapakami .kenapa-card {
+            margin-bottom: 20px;
+            /* Ruang antar card */
+            border-radius: 15px;
+            /* Lebih rounded */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            /* Shadow lebih lembut */
+        }
+
+        .kenapakami .card-content {
+            padding: 1.2rem;
+            /* Padding lebih rapat */
+        }
+
+        .kenapakami .card-content h4 {
+            font-size: 1.1rem;
+            /* Ukuran font lebih kecil */
+            margin-bottom: 0.8rem;
+            /* Ruang lebih rapat */
+        }
+
+        .kenapakami .card-content p {
+            font-size: 0.9rem;
+            /* Ukuran font lebih kecil */
+            line-height: 1.5;
+            /* Line height lebih rapat */
+        }
+
+        /* Perbaikan tampilan carousel controls */
+        .kenapakami .carousel-control-prev,
+        .kenapakami .carousel-control-next {
+            width: 40px;
+            height: 40px;
+            top: 40%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+        }
+    }
 </style>
 
 <!--========== AREA KENAPA KAMI ==========-->
@@ -130,7 +176,7 @@ $kenapaKamiProps = [
                 <div class="carousel-inner">
                     <?php foreach ($kenapaKamiProps as $i => $item): ?>
                         <div class="carousel-item <?= $i === 0 ? 'active' : '' ?>">
-                            <div class="kenapa-card mx-2">
+                            <div class="kenapa-card">
                                 <div class="card-image-container">
                                     <img src="<?= $baseUrl . $item['image'] ?>"
                                         class="card-image"
