@@ -1,5 +1,5 @@
 <?php
-// manage_promo.php
+// manage_promos.php
 
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/user_actions_config.php';
@@ -37,8 +37,19 @@ if ($userInfo['role'] !== 'admin') {
     exit();
 }
 
-// Retrieve product categories from the database.
+// Retrieve promo categories from the database.
 $categories = getPromoCategories($config, $env);
+
+// Create an array of unique main categories
+$mainCategories = [];
+foreach ($categories as $cat) {
+    $mainCategoryId = $cat['main_category_id'];
+    $mainCategoryName = $cat['main_category_name'];
+
+    if ($mainCategoryId !== null && !isset($mainCategories[$mainCategoryId])) {
+        $mainCategories[$mainCategoryId] = $mainCategoryName;
+    }
+}
 
 // Load dynamic URL configuration.
 $config = getEnvironmentConfig();
@@ -46,13 +57,18 @@ $baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']);
 $isLive = $config['is_live'];
 $pdo = getPDOConnection($config, $env);
 
-// Set no-cache headers in the local environment.
-setCacheHeaders($isLive);
-
 // Set security headers.
 header("X-Frame-Options: DENY");
 header("X-Content-Type-Options: nosniff");
 header("X-XSS-Protection: 1; mode=block");
+
+// Set no-cache headers in the local environment.
+setCacheHeaders($isLive);
+
+// Handle success/error messages and update cache headers
+$flash = processFlashMessagesAndHeaders($isLive);
+$successMessage = $flash['success'];
+$errorMessage = $flash['error'];
 ?>
 
 <!DOCTYPE html>
@@ -232,15 +248,32 @@ header("X-XSS-Protection: 1; mode=block");
                 <div class="card-body d-flex justify-content-center align-items-center">
                     <select class="form-select w-45" id="categoryFilter" aria-label="Filter by Category">
                         <option value="" selected>All Categories</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?= htmlspecialchars($category['promo_category_id']) ?>">
-                                <?= htmlspecialchars($category['promo_category_name']) ?>
+                        <?php foreach ($mainCategories as $id => $name): ?>
+                            <option value="<?= htmlspecialchars($id) ?>">
+                                <?= htmlspecialchars($name) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
             </div>
 
+            <!--========== AREA GENERIC FLASH MESSAGES ==========-->
+            <div class="area-generic-flash-messages mb-4">
+                <?php if ($successMessage): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= htmlspecialchars($successMessage) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($errorMessage): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <?= htmlspecialchars($errorMessage) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <!--========== AKHIR AREA GENERIC FLASH MESSAGES ==========-->
         </div>
     </div>
     <!--========== AKHIR AREA MANAGE PROMO ==========-->
@@ -255,6 +288,10 @@ header("X-XSS-Protection: 1; mode=block");
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
+    <!-- Load baseUrl for JS -->
+    <script>
+        const BASE_URL = '<?= $baseUrl ?>';
+    </script>
 </body>
 
 </html>
