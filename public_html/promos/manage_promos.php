@@ -281,6 +281,119 @@ $errorMessage = $flash['error'];
                     <i class="fas fa-plus"></i> Add Promo
                 </button>
             </div>
+
+            <!-- Promos Table -->
+            <div class="halaman-manage-promos-bagian-table table-responsive mb-4">
+                <table class="table table-bordered table-sm table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>No.</th>
+                            <th>Promo Name</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Discount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="promosTableBody">
+                        <?php
+                        $promos = getAllPromoWithCategories($config, $env);
+                        $counter = 1;
+                        foreach ($promos as $promo):
+                            $encodedId = $optimus->encode($promo['promo_id']);
+                        ?>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="selected_promos[]" value="<?= $promo['promo_id'] ?>"
+                                        class="promo-checkbox">
+                                    <?= $counter++ ?>
+                                </td>
+                                <td><?= htmlspecialchars($promo['promo_name']) ?></td>
+                                <td><?= htmlspecialchars($promo['category_name'] ?? 'General') ?></td>
+
+                                <!-- Kolom Status Promo -->
+                                <td>
+                                    <div class="dropdown">
+                                        <?php
+                                        $allowedStatuses = ['active', 'inactive', 'scheduled', 'expired'];
+                                        $status = in_array(strtolower($promo['status']), $allowedStatuses)
+                                            ? strtolower($promo['status'])
+                                            : 'inactive';
+
+                                        $badgeClass = match ($status) {
+                                            'active' => 'success',
+                                            'scheduled' => 'info',
+                                            'expired' => 'secondary',
+                                            default => 'danger'
+                                        };
+                                        ?>
+                                        <button class="btn btn-sm btn-<?= htmlspecialchars($badgeClass, ENT_QUOTES, 'UTF-8') ?> dropdown-toggle d-flex align-items-center"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <?= htmlspecialchars(ucfirst($status), ENT_QUOTES, 'UTF-8') ?>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item <?= $status === 'active' ? 'disabled' : '' ?>"
+                                                    href="#"
+                                                    data-promo-id="<?= intval($promo['promo_id']) ?>"
+                                                    data-new-status="active">
+                                                    Active
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item <?= $status === 'inactive' ? 'disabled' : '' ?>"
+                                                    href="#"
+                                                    data-promo-id="<?= intval($promo['promo_id']) ?>"
+                                                    data-new-status="inactive">
+                                                    Inactive
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item <?= $status === 'scheduled' ? 'disabled' : '' ?>"
+                                                    href="#"
+                                                    data-promo-id="<?= intval($promo['promo_id']) ?>"
+                                                    data-new-status="scheduled">
+                                                    Scheduled
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item <?= $status === 'expired' ? 'disabled' : '' ?>"
+                                                    href="#"
+                                                    data-promo-id="<?= intval($promo['promo_id']) ?>"
+                                                    data-new-status="expired">
+                                                    Expired
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <?php if ($promo['discount_type'] === 'percentage'): ?>
+                                        <?= number_format($promo['discount_value'], 0) ?>%
+                                    <?php else: ?>
+                                        Rp <?= number_format($promo['discount_value'], 0, ',', '.') ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <!-- Tombol View Details -->
+                                    <button class="btn btn-info btn-sm"
+                                        onclick="viewPromoDetails(<?= $promo['promo_id'] ?>)">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <!-- Tombol Edit -->
+                                    <button class="btn btn-warning btn-sm"
+                                        onclick="editPromo('<?= $promo['slug'] ?>', <?= $encodedId ?>)">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <!--========== AKHIR AREA MANAGE PROMO ==========-->
