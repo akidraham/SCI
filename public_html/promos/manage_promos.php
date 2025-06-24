@@ -274,6 +274,13 @@ $errorMessage = $flash['error'];
                 <?php endif; ?>
             </div>
             <!--========== AKHIR AREA GENERIC FLASH MESSAGES ==========-->
+
+            <!-- Tombol untuk membuka modal Add Promo -->
+            <div class="button-add-promo">
+                <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addPromoModal">
+                    <i class="fas fa-plus"></i> Add Promo
+                </button>
+            </div>
         </div>
     </div>
     <!--========== AKHIR AREA MANAGE PROMO ==========-->
