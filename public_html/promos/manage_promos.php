@@ -4,6 +4,7 @@
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/user_actions_config.php';
 require_once __DIR__ . '/../../config/promos/promo_functions.php';
+require_once __DIR__ . '/../../config/products/product_functions.php';
 
 use Carbon\Carbon;
 
@@ -56,6 +57,9 @@ $config = getEnvironmentConfig();
 $baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']);
 $isLive = $config['is_live'];
 $pdo = getPDOConnection($config, $env);
+
+// Load products for the promo form.
+$products = getProducts($config, $env);
 
 // Set security headers.
 header("X-Frame-Options: DENY");
@@ -394,6 +398,207 @@ $errorMessage = $flash['error'];
                     </tbody>
                 </table>
             </div>
+
+            <!-- Add Promo Modal -->
+            <div class="modal fade" id="addPromoModal" tabindex="-1" aria-labelledby="addPromoModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addPromoModalLabel">Add New Promo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form Promo Baru -->
+                            <form id="addPromoForm" action="<?php echo $baseUrl; ?>manage_promos" method="POST">
+                                <!-- Bagian Nama Promo -->
+                                <div class="mb-3">
+                                    <label for="promoName" class="form-label">Promo Name</label>
+                                    <input type="text" class="form-control" id="promoName" name="promoName" required>
+                                </div>
+
+                                <!-- Bagian Kode Promo -->
+                                <div class="mb-3">
+                                    <label for="promoCode" class="form-label">Promo Code</label>
+                                    <input type="text" class="form-control" id="promoCode" name="promoCode" required>
+                                </div>
+
+                                <!-- Bagian Deskripsi Promo -->
+                                <div class="mb-3">
+                                    <label for="promoDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="promoDescription" name="promoDescription" rows="3"></textarea>
+                                </div>
+
+                                <!-- Bagian Tipe Diskon -->
+                                <div class="mb-3">
+                                    <label class="form-label">Discount Type</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <select class="form-select" id="discountType" name="discountType" required>
+                                                <option value="" selected disabled>Select Discount Type</option>
+                                                <option value="percentage">Percentage</option>
+                                                <option value="fixed">Fixed Amount</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="discountValue" name="discountValue" step="0.01" min="0" required>
+                                                <span class="input-group-text" id="discountSuffix">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Max Discount (Hanya untuk tipe percentage) -->
+                                <div class="mb-3" id="maxDiscountField" style="display: none;">
+                                    <label for="maxDiscount" class="form-label">Max Discount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">IDR</span>
+                                        <input type="number" class="form-control" id="maxDiscount" name="maxDiscount" step="1000" min="0">
+                                        <span class="input-group-text">,00</span>
+                                    </div>
+                                    <div class="form-text">Maximum discount amount for percentage-based discounts</div>
+                                </div>
+
+                                <!-- Kategori Promo -->
+                                <div class="mb-3">
+                                    <label for="promoCategory" class="form-label">Category</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <select class="form-select" id="mainPromoCategory" name="mainPromoCategory" required>
+                                                <option value="" selected disabled>Select Main Category</option>
+                                                <?php foreach ($mainCategories as $id => $name): ?>
+                                                    <option value="<?php echo $id; ?>"><?php echo htmlspecialchars($name); ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="form-select" id="subPromoCategory" name="subcategory_id" required>
+                                                <option value="" selected disabled>Select Subcategory</option>
+                                                <?php foreach ($categories as $cat): ?>
+                                                    <?php if ($cat['main_category_id']): ?>
+                                                        <option class="subcat-option subcat-<?php echo $cat['main_category_id']; ?>"
+                                                            value="<?php echo $cat['subcategory_id']; ?>"
+                                                            style="display: none;">
+                                                            <?php echo htmlspecialchars($cat['subcategory_name']); ?>
+                                                        </option>
+                                                    <?php endif; ?>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tanggal Berlaku -->
+                                <div class="mb-3">
+                                    <label class="form-label">Validity Period</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <label for="startDate" class="form-label small text-muted">Start Date</label>
+                                            <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="endDate" class="form-label small text-muted">End Date</label>
+                                            <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Produk yang Berlaku -->
+                                <div class="mb-3">
+                                    <label class="form-label">Applicable Products</label>
+
+                                    <!-- Search and filter bar -->
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                        <input type="text" class="form-control" id="productSearch" placeholder="Search products...">
+                                    </div>
+
+                                    <!-- Products table with checkboxes -->
+                                    <div class="border rounded" style="max-height: 300px; overflow-y: auto;">
+                                        <table class="table table-hover mb-0">
+                                            <thead class="sticky-top bg-light">
+                                                <tr>
+                                                    <th scope="col" style="width: 20px;">
+                                                        <input type="checkbox" class="form-check-input" id="selectAllProducts">
+                                                    </th>
+                                                    <th scope="col">Product Name</th>
+                                                    <th scope="col" class="text-end">Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="productList">
+                                                <?php foreach ($products as $product): ?>
+                                                    <tr class="product-row">
+                                                        <td>
+                                                            <input type="checkbox" class="form-check-input product-check"
+                                                                name="applicableProducts[]"
+                                                                value="<?php echo $product['product_id']; ?>">
+                                                        </td>
+                                                        <td><?php echo htmlspecialchars($product['product_name']); ?></td>
+                                                        <td class="text-end">
+                                                            IDR <?php echo number_format($product['price_amount'], 0, ',', '.'); ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="mt-1 text-muted small" id="selectedCount">0 products selected</div>
+                                </div>
+
+                                <!-- Kelayakan & Minimal Pembelian -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="eligibility" class="form-label">Eligibility</label>
+                                        <select class="form-select" id="eligibility" name="eligibility" required>
+                                            <option value="all" selected>All Users</option>
+                                            <option value="referral">Referral Only</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="minPurchase" class="form-label">Minimum Purchase</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">IDR</span>
+                                            <input type="number" class="form-control" id="minPurchase" name="minPurchase" step="1000" min="0" value="0">
+                                            <span class="input-group-text">,00</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Maksimal Klaim -->
+                                <div class="mb-3">
+                                    <label for="maxClaims" class="form-label">Max Claims</label>
+                                    <input type="number" class="form-control" id="maxClaims" name="maxClaims" min="0" value="0">
+                                    <div class="form-text">0 = unlimited claims</div>
+                                </div>
+
+                                <!-- Opsi Tambahan -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="autoApply" name="autoApply" value="1">
+                                            <label class="form-check-label" for="autoApply">Auto Apply</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="promoStatus" name="promoStatus" value="active" checked>
+                                            <label class="form-check-label" for="promoStatus">Active Promo</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" id="savePromoBtn">Save Promo</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!--========== AKHIR AREA MANAGE PROMO ==========-->
@@ -411,6 +616,92 @@ $errorMessage = $flash['error'];
     <!-- Load baseUrl for JS -->
     <script>
         const BASE_URL = '<?= $baseUrl ?>';
+    </script>
+    <script>
+        // Script untuk menangani perubahan tipe diskon
+        document.getElementById('discountType').addEventListener('change', function() {
+            const discountType = this.value;
+            const maxDiscountField = document.getElementById('maxDiscountField');
+            const discountSuffix = document.getElementById('discountSuffix');
+
+            if (discountType === 'percentage') {
+                maxDiscountField.style.display = 'block';
+                discountSuffix.textContent = '%';
+            } else {
+                maxDiscountField.style.display = 'none';
+                discountSuffix.textContent = 'IDR';
+            }
+        });
+
+        // Script untuk menangani perubahan kategori utama
+        document.getElementById('mainPromoCategory').addEventListener('change', function() {
+            const mainCatId = this.value;
+            const subOptions = document.querySelectorAll('#subPromoCategory option.subcat-option');
+
+            // Sembunyikan semua opsi subkategori
+            subOptions.forEach(option => {
+                option.style.display = 'none';
+            });
+
+            // Tampilkan hanya opsi yang sesuai dengan kategori utama
+            const validOptions = document.querySelectorAll(`.subcat-${mainCatId}`);
+            validOptions.forEach(option => {
+                option.style.display = 'block';
+            });
+
+            // Reset pilihan subkategori
+            document.getElementById('subPromoCategory').value = '';
+        });
+
+        // Inisialisasi datepicker dengan tanggal minimal hari ini
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
+            document.getElementById('startDate').min = today;
+            document.getElementById('endDate').min = today;
+
+            // Update min end date saat start date berubah
+            document.getElementById('startDate').addEventListener('change', function() {
+                document.getElementById('endDate').min = this.value;
+            });
+        });
+    </script>
+    <script>
+        // Product search functionality
+        document.getElementById('productSearch').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.product-row');
+
+            rows.forEach(row => {
+                const productName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                row.style.display = productName.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Select all functionality
+        document.getElementById('selectAllProducts').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.product-check');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.closest('tr').style.display !== 'none') {
+                    checkbox.checked = this.checked;
+                }
+            });
+            updateSelectedCount();
+        });
+
+        // Update selected count
+        function updateSelectedCount() {
+            const selected = document.querySelectorAll('.product-check:checked').length;
+            document.getElementById('selectedCount').textContent =
+                `${selected} product${selected !== 1 ? 's' : ''} selected`;
+        }
+
+        // Initialize count and add event listeners
+        document.querySelectorAll('.product-check').forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedCount);
+        });
+        updateSelectedCount();
     </script>
 </body>
 
