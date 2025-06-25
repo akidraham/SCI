@@ -9,7 +9,6 @@ $baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']);
 $env = ($_SERVER['HTTP_HOST'] === 'localhost') ? 'local' : 'live';
 
 /**
-/**
  * Establishes a new PDO connection to a MySQL database with UTF-8 encoding and exception-based error handling.
  *
  * This function uses the provided configuration array to connect to the database,
