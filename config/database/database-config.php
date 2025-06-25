@@ -22,18 +22,18 @@ $env = ($_SERVER['HTTP_HOST'] === 'localhost') ? 'local' : 'live';
 function getPDOConnection($config, $env)
 {
     try {
+        // Set PHP timezone to Jakarta for consistent time display
+        date_default_timezone_set('Asia/Jakarta');
+
         // Create a PDO connection using the database credentials
         $pdo = new PDO(
-            "mysql:host={$config['DB_HOST']};dbname={$config['DB_NAME']}",
+            "mysql:host={$config['DB_HOST']};dbname={$config['DB_NAME']};charset=utf8mb4",
             $config['DB_USER'],
             $config['DB_PASS']
         );
 
         // Enable exception mode for better error handling
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        // Set the MySQL session timezone to Asia/Jakarta (+07:00)
-        $pdo->exec("SET time_zone = '+07:00';");
 
         return $pdo;
     } catch (PDOException $e) {
