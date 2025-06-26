@@ -9,22 +9,25 @@ $baseUrl = getBaseUrl($config, $_ENV['LIVE_URL']);
 $env = ($_SERVER['HTTP_HOST'] === 'localhost') ? 'local' : 'live';
 
 /**
- * Establishes a PDO database connection using environment-specific settings.
+ * Establishes a new PDO connection to a MySQL database with UTF-8 encoding and exception-based error handling.
  *
- * This function retrieves database configuration details from the environment, 
- * connects to a MySQL database using PDO, sets the error mode to exceptions, 
- * and adjusts the MySQL session timezone.
+ * This function uses the provided configuration array to connect to the database,
+ * sets the character set to UTF-8 for full Unicode support, and configures PDO to throw exceptions
+ * on error to improve debugging and reliability. The environment flag is used to determine error logging behavior.
  *
- * @param array $config Konfigurasi database.
- * @param string $env Environment (local/live).
- * @return PDO|null Returns a PDO instance if the connection is successful; otherwise, returns null.
+ * @param array $config Contains DB_HOST, DB_NAME, DB_USER, and DB_PASS.
+ * @param string $env Indicates the current environment ('local' or 'live') used for error handling.
+ * @return PDO|null Returns a PDO instance if the connection is successful, or null if it fails.
  */
 function getPDOConnection($config, $env)
 {
     try {
+        // Set PHP timezone to Jakarta for consistent time display
+        date_default_timezone_set('Asia/Jakarta');
+
         // Create a PDO connection using the database credentials
         $pdo = new PDO(
-            "mysql:host={$config['DB_HOST']};dbname={$config['DB_NAME']}",
+            "mysql:host={$config['DB_HOST']};dbname={$config['DB_NAME']};charset=utf8mb4",
             $config['DB_USER'],
             $config['DB_PASS']
         );
@@ -32,14 +35,10 @@ function getPDOConnection($config, $env)
         // Enable exception mode for better error handling
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Set the MySQL session timezone to Asia/Jakarta (+07:00)
-        $pdo->exec("SET time_zone = '+07:00';");
-
         return $pdo;
     } catch (PDOException $e) {
         // Log the error and display a user-friendly message
         handleError("Database Error: " . $e->getMessage(), $env);
-
         echo 'Database Error: An error occurred. Please try again later.';
         return null;
     }
