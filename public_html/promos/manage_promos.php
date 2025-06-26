@@ -622,91 +622,135 @@ $errorMessage = $flash['error'];
     <script>
         const BASE_URL = '<?= $baseUrl ?>';
     </script>
+    <!-- Script for Add Promo Modal -->
     <script>
-        // Script untuk menangani perubahan tipe diskon
-        document.getElementById('discountType').addEventListener('change', function() {
-            const discountType = this.value;
+        document.addEventListener('DOMContentLoaded', () => {
+            /** Cache DOM elements to avoid redundant lookups */
+            const discountTypeEl = document.getElementById('discountType');
             const maxDiscountField = document.getElementById('maxDiscountField');
             const discountSuffix = document.getElementById('discountSuffix');
 
-            if (discountType === 'percentage') {
-                maxDiscountField.style.display = 'block';
-                discountSuffix.textContent = '%';
-            } else {
-                maxDiscountField.style.display = 'none';
-                discountSuffix.textContent = 'IDR';
-            }
-        });
-
-        // Script untuk menangani perubahan kategori utama
-        document.getElementById('mainPromoCategory').addEventListener('change', function() {
-            const mainCatId = this.value;
+            const mainCatEl = document.getElementById('mainPromoCategory');
+            const subCatEl = document.getElementById('subPromoCategory');
             const subOptions = document.querySelectorAll('#subPromoCategory option.subcat-option');
 
-            // Sembunyikan semua opsi subkategori
-            subOptions.forEach(option => {
-                option.style.display = 'none';
+            const startDateEl = document.getElementById('startDate');
+            const endDateEl = document.getElementById('endDate');
+            const infiniteCheckbox = document.getElementById('infiniteDuration');
+            const dateFields = document.getElementById('dateFields');
+
+            const productSearchEl = document.getElementById('productSearch');
+            const selectAllEl = document.getElementById('selectAllProducts');
+            const selectedCountEl = document.getElementById('selectedCount');
+            const productRows = document.querySelectorAll('.product-row');
+            const productCheckboxes = document.querySelectorAll('.product-check');
+
+            /**
+             * Sets the display style of an element.
+             * @param {HTMLElement} el - The element to show or hide.
+             * @param {boolean} show - Whether to show the element.
+             * @param {string} [displayType='block'] - The display type to use when showing.
+             */
+            const setDisplay = (el, show, displayType = 'block') => {
+                el.style.display = show ? displayType : 'none';
+            };
+
+            /**
+             * Sets the minimum date for an input element.
+             * @param {HTMLInputElement} el - The input element.
+             * @param {string} dateStr - The minimum date in ISO format.
+             */
+            const setMinDate = (el, dateStr) => {
+                if (el) el.min = dateStr;
+            };
+
+            // Generate current date in ISO format, adjusted for local timezone
+            const today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                .toISOString()
+                .slice(0, 16);
+
+            // Set min date for start and end date fields
+            setMinDate(startDateEl, today);
+            setMinDate(endDateEl, today);
+
+            /** Handle discount type changes (percentage or fixed) */
+            discountTypeEl?.addEventListener('change', () => {
+                const isPercentage = discountTypeEl.value === 'percentage';
+                setDisplay(maxDiscountField, isPercentage);
+                discountSuffix.textContent = isPercentage ? '%' : 'IDR';
             });
 
-            // Tampilkan hanya opsi yang sesuai dengan kategori utama
-            const validOptions = document.querySelectorAll(`.subcat-${mainCatId}`);
-            validOptions.forEach(option => {
-                option.style.display = 'block';
+            /** Filter subcategories based on selected main category */
+            mainCatEl?.addEventListener('change', () => {
+                const mainCatId = mainCatEl.value;
+                subOptions.forEach(opt => setDisplay(opt, false));
+                document.querySelectorAll(`.subcat-${mainCatId}`).forEach(opt => setDisplay(opt, true));
+                subCatEl.value = '';
             });
 
-            // Reset pilihan subkategori
-            document.getElementById('subPromoCategory').value = '';
+            /** Set min end date when start date changes */
+            startDateEl?.addEventListener('change', () => {
+                setMinDate(endDateEl, startDateEl.value);
+            });
+
+            /** Toggle date fields visibility and required attribute based on checkbox */
+            infiniteCheckbox?.addEventListener('change', () => {
+                const isChecked = infiniteCheckbox.checked;
+                setDisplay(dateFields, !isChecked, 'flex');
+
+                ['startDate', 'endDate'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        isChecked ? el.removeAttribute('required') : el.setAttribute('required', 'required');
+                        if (!isChecked) setMinDate(el, today);
+                    }
+            });
         });
 
-        // Inisialisasi datepicker dengan tanggal minimal hari ini
-        document.addEventListener('DOMContentLoaded', function() {
-            const now = new Date();
-            const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            /** Initialize duration display based on infinite checkbox state */
+            setDisplay(dateFields, !infiniteCheckbox.checked, 'flex');
 
-            document.getElementById('startDate').min = today;
-            document.getElementById('endDate').min = today;
+            /** Filter product list based on search input */
+            productSearchEl?.addEventListener('input', () => {
+                const keyword = productSearchEl.value.toLowerCase();
 
-            // Update min end date saat start date berubah
-            document.getElementById('startDate').addEventListener('change', function() {
-                document.getElementById('endDate').min = this.value;
-            });
-        });
-    </script>
-    <script>
-        // Product search functionality
-        document.getElementById('productSearch').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const rows = document.querySelectorAll('.product-row');
-
-            rows.forEach(row => {
-                const productName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                row.style.display = productName.includes(searchTerm) ? '' : 'none';
-            });
+                productRows.forEach(row => {
+                    const name = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                    setDisplay(row, name.includes(keyword), 'table-row');
         });
 
-        // Select all functionality
-        document.getElementById('selectAllProducts').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.product-check');
-            checkboxes.forEach(checkbox => {
-                if (checkbox.closest('tr').style.display !== 'none') {
-                    checkbox.checked = this.checked;
-                }
+                // Recalculate selected products after filtering
+                updateSelectedCount();
             });
+
+            /** Select or deselect all visible products */
+            selectAllEl?.addEventListener('change', () => {
+                productCheckboxes.forEach(cb => {
+                    const rowVisible = cb.closest('tr').style.display !== 'none';
+                    if (rowVisible) cb.checked = selectAllEl.checked;
+            });
+
+                // Update count after bulk selection
             updateSelectedCount();
         });
 
-        // Update selected count
+            /**
+             * Count and display the number of selected visible products.
+             */
         function updateSelectedCount() {
-            const selected = document.querySelectorAll('.product-check:checked').length;
-            document.getElementById('selectedCount').textContent =
-                `${selected} product${selected !== 1 ? 's' : ''} selected`;
+                const selected = Array.from(productCheckboxes).filter(cb => {
+                    return cb.checked && cb.closest('tr').style.display !== 'none';
+                }).length;
+
+                selectedCountEl.textContent = `${selected} product${selected !== 1 ? 's' : ''} selected`;
         }
 
-        // Initialize count and add event listeners
-        document.querySelectorAll('.product-check').forEach(checkbox => {
-            checkbox.addEventListener('change', updateSelectedCount);
+            /** Add listener to each product checkbox to update count on change */
+            productCheckboxes.forEach(cb => cb.addEventListener('change', updateSelectedCount));
+
+            /** Initial count of selected products */
+            updateSelectedCount();
         });
-        updateSelectedCount();
     </script>
 </body>
 
