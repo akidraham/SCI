@@ -412,31 +412,31 @@ $errorMessage = $flash['error'];
                             <form id="addPromoForm" action="<?php echo $baseUrl; ?>manage_promos" method="POST">
                                 <!-- Bagian Nama Promo -->
                                 <div class="mb-3">
-                                    <label for="promoName" class="form-label">Promo Name</label>
+                                    <label for="promoName" class="form-label">Nama Promo</label>
                                     <input type="text" class="form-control" id="promoName" name="promoName" required>
                                 </div>
 
                                 <!-- Bagian Kode Promo -->
                                 <div class="mb-3">
-                                    <label for="promoCode" class="form-label">Promo Code</label>
+                                    <label for="promoCode" class="form-label">Kode Promo</label>
                                     <input type="text" class="form-control" id="promoCode" name="promoCode" required>
                                 </div>
 
                                 <!-- Bagian Deskripsi Promo -->
                                 <div class="mb-3">
-                                    <label for="promoDescription" class="form-label">Description</label>
+                                    <label for="promoDescription" class="form-label">Masukkan Deskripsi Promo</label>
                                     <textarea class="form-control" id="promoDescription" name="promoDescription" rows="3"></textarea>
                                 </div>
 
                                 <!-- Bagian Tipe Diskon -->
                                 <div class="mb-3">
-                                    <label class="form-label">Discount Type</label>
+                                    <label class="form-label">Tipe Promo</label>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <select class="form-select" id="discountType" name="discountType" required>
-                                                <option value="" selected disabled>Select Discount Type</option>
+                                                <option value="" selected disabled>Pilih Tipe Promo</option>
                                                 <option value="percentage">Percentage</option>
-                                                <option value="fixed">Fixed Amount</option>
+                                                <option value="fixed">Jumlah Tetap</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
@@ -450,22 +450,23 @@ $errorMessage = $flash['error'];
 
                                 <!-- Max Discount (Hanya untuk tipe percentage) -->
                                 <div class="mb-3" id="maxDiscountField" style="display: none;">
-                                    <label for="maxDiscount" class="form-label">Max Discount</label>
+                                    <label for="maxDiscount" class="form-label">Maksimal Diskon</label>
                                     <div class="input-group">
                                         <span class="input-group-text">IDR</span>
                                         <input type="number" class="form-control" id="maxDiscount" name="maxDiscount" step="1000" min="0">
                                         <span class="input-group-text">,00</span>
                                     </div>
-                                    <div class="form-text">Maximum discount amount for percentage-based discounts</div>
+                                    <ksimal class="form-text">Jumlah maksimal diskon untuk promo berbasis persentase.
+                                </div>
                                 </div>
 
                                 <!-- Kategori Promo -->
                                 <div class="mb-3">
-                                    <label for="promoCategory" class="form-label">Category</label>
+                            <label for="promoCategory" class="form-label">Kategori</label>
                                     <div class="row g-2">
                                         <div class="col-md-6">
                                             <select class="form-select" id="mainPromoCategory" name="mainPromoCategory" required>
-                                                <option value="" selected disabled>Select Main Category</option>
+                                        <option value="" selected disabled>Pilih Kategori Utamaa</option>
                                                 <?php foreach ($mainCategories as $id => $name): ?>
                                                     <option value="<?php echo $id; ?>"><?php echo htmlspecialchars($name); ?></option>
                                                 <?php endforeach; ?>
@@ -473,7 +474,7 @@ $errorMessage = $flash['error'];
                                         </div>
                                         <div class="col-md-6">
                                             <select class="form-select" id="subPromoCategory" name="subcategory_id" required>
-                                                <option value="" selected disabled>Select Subcategory</option>
+                                        <option value="" selected disabled>Pilih Sub Kategori</option>
                                                 <?php foreach ($categories as $cat): ?>
                                                     <?php if ($cat['main_category_id']): ?>
                                                         <option class="subcat-option subcat-<?php echo $cat['main_category_id']; ?>"
@@ -488,29 +489,33 @@ $errorMessage = $flash['error'];
                                     </div>
                                 </div>
 
-                                <!-- Tanggal Berlaku -->
+                        <!-- Masa Berlaku Promo -->
                                 <div class="mb-3">
-                                    <label class="form-label">Validity Period</label>
-                                    <div class="row g-2">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="infiniteDuration" name="infiniteDuration">
+                                <label class="form-check-label" for="infiniteDuration">Durasi Tak Terbatas</label>
+                            </div>
+                            <label class="form-label">Masa Berlaku Promo</label>
+                            <div class="row g-2" id="dateFields">
                                         <div class="col-md-6">
-                                            <label for="startDate" class="form-label small text-muted">Start Date</label>
-                                            <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
+                                    <label for="startDate" class="form-label small text-muted">Tanggal Mulai</label>
+                                    <input type="datetime-local" class="form-control" id="startDate" name="startDate">
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="endDate" class="form-label small text-muted">End Date</label>
-                                            <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>
+                                    <label for="endDate" class="form-label small text-muted">Tanggal Akhir</label>
+                                    <input type="datetime-local" class="form-control" id="endDate" name="endDate">
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Produk yang Berlaku -->
+                        <!-- Produk yang Berlaku untuk Promo -->
                                 <div class="mb-3">
-                                    <label class="form-label">Applicable Products</label>
+                            <label class="form-label">Pilih Produk Promo</label>
 
                                     <!-- Search and filter bar -->
                                     <div class="input-group mb-2">
                                         <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input type="text" class="form-control" id="productSearch" placeholder="Search products...">
+                                <input type="text" class="form-control" id="productSearch" placeholder="Cari produk...">
                                     </div>
 
                                     <!-- Products table with checkboxes -->
@@ -521,8 +526,8 @@ $errorMessage = $flash['error'];
                                                     <th scope="col" style="width: 20px;">
                                                         <input type="checkbox" class="form-check-input" id="selectAllProducts">
                                                     </th>
-                                                    <th scope="col">Product Name</th>
-                                                    <th scope="col" class="text-end">Price</th>
+                                            <th scope="col">Nama Produk</th>
+                                            <th scope="col" class="text-end">Harga</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="productList">
@@ -543,20 +548,20 @@ $errorMessage = $flash['error'];
                                         </table>
                                     </div>
 
-                                    <div class="mt-1 text-muted small" id="selectedCount">0 products selected</div>
+                            <div class="mt-1 text-muted small" id="selectedCount">0 produk yang dipilih.</div>
                                 </div>
 
                                 <!-- Kelayakan & Minimal Pembelian -->
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="eligibility" class="form-label">Eligibility</label>
+                                <label for="eligibility" class="form-label">Syarat Promo</label>
                                         <select class="form-select" id="eligibility" name="eligibility" required>
-                                            <option value="all" selected>All Users</option>
-                                            <option value="referral">Referral Only</option>
+                                    <option value="all" selected>Semua User</option>
+                                    <option value="referral">Hanya Referral</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="minPurchase" class="form-label">Minimum Purchase</label>
+                                <label for="minPurchase" class="form-label">Minimal Pembelian</label>
                                         <div class="input-group">
                                             <span class="input-group-text">IDR</span>
                                             <input type="number" class="form-control" id="minPurchase" name="minPurchase" step="1000" min="0" value="0">
@@ -567,7 +572,7 @@ $errorMessage = $flash['error'];
 
                                 <!-- Maksimal Klaim -->
                                 <div class="mb-3">
-                                    <label for="maxClaims" class="form-label">Max Claims</label>
+                            <label for="maxClaims" class="form-label">Maksimal Jumlah Klaim per User</label>
                                     <input type="number" class="form-control" id="maxClaims" name="maxClaims" min="0" value="0">
                                     <div class="form-text">0 = unlimited claims</div>
                                 </div>
@@ -583,7 +588,7 @@ $errorMessage = $flash['error'];
                                     <div class="col-md-6">
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="promoStatus" name="promoStatus" value="active" checked>
-                                            <label class="form-check-label" for="promoStatus">Active Promo</label>
+                                    <label class="form-check-label" for="promoStatus">Aktifkan Promo</label>
                                         </div>
                                     </div>
                                 </div>
