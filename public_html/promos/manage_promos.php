@@ -456,17 +456,17 @@ $errorMessage = $flash['error'];
                                         <input type="number" class="form-control" id="maxDiscount" name="maxDiscount" step="1000" min="0">
                                         <span class="input-group-text">,00</span>
                                     </div>
-                                    <ksimal class="form-text">Jumlah maksimal diskon untuk promo berbasis persentase.
-                                </div>
+                                    <div class="form-text">Jumlah maksimal diskon untuk promo berbasis persentase.
+                                    </div>
                                 </div>
 
                                 <!-- Kategori Promo -->
                                 <div class="mb-3">
-                            <label for="promoCategory" class="form-label">Kategori</label>
+                                    <label for="promoCategory" class="form-label">Kategori</label>
                                     <div class="row g-2">
                                         <div class="col-md-6">
                                             <select class="form-select" id="mainPromoCategory" name="mainPromoCategory" required>
-                                        <option value="" selected disabled>Pilih Kategori Utamaa</option>
+                                                <option value="" selected disabled>Pilih Kategori Utamaa</option>
                                                 <?php foreach ($mainCategories as $id => $name): ?>
                                                     <option value="<?php echo $id; ?>"><?php echo htmlspecialchars($name); ?></option>
                                                 <?php endforeach; ?>
@@ -474,7 +474,7 @@ $errorMessage = $flash['error'];
                                         </div>
                                         <div class="col-md-6">
                                             <select class="form-select" id="subPromoCategory" name="subcategory_id" required>
-                                        <option value="" selected disabled>Pilih Sub Kategori</option>
+                                                <option value="" selected disabled>Pilih Sub Kategori</option>
                                                 <?php foreach ($categories as $cat): ?>
                                                     <?php if ($cat['main_category_id']): ?>
                                                         <option class="subcat-option subcat-<?php echo $cat['main_category_id']; ?>"
@@ -489,33 +489,33 @@ $errorMessage = $flash['error'];
                                     </div>
                                 </div>
 
-                        <!-- Masa Berlaku Promo -->
+                                <!-- Masa Berlaku Promo -->
                                 <div class="mb-3">
-                            <div class="form-check form-switch mb-2">
-                                <input class="form-check-input" type="checkbox" id="infiniteDuration" name="infiniteDuration">
-                                <label class="form-check-label" for="infiniteDuration">Durasi Tak Terbatas</label>
-                            </div>
-                            <label class="form-label">Masa Berlaku Promo</label>
-                            <div class="row g-2" id="dateFields">
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="infiniteDuration" name="infiniteDuration">
+                                        <label class="form-check-label" for="infiniteDuration">Durasi Tak Terbatas</label>
+                                    </div>
+                                    <label class="form-label">Masa Berlaku Promo</label>
+                                    <div class="row g-2" id="dateFields">
                                         <div class="col-md-6">
-                                    <label for="startDate" class="form-label small text-muted">Tanggal Mulai</label>
-                                    <input type="datetime-local" class="form-control" id="startDate" name="startDate">
+                                            <label for="startDate" class="form-label small text-muted">Tanggal Mulai</label>
+                                            <input type="datetime-local" class="form-control" id="startDate" name="startDate">
                                         </div>
                                         <div class="col-md-6">
-                                    <label for="endDate" class="form-label small text-muted">Tanggal Akhir</label>
-                                    <input type="datetime-local" class="form-control" id="endDate" name="endDate">
+                                            <label for="endDate" class="form-label small text-muted">Tanggal Akhir</label>
+                                            <input type="datetime-local" class="form-control" id="endDate" name="endDate">
                                         </div>
                                     </div>
                                 </div>
 
-                        <!-- Produk yang Berlaku untuk Promo -->
+                                <!-- Produk yang Berlaku untuk Promo -->
                                 <div class="mb-3">
-                            <label class="form-label">Pilih Produk Promo</label>
+                                    <label class="form-label">Pilih Produk Promo</label>
 
                                     <!-- Search and filter bar -->
                                     <div class="input-group mb-2">
                                         <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" id="productSearch" placeholder="Cari produk...">
+                                        <input type="text" class="form-control" id="productSearch" placeholder="Cari produk...">
                                     </div>
 
                                     <!-- Products table with checkboxes -->
@@ -526,8 +526,8 @@ $errorMessage = $flash['error'];
                                                     <th scope="col" style="width: 20px;">
                                                         <input type="checkbox" class="form-check-input" id="selectAllProducts">
                                                     </th>
-                                            <th scope="col">Nama Produk</th>
-                                            <th scope="col" class="text-end">Harga</th>
+                                                    <th scope="col">Nama Produk</th>
+                                                    <th scope="col" class="text-end">Harga</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="productList">
@@ -548,20 +548,20 @@ $errorMessage = $flash['error'];
                                         </table>
                                     </div>
 
-                            <div class="mt-1 text-muted small" id="selectedCount">0 produk yang dipilih.</div>
+                                    <div class="mt-1 text-muted small" id="selectedCount">0 produk yang dipilih.</div>
                                 </div>
 
                                 <!-- Kelayakan & Minimal Pembelian -->
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                <label for="eligibility" class="form-label">Syarat Promo</label>
+                                        <label for="eligibility" class="form-label">Syarat Promo</label>
                                         <select class="form-select" id="eligibility" name="eligibility" required>
-                                    <option value="all" selected>Semua User</option>
-                                    <option value="referral">Hanya Referral</option>
+                                            <option value="all" selected>Semua User</option>
+                                            <option value="referral">Hanya Referral</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                <label for="minPurchase" class="form-label">Minimal Pembelian</label>
+                                        <label for="minPurchase" class="form-label">Minimal Pembelian</label>
                                         <div class="input-group">
                                             <span class="input-group-text">IDR</span>
                                             <input type="number" class="form-control" id="minPurchase" name="minPurchase" step="1000" min="0" value="0">
@@ -572,7 +572,7 @@ $errorMessage = $flash['error'];
 
                                 <!-- Maksimal Klaim -->
                                 <div class="mb-3">
-                            <label for="maxClaims" class="form-label">Maksimal Jumlah Klaim per User</label>
+                                    <label for="maxClaims" class="form-label">Maksimal Jumlah Klaim per User</label>
                                     <input type="number" class="form-control" id="maxClaims" name="maxClaims" min="0" value="0">
                                     <div class="form-text">0 = unlimited claims</div>
                                 </div>
@@ -588,7 +588,7 @@ $errorMessage = $flash['error'];
                                     <div class="col-md-6">
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="promoStatus" name="promoStatus" value="active" checked>
-                                    <label class="form-check-label" for="promoStatus">Aktifkan Promo</label>
+                                            <label class="form-check-label" for="promoStatus">Aktifkan Promo</label>
                                         </div>
                                     </div>
                                 </div>
@@ -704,8 +704,8 @@ $errorMessage = $flash['error'];
                         isChecked ? el.removeAttribute('required') : el.setAttribute('required', 'required');
                         if (!isChecked) setMinDate(el, today);
                     }
+                });
             });
-        });
 
             /** Initialize duration display based on infinite checkbox state */
             setDisplay(dateFields, !infiniteCheckbox.checked, 'flex');
@@ -717,7 +717,7 @@ $errorMessage = $flash['error'];
                 productRows.forEach(row => {
                     const name = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
                     setDisplay(row, name.includes(keyword), 'table-row');
-        });
+                });
 
                 // Recalculate selected products after filtering
                 updateSelectedCount();
@@ -728,22 +728,22 @@ $errorMessage = $flash['error'];
                 productCheckboxes.forEach(cb => {
                     const rowVisible = cb.closest('tr').style.display !== 'none';
                     if (rowVisible) cb.checked = selectAllEl.checked;
-            });
+                });
 
                 // Update count after bulk selection
-            updateSelectedCount();
-        });
+                updateSelectedCount();
+            });
 
             /**
              * Count and display the number of selected visible products.
              */
-        function updateSelectedCount() {
+            function updateSelectedCount() {
                 const selected = Array.from(productCheckboxes).filter(cb => {
                     return cb.checked && cb.closest('tr').style.display !== 'none';
                 }).length;
 
                 selectedCountEl.textContent = `${selected} product${selected !== 1 ? 's' : ''} selected`;
-        }
+            }
 
             /** Add listener to each product checkbox to update count on change */
             productCheckboxes.forEach(cb => cb.addEventListener('change', updateSelectedCount));
