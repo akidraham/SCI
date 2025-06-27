@@ -443,6 +443,7 @@ $errorMessage = $flash['error'];
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Tipe Diskon <span class="text-danger">*</span></label>
                                         <div class="row align-items-end">
+                                            <!-- Jenis Diskon -->
                                             <div class="col-md-5">
                                                 <label for="discountType" class="form-label small text-muted">Jenis Diskon</label>
                                                 <select class="form-select" id="discountType" name="discountType" required>
@@ -451,11 +452,17 @@ $errorMessage = $flash['error'];
                                                     <option value="fixed">Jumlah Tetap (IDR)</option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-7">
+                                            <!-- Nilai Diskon -->
+                                            <div class="col-md-7 position-relative">
                                                 <label for="discountValue" class="form-label small text-muted">Nilai Diskon</label>
                                                 <div class="input-group">
-                                                    <input type="number" class="form-control" id="discountValue" name="discountValue" step="0.01" min="0" required>
+                                                    <input type="text" class="form-control" id="discountValue" name="discountValue" required>
                                                     <span class="input-group-text" id="discountSuffix">%</span>
+                                                </div>
+                                                <div class="position-absolute w-100" style="top: 100%; left: 0;">
+                                                    <div class="form-text small" id="discountHelp" style="display: none;">
+                                                        Gunakan titik (.) untuk desimal, contoh: 15.5 untuk 15,5%
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -466,8 +473,7 @@ $errorMessage = $flash['error'];
                                         <label for="maxDiscount" class="form-label fw-bold">Maksimal Diskon</label>
                                         <div class="input-group">
                                             <span class="input-group-text">IDR</span>
-                                            <input type="number" class="form-control" id="maxDiscount" name="maxDiscount" step="1000" min="0">
-                                            <span class="input-group-text">,00</span>
+                                            <input type="text" class="form-control" id="maxDiscount" name="maxDiscount">
                                         </div>
                                         <div class="form-text">Hanya untuk diskon persentase. Biarkan kosong untuk tidak ada batas.</div>
                                     </div>
@@ -619,12 +625,12 @@ $errorMessage = $flash['error'];
                                                 <option value="referral">Hanya Pengguna Referral</option>
                                             </select>
                                         </div>
+                                        <!-- Minimal Pembelian -->
                                         <div class="col-md-6 mb-3">
                                             <label for="minPurchase" class="form-label fw-bold">Minimal Pembelian</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">IDR</span>
-                                                <input type="number" class="form-control" id="minPurchase" name="minPurchase" step="1000" min="0" value="0">
-                                                <span class="input-group-text">,00</span>
+                                                <input type="text" class="form-control" id="minPurchase" name="minPurchase" value="0">
                                             </div>
                                         </div>
 
@@ -682,6 +688,7 @@ $errorMessage = $flash['error'];
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autonumeric@4.6.0/dist/autoNumeric.min.js"></script>
     <!-- Custom JS -->
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
     <!-- Load baseUrl for JS -->
@@ -712,6 +719,65 @@ $errorMessage = $flash['error'];
 
             const selectAllBtn = document.getElementById('selectAllBtn');
             const deselectAllBtn = document.getElementById('deselectAllBtn');
+
+            // Initialize AutoNumeric for currency/number formatting
+            const minPurchaseNumeric = new AutoNumeric('#minPurchase', {
+                digitGroupSeparator: '.',
+                decimalCharacter: ',',
+                decimalPlaces: 0,
+                unformatOnSubmit: true,
+                minimumValue: '0'
+            });
+
+            const maxDiscountNumeric = new AutoNumeric('#maxDiscount', {
+                digitGroupSeparator: '.',
+                decimalCharacter: ',',
+                decimalPlaces: 0,
+                unformatOnSubmit: true,
+                minimumValue: '0'
+            });
+
+            // Initialize discountValue (default: percentage)
+            const discountValueNumeric = new AutoNumeric('#discountValue', {
+                decimalPlaces: 2,
+                digitGroupSeparator: '',
+                decimalCharacter: '.',
+                unformatOnSubmit: true,
+                minimumValue: '0'
+            });
+            discountValueNumeric.set(0); // Default value
+
+            discountTypeEl?.addEventListener('change', () => {
+                const isPercentage = discountTypeEl.value === 'percentage';
+                setDisplay(maxDiscountField, isPercentage);
+                discountSuffix.textContent = isPercentage ? '%' : 'IDR';
+
+                // Show/hide format hint
+                const discountHelp = document.getElementById('discountHelp');
+                setDisplay(discountHelp, isPercentage);
+
+                // Update discount value format
+                if (isPercentage) {
+                    discountValueNumeric.update({
+                        decimalPlaces: 2,
+                        digitGroupSeparator: '',
+                        decimalCharacter: '.'
+                    });
+                    discountValueNumeric.set(0); // Reset value
+                } else {
+                    discountValueNumeric.update({
+                        decimalPlaces: 0,
+                        digitGroupSeparator: '.',
+                        decimalCharacter: ','
+                    });
+                    discountValueNumeric.set(0); // Reset value
+                }
+            });
+
+            // Show format hint if initial type is percentage
+            if (discountTypeEl.value === 'percentage') {
+                setDisplay(document.getElementById('discountHelp'), true);
+            }
 
             // Allow clicking on the entire row to toggle product selection
             productRows.forEach(row => {
