@@ -86,9 +86,8 @@ $errorMessage = $flash['error'];
     <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>favicon.ico" />
     <!-- Bootstrap css -->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/vendor/css/bootstrap.min.css" />
-    <!-- Slick Slider css -->
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/vendor/css/slick.min.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl; ?>assets/vendor/css/slick-theme.min.css" />
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
@@ -520,13 +519,23 @@ $errorMessage = $flash['error'];
 
                                         <div id="dateFields">
                                             <div class="row g-3">
-                                                <div class="col-md-6">
-                                                    <label for="startDate" class="form-label fw-bold">Tanggal Mulai</label>
-                                                    <input type="datetime-local" class="form-control" id="startDate" name="startDate">
+                                                <div class="col-12 col-md-6">
+                                                    <div class="form-group h-100">
+                                                        <label for="startDate" class="form-label fw-bold d-block mb-1">Tanggal Mulai</label>
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control date-time-picker" id="startDate" name="startDate" placeholder="Pilih Tanggal & Waktu">
+                                                            <span class="input-group-text"><i class="fa-regular fa-calendar"></i></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <label for="endDate" class="form-label fw-bold">Tanggal Berakhir</label>
-                                                    <input type="datetime-local" class="form-control" id="endDate" name="endDate">
+                                                <div class="col-12 col-md-6">
+                                                    <div class="form-group h-100">
+                                                        <label for="endDate" class="form-label fw-bold d-block mb-1">Tanggal Berakhir</label>
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control date-time-picker" id="endDate" name="endDate" placeholder="Pilih Tanggal & Waktu">
+                                                            <span class="input-group-text"><i class="fa-regular fa-calendar"></i></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -672,6 +681,7 @@ $errorMessage = $flash['error'];
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/jquery-slim.min.js"></script>
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/popper.min.js"></script>
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- Custom JS -->
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
     <!-- Load baseUrl for JS -->
@@ -737,23 +747,50 @@ $errorMessage = $flash['error'];
                 el.style.display = show ? displayType : 'none';
             };
 
-            /**
-             * Sets the minimum date for an input element.
-             * @param {HTMLInputElement} el - The input element.
-             * @param {string} dateStr - The minimum date in ISO format.
-             */
-            const setMinDate = (el, dateStr) => {
-                if (el) el.min = dateStr;
+            // Initialize Flatpickr
+            const dateTimeConfig = {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                minDate: "today",
+                time_24hr: true,
+                locale: "id",
+                minuteIncrement: 5,
+                static: true,
+                disableMobile: true,
+                clickOpens: true,
+                mobileBehaviour: 'touch'
             };
 
-            // Generate current date in ISO format, adjusted for local timezone
-            const today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-                .toISOString()
-                .slice(0, 16);
+            const startDateFP = flatpickr("#startDate", {
+                ...dateTimeConfig,
+                onChange: function(selectedDates) {
+                    endDateFP.set('minDate', selectedDates[0]);
+                }
+            });
 
-            // Set min date for start and end date fields
-            setMinDate(startDateEl, today);
-            setMinDate(endDateEl, today);
+            const endDateFP = flatpickr("#endDate", {
+                ...dateTimeConfig
+            });
+
+            // Update event listener for infinite duration
+            infiniteCheckbox?.addEventListener('change', () => {
+                const isChecked = infiniteCheckbox.checked;
+                setDisplay(dateFields, !isChecked, 'flex');
+
+                if (isChecked) {
+                    startDateEl.removeAttribute('required');
+                    endDateEl.removeAttribute('required');
+                    startDateFP.clear();
+                    endDateFP.clear();
+                } else {
+                    startDateEl.setAttribute('required', 'required');
+                    endDateEl.setAttribute('required', 'required');
+
+                    // Set minDate back to today
+                    startDateFP.set('minDate', 'today');
+                    endDateFP.set('minDate', 'today');
+                }
+            });
 
             /** Update UI elements based on discount type selection */
             discountTypeEl?.addEventListener('change', () => {
