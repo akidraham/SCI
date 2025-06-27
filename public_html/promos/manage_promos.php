@@ -549,7 +549,7 @@ $errorMessage = $flash['error'];
                                         <!-- Tabel daftar produk -->
                                         <div class="border rounded" style="max-height: 300px; overflow-y: auto;">
                                             <table class="table table-hover mb-0">
-                                                <thead class="sticky-top bg-light">
+                                                <thead class="bg-light">
                                                     <tr>
                                                         <th scope="col" style="width: 20px;"></th>
                                                         <th scope="col" class="fw-bold">Nama Produk</th>
