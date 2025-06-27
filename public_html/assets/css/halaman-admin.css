@@ -161,7 +161,16 @@ input[type="number"] {
   display: block;
 }
 /* === Akhir Bagian Status Penjualan === */
+/* === Bagian Add Promo Modal Halaman Manage Promos === */
+#addPromoModal .clickable-row:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
 
+#addPromoModal #selectAllBtn,
+#deselectAllBtn {
+  min-width: 100px;
+}
+/* === Akhir Bagian Add Promo Modal Halaman Manage Promos === */
 /* AKHIR AREA HALAMAN MANAGE PRODUCTS
 ================================================================================ */
 

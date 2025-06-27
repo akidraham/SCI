@@ -549,16 +549,14 @@ $errorMessage = $flash['error'];
                                             <table class="table table-hover mb-0">
                                                 <thead class="sticky-top bg-light">
                                                     <tr>
-                                                        <th scope="col" style="width: 20px;">
-                                                            <input type="checkbox" class="form-check-input" id="selectAllProducts">
-                                                        </th>
+                                                        <th scope="col" style="width: 20px;"></th>
                                                         <th scope="col" class="fw-bold">Nama Produk</th>
                                                         <th scope="col" class="fw-bold text-end">Harga</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="productList">
                                                     <?php foreach ($products as $product): ?>
-                                                        <tr class="product-row">
+                                                        <tr class="product-row clickable-row">
                                                             <td>
                                                                 <input type="checkbox" class="form-check-input product-check"
                                                                     name="applicableProducts[]"
@@ -574,7 +572,27 @@ $errorMessage = $flash['error'];
                                             </table>
                                         </div>
 
-                                        <div class="mt-2 fw-bold" id="selectedCount">0 produk yang dipilih.</div>
+                                        <!-- Bulk Selection - Dengan ikon lebih jelas -->
+                                        <div class="mt-2">
+                                            <!-- Teks jumlah produk dipindahkan ke atas -->
+                                            <span class="fw-bold text-dark d-block mb-2" id="selectedCount">0 produk dipilih</span>
+
+                                            <!-- Container tombol dengan teks -->
+                                            <div class="d-flex align-items-center gap-2">
+                                                <!-- Tombol Pilih Semua -->
+                                                <button type="button" class="btn btn-outline-success btn-sm" id="selectAllBtn">
+                                                    <i class="fa-solid fa-square-check text-success me-1"></i>
+                                                    Pilih Semua
+                                                </button>
+
+                                                <!-- Tombol Hapus Semua -->
+                                                <button type="button" class="btn btn-outline-danger btn-sm" id="deselectAllBtn">
+                                                    <i class="fa-regular fa-square text-danger me-1"></i>
+                                                    Hapus Semua
+                                                </button>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
 
@@ -676,10 +694,36 @@ $errorMessage = $flash['error'];
             const dateFields = document.getElementById('dateFields');
 
             const productSearchEl = document.getElementById('productSearch');
-            const selectAllEl = document.getElementById('selectAllProducts');
             const selectedCountEl = document.getElementById('selectedCount');
             const productRows = document.querySelectorAll('.product-row');
             const productCheckboxes = document.querySelectorAll('.product-check');
+
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const deselectAllBtn = document.getElementById('deselectAllBtn');
+
+            // Allow clicking on the entire row to toggle product selection
+            productRows.forEach(row => {
+                row.style.cursor = 'pointer';
+
+                row.addEventListener('click', (e) => {
+                    // Ignore clicks on the checkbox itself
+                    if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+                        return;
+                    }
+
+                    // Toggle the checkbox inside the row
+                    const checkbox = row.querySelector('.product-check');
+                    if (checkbox) {
+                        checkbox.checked = !checkbox.checked;
+
+                        // Trigger the change event manually
+                        const event = new Event('change', {
+                            bubbles: true
+                        });
+                        checkbox.dispatchEvent(event);
+                    }
+                });
+            });
 
             /**
              * Sets the display style of an element.
@@ -709,14 +753,14 @@ $errorMessage = $flash['error'];
             setMinDate(startDateEl, today);
             setMinDate(endDateEl, today);
 
-            /** Handle discount type changes (percentage or fixed) */
+            /** Update UI elements based on discount type selection */
             discountTypeEl?.addEventListener('change', () => {
                 const isPercentage = discountTypeEl.value === 'percentage';
                 setDisplay(maxDiscountField, isPercentage);
                 discountSuffix.textContent = isPercentage ? '%' : 'IDR';
             });
 
-            /** Filter subcategories based on selected main category */
+            /** Display only subcategories that match the selected main category */
             mainCatEl?.addEventListener('change', () => {
                 const mainCatId = mainCatEl.value;
                 subOptions.forEach(opt => setDisplay(opt, false));
@@ -724,12 +768,12 @@ $errorMessage = $flash['error'];
                 subCatEl.value = '';
             });
 
-            /** Set min end date when start date changes */
+            /** Restrict end date to be after selected start date */
             startDateEl?.addEventListener('change', () => {
                 setMinDate(endDateEl, startDateEl.value);
             });
 
-            /** Toggle date fields visibility and required attribute based on checkbox */
+            /** Toggle date input visibility based on "infinite duration" checkbox */
             infiniteCheckbox?.addEventListener('change', () => {
                 const isChecked = infiniteCheckbox.checked;
                 setDisplay(dateFields, !isChecked, 'flex');
@@ -743,10 +787,10 @@ $errorMessage = $flash['error'];
                 });
             });
 
-            /** Initialize duration display based on infinite checkbox state */
+            /** Set initial visibility of date fields on load */
             setDisplay(dateFields, !infiniteCheckbox.checked, 'flex');
 
-            /** Filter product list based on search input */
+            /** Filter product table rows based on user input */
             productSearchEl?.addEventListener('input', () => {
                 const keyword = productSearchEl.value.toLowerCase();
 
@@ -755,37 +799,77 @@ $errorMessage = $flash['error'];
                     setDisplay(row, name.includes(keyword), 'table-row');
                 });
 
-                // Recalculate selected products after filtering
+                // Recalculate the selected count after filtering
                 updateSelectedCount();
             });
 
-            /** Select or deselect all visible products */
-            selectAllEl?.addEventListener('change', () => {
+            /** Select all currently visible products */
+            selectAllBtn?.addEventListener('click', () => {
                 productCheckboxes.forEach(cb => {
                     const rowVisible = cb.closest('tr').style.display !== 'none';
-                    if (rowVisible) cb.checked = selectAllEl.checked;
-                });
+                    if (rowVisible) {
+                        cb.checked = true;
 
-                // Update count after bulk selection
-                updateSelectedCount();
+                        // Trigger change event
+                        const event = new Event('change', {
+                            bubbles: true
+                        });
+                        cb.dispatchEvent(event);
+                    }
+                });
+            });
+
+            /** Deselect all products regardless of visibility */
+            deselectAllBtn?.addEventListener('click', () => {
+                productCheckboxes.forEach(cb => {
+                    cb.checked = false;
+
+                    // Trigger change event
+                    const event = new Event('change', {
+                        bubbles: true
+                    });
+                    cb.dispatchEvent(event);
+                });
             });
 
             /**
-             * Count and display the number of selected visible products.
+             * Update the count of selected and visible products.
+             * Display the count in a text element.
              */
             function updateSelectedCount() {
                 const selected = Array.from(productCheckboxes).filter(cb => {
                     return cb.checked && cb.closest('tr').style.display !== 'none';
                 }).length;
 
-                selectedCountEl.textContent = `${selected} product${selected !== 1 ? 's' : ''} selected`;
+                selectedCountEl.textContent = `${selected} produk dipilih`;
             }
 
-            /** Add listener to each product checkbox to update count on change */
+            // Attach change event to each checkbox to keep count updated
             productCheckboxes.forEach(cb => cb.addEventListener('change', updateSelectedCount));
 
-            /** Initial count of selected products */
+            // Display count initially
             updateSelectedCount();
+
+            // Toggle auto-apply information ---
+            const autoApplyCheckbox = document.getElementById('autoApply');
+            const autoApplyInfo = autoApplyCheckbox?.closest('.mb-3')?.querySelector('.form-text');
+
+            /**
+             * Update the auto-apply explanation text based on checkbox state.
+             */
+            function updateAutoApplyInfo() {
+                if (!autoApplyInfo) return;
+
+                if (autoApplyCheckbox.checked) {
+                    autoApplyInfo.textContent = "Promo akan otomatis diterapkan di keranjang";
+                } else {
+                    autoApplyInfo.textContent = "Pelanggan harus memasukkan kode promo sebelum check out di keranjang";
+                }
+            }
+
+            autoApplyCheckbox?.addEventListener('change', updateAutoApplyInfo);
+            updateAutoApplyInfo();
+            // --- End of auto-apply section ---
         });
     </script>
     <!-- End of Script for Add Promo Modal -->
