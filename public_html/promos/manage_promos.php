@@ -403,192 +403,227 @@ $errorMessage = $flash['error'];
             <div class="modal fade" id="addPromoModal" tabindex="-1" aria-labelledby="addPromoModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addPromoModalLabel">Add New Promo</h5>
+                        <div class="modal-header bg-light">
+                            <h5 class="modal-title fw-bold" id="addPromoModalLabel">Tambah Promo Baru</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <!-- Form Promo Baru -->
                             <form id="addPromoForm" action="<?php echo $baseUrl; ?>manage_promos" method="POST">
-                                <!-- Bagian Nama Promo -->
-                                <div class="mb-3">
-                                    <label for="promoName" class="form-label">Nama Promo</label>
-                                    <input type="text" class="form-control" id="promoName" name="promoName" required>
+
+                                <!-- Bagian Informasi Dasar -->
+                                <div class="border-bottom pb-3 mb-4">
+                                    <h6 class="fw-bold text-primary mb-3">Informasi Dasar Promo</h6>
+
+                                    <!-- Nama Promo -->
+                                    <div class="mb-3">
+                                        <label for="promoName" class="form-label fw-bold">Nama Promo <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="promoName" name="promoName" required>
+                                        <div class="form-text">Contoh: Promo Pelanggan Baru</div>
+                                    </div>
+
+                                    <!-- Kode Promo -->
+                                    <div class="mb-3">
+                                        <label for="promoCode" class="form-label fw-bold">Kode Promo <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="promoCode" name="promoCode" required>
+                                        <div class="form-text">Contoh: BARUHEMAT25</div>
+                                    </div>
+
+                                    <!-- Deskripsi Promo -->
+                                    <div class="mb-3">
+                                        <label for="promoDescription" class="form-label fw-bold">Deskripsi Promo</label>
+                                        <textarea class="form-control" id="promoDescription" name="promoDescription" rows="3"></textarea>
+                                    </div>
                                 </div>
 
-                                <!-- Bagian Kode Promo -->
-                                <div class="mb-3">
-                                    <label for="promoCode" class="form-label">Kode Promo</label>
-                                    <input type="text" class="form-control" id="promoCode" name="promoCode" required>
-                                </div>
+                                <!-- Bagian Diskon -->
+                                <div class="border-bottom pb-3 mb-4">
+                                    <h6 class="fw-bold text-primary mb-3">Detail Diskon</h6>
 
-                                <!-- Bagian Deskripsi Promo -->
-                                <div class="mb-3">
-                                    <label for="promoDescription" class="form-label">Masukkan Deskripsi Promo</label>
-                                    <textarea class="form-control" id="promoDescription" name="promoDescription" rows="3"></textarea>
-                                </div>
-
-                                <!-- Bagian Tipe Diskon -->
-                                <div class="mb-3">
-                                    <label class="form-label">Tipe Promo</label>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <select class="form-select" id="discountType" name="discountType" required>
-                                                <option value="" selected disabled>Pilih Tipe Promo</option>
-                                                <option value="percentage">Percentage</option>
-                                                <option value="fixed">Jumlah Tetap</option>
-                                            </select>
+                                    <!-- Tipe Diskon -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Tipe Diskon <span class="text-danger">*</span></label>
+                                        <div class="row align-items-end">
+                                            <div class="col-md-5">
+                                                <label for="discountType" class="form-label small text-muted">Jenis Diskon</label>
+                                                <select class="form-select" id="discountType" name="discountType" required>
+                                                    <option value="" selected disabled>Pilih Tipe Diskon</option>
+                                                    <option value="percentage">Persentase (%)</option>
+                                                    <option value="fixed">Jumlah Tetap (IDR)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <label for="discountValue" class="form-label small text-muted">Nilai Diskon</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="discountValue" name="discountValue" step="0.01" min="0" required>
+                                                    <span class="input-group-text" id="discountSuffix">%</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="discountValue" name="discountValue" step="0.01" min="0" required>
-                                                <span class="input-group-text" id="discountSuffix">%</span>
+                                    </div>
+
+                                    <!-- Maksimal Diskon -->
+                                    <div class="mb-3" id="maxDiscountField" style="display: none;">
+                                        <label for="maxDiscount" class="form-label fw-bold">Maksimal Diskon</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">IDR</span>
+                                            <input type="number" class="form-control" id="maxDiscount" name="maxDiscount" step="1000" min="0">
+                                            <span class="input-group-text">,00</span>
+                                        </div>
+                                        <div class="form-text">Hanya untuk diskon persentase. Biarkan kosong untuk tidak ada batas.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Bagian Kategori -->
+                                <div class="border-bottom pb-3 mb-4">
+                                    <h6 class="fw-bold text-primary mb-3">Kategori Promo</h6>
+
+                                    <div class="mb-3">
+                                        <div class="row g-2">
+                                            <div class="col-md-6">
+                                                <label for="mainPromoCategory" class="form-label fw-bold">Kategori Utama <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="mainPromoCategory" name="mainPromoCategory" required>
+                                                    <option value="" selected disabled>Pilih Kategori Utama</option>
+                                                    <?php foreach ($mainCategories as $id => $name): ?>
+                                                        <option value="<?php echo $id; ?>"><?php echo htmlspecialchars($name); ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="subPromoCategory" class="form-label fw-bold">Sub Kategori <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="subPromoCategory" name="subcategory_id" required>
+                                                    <option value="" selected disabled>Pilih Sub Kategori</option>
+                                                    <?php foreach ($categories as $cat): ?>
+                                                        <?php if ($cat['main_category_id']): ?>
+                                                            <option class="subcat-option subcat-<?php echo $cat['main_category_id']; ?>"
+                                                                value="<?php echo $cat['subcategory_id']; ?>"
+                                                                style="display: none;">
+                                                                <?php echo htmlspecialchars($cat['subcategory_name']); ?>
+                                                            </option>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Max Discount (Hanya untuk tipe percentage) -->
-                                <div class="mb-3" id="maxDiscountField" style="display: none;">
-                                    <label for="maxDiscount" class="form-label">Maksimal Diskon</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">IDR</span>
-                                        <input type="number" class="form-control" id="maxDiscount" name="maxDiscount" step="1000" min="0">
-                                        <span class="input-group-text">,00</span>
-                                    </div>
-                                    <div class="form-text">Jumlah maksimal diskon untuk promo berbasis persentase.
-                                    </div>
-                                </div>
+                                <!-- Bagian Waktu -->
+                                <div class="border-bottom pb-3 mb-4">
+                                    <h6 class="fw-bold text-primary mb-3">Periode Promo</h6>
 
-                                <!-- Kategori Promo -->
-                                <div class="mb-3">
-                                    <label for="promoCategory" class="form-label">Kategori</label>
-                                    <div class="row g-2">
-                                        <div class="col-md-6">
-                                            <select class="form-select" id="mainPromoCategory" name="mainPromoCategory" required>
-                                                <option value="" selected disabled>Pilih Kategori Utamaa</option>
-                                                <?php foreach ($mainCategories as $id => $name): ?>
-                                                    <option value="<?php echo $id; ?>"><?php echo htmlspecialchars($name); ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" id="infiniteDuration" name="infiniteDuration">
+                                            <label class="form-check-label fw-bold" for="infiniteDuration">Durasi Tak Terbatas</label>
                                         </div>
-                                        <div class="col-md-6">
-                                            <select class="form-select" id="subPromoCategory" name="subcategory_id" required>
-                                                <option value="" selected disabled>Pilih Sub Kategori</option>
-                                                <?php foreach ($categories as $cat): ?>
-                                                    <?php if ($cat['main_category_id']): ?>
-                                                        <option class="subcat-option subcat-<?php echo $cat['main_category_id']; ?>"
-                                                            value="<?php echo $cat['subcategory_id']; ?>"
-                                                            style="display: none;">
-                                                            <?php echo htmlspecialchars($cat['subcategory_name']); ?>
-                                                        </option>
-                                                    <?php endif; ?>
-                                                <?php endforeach; ?>
-                                            </select>
+
+                                        <div id="dateFields">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label for="startDate" class="form-label fw-bold">Tanggal Mulai</label>
+                                                    <input type="datetime-local" class="form-control" id="startDate" name="startDate">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="endDate" class="form-label fw-bold">Tanggal Berakhir</label>
+                                                    <input type="datetime-local" class="form-control" id="endDate" name="endDate">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Masa Berlaku Promo -->
-                                <div class="mb-3">
-                                    <div class="form-check form-switch mb-2">
-                                        <input class="form-check-input" type="checkbox" id="infiniteDuration" name="infiniteDuration">
-                                        <label class="form-check-label" for="infiniteDuration">Durasi Tak Terbatas</label>
-                                    </div>
-                                    <label class="form-label">Masa Berlaku Promo</label>
-                                    <div class="row g-2" id="dateFields">
-                                        <div class="col-md-6">
-                                            <label for="startDate" class="form-label small text-muted">Tanggal Mulai</label>
-                                            <input type="datetime-local" class="form-control" id="startDate" name="startDate">
+                                <!-- Bagian Produk -->
+                                <div class="border-bottom pb-3 mb-4">
+                                    <h6 class="fw-bold text-primary mb-3">Produk yang Berlaku</h6>
+
+                                    <div class="mb-3">
+                                        <!-- Bar pencarian dan filter produk -->
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                            <input type="text" class="form-control" id="productSearch" placeholder="Cari produk...">
                                         </div>
-                                        <div class="col-md-6">
-                                            <label for="endDate" class="form-label small text-muted">Tanggal Akhir</label>
-                                            <input type="datetime-local" class="form-control" id="endDate" name="endDate">
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <!-- Produk yang Berlaku untuk Promo -->
-                                <div class="mb-3">
-                                    <label class="form-label">Pilih Produk Promo</label>
-
-                                    <!-- Search and filter bar -->
-                                    <div class="input-group mb-2">
-                                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                        <input type="text" class="form-control" id="productSearch" placeholder="Cari produk...">
-                                    </div>
-
-                                    <!-- Products table with checkboxes -->
-                                    <div class="border rounded" style="max-height: 300px; overflow-y: auto;">
-                                        <table class="table table-hover mb-0">
-                                            <thead class="sticky-top bg-light">
-                                                <tr>
-                                                    <th scope="col" style="width: 20px;">
-                                                        <input type="checkbox" class="form-check-input" id="selectAllProducts">
-                                                    </th>
-                                                    <th scope="col">Nama Produk</th>
-                                                    <th scope="col" class="text-end">Harga</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="productList">
-                                                <?php foreach ($products as $product): ?>
-                                                    <tr class="product-row">
-                                                        <td>
-                                                            <input type="checkbox" class="form-check-input product-check"
-                                                                name="applicableProducts[]"
-                                                                value="<?php echo $product['product_id']; ?>">
-                                                        </td>
-                                                        <td><?php echo htmlspecialchars($product['product_name']); ?></td>
-                                                        <td class="text-end">
-                                                            IDR <?php echo number_format($product['price_amount'], 0, ',', '.'); ?>
-                                                        </td>
+                                        <!-- Tabel daftar produk -->
+                                        <div class="border rounded" style="max-height: 300px; overflow-y: auto;">
+                                            <table class="table table-hover mb-0">
+                                                <thead class="sticky-top bg-light">
+                                                    <tr>
+                                                        <th scope="col" style="width: 20px;">
+                                                            <input type="checkbox" class="form-check-input" id="selectAllProducts">
+                                                        </th>
+                                                        <th scope="col" class="fw-bold">Nama Produk</th>
+                                                        <th scope="col" class="fw-bold text-end">Harga</th>
                                                     </tr>
-                                                <?php endforeach; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                </thead>
+                                                <tbody id="productList">
+                                                    <?php foreach ($products as $product): ?>
+                                                        <tr class="product-row">
+                                                            <td>
+                                                                <input type="checkbox" class="form-check-input product-check"
+                                                                    name="applicableProducts[]"
+                                                                    value="<?php echo $product['product_id']; ?>">
+                                                            </td>
+                                                            <td><?php echo htmlspecialchars($product['product_name']); ?></td>
+                                                            <td class="text-end">
+                                                                IDR <?php echo number_format($product['price_amount'], 0, ',', '.'); ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
 
-                                    <div class="mt-1 text-muted small" id="selectedCount">0 produk yang dipilih.</div>
+                                        <div class="mt-2 fw-bold" id="selectedCount">0 produk yang dipilih.</div>
+                                    </div>
                                 </div>
 
-                                <!-- Kelayakan & Minimal Pembelian -->
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="eligibility" class="form-label">Syarat Promo</label>
-                                        <select class="form-select" id="eligibility" name="eligibility" required>
-                                            <option value="all" selected>Semua User</option>
-                                            <option value="referral">Hanya Referral</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="minPurchase" class="form-label">Minimal Pembelian</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">IDR</span>
-                                            <input type="number" class="form-control" id="minPurchase" name="minPurchase" step="1000" min="0" value="0">
-                                            <span class="input-group-text">,00</span>
+                                <!-- Bagian Ketentuan -->
+                                <div class="border-bottom pb-3 mb-4">
+                                    <h6 class="fw-bold text-primary mb-3">Ketentuan Promo</h6>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="eligibility" class="form-label fw-bold">Syarat Pengguna</label>
+                                            <select class="form-select" id="eligibility" name="eligibility" required>
+                                                <option value="all" selected>Semua Pengguna</option>
+                                                <option value="referral">Hanya Pengguna Referral</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="minPurchase" class="form-label fw-bold">Minimal Pembelian</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">IDR</span>
+                                                <input type="number" class="form-control" id="minPurchase" name="minPurchase" step="1000" min="0" value="0">
+                                                <span class="input-group-text">,00</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <label for="maxClaims" class="form-label fw-bold">Maksimal Klaim per Pengguna</label>
+                                            <input type="number" class="form-control" id="maxClaims" name="maxClaims" min="0" value="0">
+                                            <div class="form-text">Isi 0 untuk mengizinkan klaim tak terbatas</div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Maksimal Klaim -->
-                                <div class="mb-3">
-                                    <label for="maxClaims" class="form-label">Maksimal Jumlah Klaim per User</label>
-                                    <input type="number" class="form-control" id="maxClaims" name="maxClaims" min="0" value="0">
-                                    <div class="form-text">0 = unlimited claims</div>
-                                </div>
+                                <!-- Bagian Pengaturan -->
+                                <div class="mb-4">
+                                    <h6 class="fw-bold text-primary mb-3">Pengaturan Tambahan</h6>
 
-                                <!-- Opsi Tambahan -->
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="autoApply" name="autoApply" value="1">
-                                            <label class="form-check-label" for="autoApply">Auto Apply</label>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="autoApply" name="autoApply" value="1">
+                                                <label class="form-check-label fw-bold" for="autoApply">Terapkan Otomatis</label>
+                                            </div>
+                                            <div class="form-text">Promo akan otomatis diterapkan di keranjang</div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" id="promoStatus" name="promoStatus" value="active" checked>
-                                            <label class="form-check-label" for="promoStatus">Aktifkan Promo</label>
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="promoStatus" name="promoStatus" value="active" checked>
+                                                <label class="form-check-label fw-bold" for="promoStatus">Aktifkan Promo Sekarang</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -596,14 +631,15 @@ $errorMessage = $flash['error'];
                                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary" id="savePromoBtn">Save Promo</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary fw-bold" id="savePromoBtn">Simpan Promo</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- End of Add Promo Modal -->
         </div>
     </div>
     <!--========== AKHIR AREA MANAGE PROMO ==========-->
@@ -752,6 +788,7 @@ $errorMessage = $flash['error'];
             updateSelectedCount();
         });
     </script>
+    <!-- End of Script for Add Promo Modal -->
 </body>
 
 </html>
