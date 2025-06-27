@@ -540,7 +540,9 @@ $errorMessage = $flash['error'];
                                     <div class="mb-3">
                                         <!-- Bar pencarian dan filter produk -->
                                         <div class="input-group mb-3">
-                                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                            <span class="input-group-text">
+                                                <i class="fa-solid fa-magnifying-glass"></i>
+                                            </span>
                                             <input type="text" class="form-control" id="productSearch" placeholder="Cari produk...">
                                         </div>
 
