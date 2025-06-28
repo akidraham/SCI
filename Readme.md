@@ -16,7 +16,7 @@
 
 ## Acknowledgments :thumbsup:
 
-> **[?]** Reference someone's code you used, insert an external link or thank people, i.e.:
+> Libraries used:
 
 - [vlucas/phpdotenv](https://github.com/vlucas/phpdotenv).
 - [PHPMailer/PHPMailer](https://github.com/PHPMailer/PHPMailer).
