@@ -647,18 +647,23 @@ $errorMessage = $flash['error'];
                                     <h6 class="fw-bold text-primary mb-3">Pengaturan Tambahan</h6>
 
                                     <div class="row">
+                                        <!-- Status Promo -->
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="promoStatus" name="promoStatus" value="active" checked>
+                                                <label class="form-check-label fw-bold" for="promoStatus">Status Promo</label>
+                                            </div>
+                                            <div class="form-text">
+                                                Centang kotak ini agar promo langsung aktif di sistem segera setelah disimpan.
+                                            </div>
+                                        </div>
+                                        <!-- Gunakan Promo di Keranjang Pengguna -->
                                         <div class="col-md-6 mb-3">
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" id="autoApply" name="autoApply" value="1">
                                                 <label class="form-check-label fw-bold" for="autoApply">Terapkan Otomatis</label>
                                             </div>
-                                            <div class="form-text">Promo akan otomatis diterapkan di keranjang</div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="promoStatus" name="promoStatus" value="active" checked>
-                                                <label class="form-check-label fw-bold" for="promoStatus">Aktifkan Promo Sekarang</label>
-                                            </div>
+                                            <div class="form-text">Promo akan otomatis diterapkan di keranjang pengguna yang memenuhi syarat.</div>
                                         </div>
                                     </div>
                                 </div>
@@ -955,6 +960,31 @@ $errorMessage = $flash['error'];
             // Display count initially
             updateSelectedCount();
 
+            // Toggle status promo information
+            const promoStatusCheckbox = document.getElementById('promoStatus');
+            const promoStatusInfo = promoStatusCheckbox?.closest('.mb-3')?.querySelector('.form-text');
+
+            /**
+             * Update promo status explanation text based on checkbox state
+             */
+            function updatePromoStatusInfo() {
+                if (!promoStatusInfo) return;
+
+                if (promoStatusCheckbox.checked) {
+                    promoStatusInfo.textContent =
+                        "Centang kotak ini agar promo langsung aktif di sistem segera setelah Anda menyimpannya.";
+                } else {
+                    promoStatusInfo.textContent =
+                        "Jika kotak ini tidak dicentang, promo akan disimpan dalam status nonaktif dan promo perlu diaktifkan secara manual nanti melalui halaman manage promo.";
+                }
+            }
+
+            // Initialize and add event listener
+            if (promoStatusCheckbox) {
+                updatePromoStatusInfo(); // Set initial text
+                promoStatusCheckbox.addEventListener('change', updatePromoStatusInfo);
+            }
+
             // Toggle auto-apply information ---
             const autoApplyCheckbox = document.getElementById('autoApply');
             const autoApplyInfo = autoApplyCheckbox?.closest('.mb-3')?.querySelector('.form-text');
@@ -966,9 +996,9 @@ $errorMessage = $flash['error'];
                 if (!autoApplyInfo) return;
 
                 if (autoApplyCheckbox.checked) {
-                    autoApplyInfo.textContent = "Promo akan otomatis diterapkan di keranjang";
+                    autoApplyInfo.textContent = "Promo akan otomatis diterapkan di keranjang pengguna yang memenuhi syarat.";
                 } else {
-                    autoApplyInfo.textContent = "Pelanggan harus memasukkan kode promo sebelum check out di keranjang";
+                    autoApplyInfo.textContent = "Pelanggan harus memasukkan kode promo sebelum check out di keranjang.";
                 }
             }
 
