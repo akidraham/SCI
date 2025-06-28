@@ -4,6 +4,9 @@
 
 [![Under Development](https://img.shields.io/badge/under-development-orange.svg)](https://github.com/SarjanaCanggih/SCI)
 
+<br>
+<br>
+
 ## Installing
 
 1. Clone this project and name it accordingly:
