@@ -1,6 +1,6 @@
 <img src="./public_html/assets/images/logoscblue.png" align="left" width="192px" height="192px"/>
 
-> Repo untuk Website Sarjana Canggih Indonesia. check the website (here)[https://sarjanacanggihindonesia.com].
+> Repo untuk Website Sarjana Canggih Indonesia. check the website [here](https://sarjanacanggihindonesia.com).
 
 [![Under Development](https://img.shields.io/badge/under-development-orange.svg)](https://github.com/SarjanaCanggih/SCI)
 
