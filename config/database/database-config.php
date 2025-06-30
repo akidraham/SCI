@@ -63,7 +63,7 @@ function closeConnection($pdo = null)
  * @param string $env Environment (local/live).
  * @return PDOStatement|null Returns the executed statement or null if an error occurs.
  */
-function executeQuery($pdo, $sql, $params = [], $env)
+function executeQuery($pdo, $sql, $env, $params = [])
 {
     try {
         $stmt = $pdo->prepare($sql); // Prepare SQL query

@@ -709,10 +709,10 @@ function registerUser($username, $email, $password, $phone, $env, $config)
 
         // Check if username or email already exists
         $checkQuery = "SELECT 1 FROM users WHERE username = :username OR email = :email";
-        $stmt = executeQuery($pdo, $checkQuery, [
+        $stmt = executeQuery($pdo, $checkQuery, $env, [
             'username' => $username,
             'email' => $email
-        ], $env);
+        ],);
         if (!$stmt || $stmt->fetch()) {
             $pdo->rollBack();
             return 'Username atau email sudah terdaftar';
@@ -733,13 +733,13 @@ function registerUser($username, $email, $password, $phone, $env, $config)
         // Insert new user into the database
         $insertUserQuery = "INSERT INTO users (username, email, password, isactive, activation_code, created_at) 
                             VALUES (:username, :email, :password, 0, :activation_code, :created_at)";
-        $stmt = executeQuery($pdo, $insertUserQuery, [
+        $stmt = executeQuery($pdo, $insertUserQuery, $env, [
             'username' => $username,
             'email' => $email,
             'password' => $hashedPassword,
             'activation_code' => $activationCode,
             'created_at' => $createdAt
-        ], $env);
+        ]);
         if (!$stmt) {
             $pdo->rollBack();
             return 'Gagal membuat user';
@@ -750,10 +750,10 @@ function registerUser($username, $email, $password, $phone, $env, $config)
 
         // Insert user's profile with phone number
         $insertProfileQuery = "INSERT INTO user_profiles (user_id, phone) VALUES (:user_id, :phone)";
-        $stmt = executeQuery($pdo, $insertProfileQuery, [
+        $stmt = executeQuery($pdo, $insertProfileQuery, $env, [
             'user_id' => $userId,
             'phone' => $formattedPhone
-        ], $env);
+        ]);
         if (!$stmt) {
             $pdo->rollBack();
             return 'Gagal menyimpan profil user';
@@ -1416,7 +1416,7 @@ function changeEmail($userId, $newEmail, $config, $env)
     try {
         // Check if the new email already exists in the database
         $checkQuery = "SELECT 1 FROM users WHERE email = :email AND user_id != :user_id";
-        $stmt = executeQuery($pdo, $checkQuery, ['email' => $newEmail, 'user_id' => $userId], $env);
+        $stmt = executeQuery($pdo, $checkQuery, $env, ['email' => $newEmail, 'user_id' => $userId],);
         if (!$stmt) {
             return 'An error occurred while checking the email address.';
         }
@@ -1427,7 +1427,7 @@ function changeEmail($userId, $newEmail, $config, $env)
 
         // Update the email address
         $updateQuery = "UPDATE users SET email = :email WHERE user_id = :user_id";
-        $stmt = executeQuery($pdo, $updateQuery, ['email' => $newEmail, 'user_id' => $userId], $env);
+        $stmt = executeQuery($pdo, $updateQuery, $env, ['email' => $newEmail, 'user_id' => $userId]);
         if (!$stmt) {
             return 'An error occurred while updating the email address.';
         }
