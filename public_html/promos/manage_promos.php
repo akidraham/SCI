@@ -5,10 +5,15 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/user_actions_config.php';
 require_once __DIR__ . '/../../config/promos/promo_functions.php';
 require_once __DIR__ . '/../../config/products/product_functions.php';
+require_once __DIR__ . '/../../config/auth/admin_functions.php';
 
 use Carbon\Carbon;
 
+// Start session and generate CSRF token if it doesn't exist
 startSession();
+
+// Validate if the current user has the admin role
+validateAdminRole();
 
 // Step 1: Check if the user is logged in. If not, redirect to the login page.
 if (!isset($_SESSION['user_id'])) {
@@ -82,6 +87,8 @@ $errorMessage = $flash['error'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Promos - Sarjana Canggih Indonesia</title>
+    <!-- Meta Tag CSRF Token -->
+    <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="<?php echo $baseUrl; ?>favicon.ico" />
     <!-- Bootstrap css -->
@@ -408,7 +415,7 @@ $errorMessage = $flash['error'];
                         </div>
                         <div class="modal-body">
                             <!-- Form Promo Baru -->
-                            <form id="addPromoForm" action="<?php echo $baseUrl; ?>manage_promos" method="POST">
+                            <form id="addPromoForm" action="<?php echo $baseUrl; ?>api-proxy.php?action=add_promo" method="POST">
 
                                 <!-- Bagian Informasi Dasar -->
                                 <div class="border-bottom pb-3 mb-4">
@@ -703,6 +710,8 @@ $errorMessage = $flash['error'];
     <!-- Script for Add Promo Modal -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded and parsed'); // Debug: DOM ready
+
             /** Cache DOM elements to avoid redundant lookups */
             const discountTypeEl = document.getElementById('discountType');
             const maxDiscountField = document.getElementById('maxDiscountField');
@@ -724,99 +733,64 @@ $errorMessage = $flash['error'];
 
             const selectAllBtn = document.getElementById('selectAllBtn');
             const deselectAllBtn = document.getElementById('deselectAllBtn');
+            const addPromoForm = document.getElementById('addPromoForm');
+            const savePromoBtn = document.getElementById('savePromoBtn');
+
+            // Debug: Log element availability
+            console.debug('Element availability:', {
+                discountTypeEl: !!discountTypeEl,
+                maxDiscountField: !!maxDiscountField,
+                discountSuffix: !!discountSuffix,
+                mainCatEl: !!mainCatEl,
+                subCatEl: !!subCatEl,
+                startDateEl: !!startDateEl,
+                endDateEl: !!endDateEl,
+                infiniteCheckbox: !!infiniteCheckbox,
+                dateFields: !!dateFields,
+                productSearchEl: !!productSearchEl,
+                selectedCountEl: !!selectedCountEl,
+                productRows: productRows.length,
+                productCheckboxes: productCheckboxes.length,
+                selectAllBtn: !!selectAllBtn,
+                deselectAllBtn: !!deselectAllBtn,
+                addPromoForm: !!addPromoForm,
+                savePromoBtn: !!savePromoBtn
+            });
 
             // Initialize AutoNumeric for currency/number formatting
-            const minPurchaseNumeric = new AutoNumeric('#minPurchase', {
-                digitGroupSeparator: '.',
-                decimalCharacter: ',',
-                decimalPlaces: 0,
-                unformatOnSubmit: true,
-                minimumValue: '0'
-            });
-
-            const maxDiscountNumeric = new AutoNumeric('#maxDiscount', {
-                digitGroupSeparator: '.',
-                decimalCharacter: ',',
-                decimalPlaces: 0,
-                unformatOnSubmit: true,
-                minimumValue: '0'
-            });
-
-            // Initialize discountValue (default: percentage)
-            const discountValueNumeric = new AutoNumeric('#discountValue', {
-                decimalPlaces: 2,
-                digitGroupSeparator: '',
-                decimalCharacter: '.',
-                unformatOnSubmit: true,
-                minimumValue: '0'
-            });
-            discountValueNumeric.set(0); // Default value
-
-            discountTypeEl?.addEventListener('change', () => {
-                const isPercentage = discountTypeEl.value === 'percentage';
-                setDisplay(maxDiscountField, isPercentage);
-                discountSuffix.textContent = isPercentage ? '%' : 'IDR';
-
-                // Show/hide format hint
-                const discountHelp = document.getElementById('discountHelp');
-                setDisplay(discountHelp, isPercentage);
-
-                // Update discount value format
-                if (isPercentage) {
-                    discountValueNumeric.update({
-                        decimalPlaces: 2,
-                        digitGroupSeparator: '',
-                        decimalCharacter: '.'
-                    });
-                    discountValueNumeric.set(0); // Reset value
-                } else {
-                    discountValueNumeric.update({
-                        decimalPlaces: 0,
-                        digitGroupSeparator: '.',
-                        decimalCharacter: ','
-                    });
-                    discountValueNumeric.set(0); // Reset value
-                }
-            });
-
-            // Show format hint if initial type is percentage
-            if (discountTypeEl.value === 'percentage') {
-                setDisplay(document.getElementById('discountHelp'), true);
-            }
-
-            // Allow clicking on the entire row to toggle product selection
-            productRows.forEach(row => {
-                row.style.cursor = 'pointer';
-
-                row.addEventListener('click', (e) => {
-                    // Ignore clicks on the checkbox itself
-                    if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
-                        return;
-                    }
-
-                    // Toggle the checkbox inside the row
-                    const checkbox = row.querySelector('.product-check');
-                    if (checkbox) {
-                        checkbox.checked = !checkbox.checked;
-
-                        // Trigger the change event manually
-                        const event = new Event('change', {
-                            bubbles: true
-                        });
-                        checkbox.dispatchEvent(event);
-                    }
+            let minPurchaseNumeric, maxDiscountNumeric, discountValueNumeric;
+            try {
+                minPurchaseNumeric = new AutoNumeric('#minPurchase', {
+                    digitGroupSeparator: '.',
+                    decimalCharacter: ',',
+                    decimalPlaces: 0,
+                    unformatOnSubmit: true,
+                    minimumValue: '0'
                 });
-            });
+                console.debug('minPurchaseNumeric initialized successfully');
 
-            /**
-             * Sets the display style of an element.
-             * @param {HTMLElement} el - The element to show or hide.
-             * @param {boolean} show - Whether to show the element.
-             * @param {string} [displayType='block'] - The display type to use when showing.
-             */
-            const setDisplay = (el, show, displayType = 'block') => {
-                el.style.display = show ? displayType : 'none';
-            };
+                maxDiscountNumeric = new AutoNumeric('#maxDiscount', {
+                    digitGroupSeparator: '.',
+                    decimalCharacter: ',',
+                    decimalPlaces: 0,
+                    unformatOnSubmit: true,
+                    minimumValue: '0'
+                });
+                console.debug('maxDiscountNumeric initialized successfully');
+
+                // Initialize discountValue (default: percentage)
+                discountValueNumeric = new AutoNumeric('#discountValue', {
+                    decimalPlaces: 2,
+                    digitGroupSeparator: '',
+                    decimalCharacter: '.',
+                    unformatOnSubmit: true,
+                    minimumValue: '0'
+                });
+                discountValueNumeric.set(0); // Default value
+                console.debug('discountValueNumeric initialized with default value 0');
+            } catch (e) {
+                console.error('Error initializing AutoNumeric:', e);
+            }
 
             // Initialize Flatpickr
             const dateTimeConfig = {
@@ -832,115 +806,352 @@ $errorMessage = $flash['error'];
                 mobileBehaviour: 'touch'
             };
 
-            const startDateFP = flatpickr("#startDate", {
-                ...dateTimeConfig,
-                onChange: function(selectedDates) {
-                    endDateFP.set('minDate', selectedDates[0]);
+            let startDateFP, endDateFP;
+            try {
+                startDateFP = flatpickr("#startDate", {
+                    ...dateTimeConfig,
+                    onChange: function(selectedDates) {
+                        console.debug('Start date changed to:', selectedDates[0]);
+                        endDateFP.set('minDate', selectedDates[0]);
+                    }
+                });
+                console.debug('startDateFP initialized successfully');
+
+                endDateFP = flatpickr("#endDate", {
+                    ...dateTimeConfig
+                });
+                console.debug('endDateFP initialized successfully');
+            } catch (e) {
+                console.error('Error initializing Flatpickr:', e);
+            }
+
+            /**
+             * Sets the display style of an element.
+             * @param {HTMLElement} el - The element to show or hide.
+             * @param {boolean} show - Whether to show the element.
+             * @param {string} [displayType='block'] - The display type to use when showing.
+             */
+            const setDisplay = (el, show, displayType = 'block') => {
+                if (!el) {
+                    console.warn('setDisplay: Element is null or undefined');
+                    return;
                 }
-            });
+                el.style.display = show ? displayType : 'none';
+                console.debug(`setDisplay: ${el.id || el.className} set to ${show ? 'visible' : 'hidden'}`);
+            };
 
-            const endDateFP = flatpickr("#endDate", {
-                ...dateTimeConfig
-            });
+            /**
+             * Show validation errors in a user-friendly way
+             * @param {Array} errors - Array of error messages
+             */
+            function showValidationErrors(errors) {
+                console.group('Showing validation errors');
+                console.debug('Errors:', errors);
 
-            // Update event listener for infinite duration
-            infiniteCheckbox?.addEventListener('change', () => {
-                const isChecked = infiniteCheckbox.checked;
-                setDisplay(dateFields, !isChecked, 'flex');
-
-                if (isChecked) {
-                    startDateEl.removeAttribute('required');
-                    endDateEl.removeAttribute('required');
-                    startDateFP.clear();
-                    endDateFP.clear();
-                } else {
-                    startDateEl.setAttribute('required', 'required');
-                    endDateEl.setAttribute('required', 'required');
-
-                    // Set minDate back to today
-                    startDateFP.set('minDate', 'today');
-                    endDateFP.set('minDate', 'today');
+                // Create error container if not exists
+                let errorContainer = document.getElementById('validationErrors');
+                if (!errorContainer) {
+                    console.debug('Creating new validationErrors container');
+                    errorContainer = document.createElement('div');
+                    errorContainer.id = 'validationErrors';
+                    errorContainer.className = 'alert alert-danger';
+                    addPromoForm.insertBefore(errorContainer, addPromoForm.firstChild);
                 }
-            });
 
-            /** Update UI elements based on discount type selection */
-            discountTypeEl?.addEventListener('change', () => {
-                const isPercentage = discountTypeEl.value === 'percentage';
-                setDisplay(maxDiscountField, isPercentage);
-                discountSuffix.textContent = isPercentage ? '%' : 'IDR';
-            });
+                // Clear previous errors
+                errorContainer.innerHTML = '';
 
-            /** Display only subcategories that match the selected main category */
-            mainCatEl?.addEventListener('change', () => {
-                const mainCatId = mainCatEl.value;
-                subOptions.forEach(opt => setDisplay(opt, false));
-                document.querySelectorAll(`.subcat-${mainCatId}`).forEach(opt => setDisplay(opt, true));
-                subCatEl.value = '';
-            });
+                // Add heading
+                const heading = document.createElement('h6');
+                heading.className = 'fw-bold';
+                heading.textContent = 'Terdapat kesalahan:';
+                errorContainer.appendChild(heading);
 
-            /** Restrict end date to be after selected start date */
-            startDateEl?.addEventListener('change', () => {
-                setMinDate(endDateEl, startDateEl.value);
-            });
+                // Add error list
+                const errorList = document.createElement('ul');
+                errorList.className = 'mb-0';
 
-            /** Toggle date input visibility based on "infinite duration" checkbox */
-            infiniteCheckbox?.addEventListener('change', () => {
-                const isChecked = infiniteCheckbox.checked;
-                setDisplay(dateFields, !isChecked, 'flex');
+                errors.forEach(error => {
+                    const item = document.createElement('li');
+                    item.textContent = error;
+                    errorList.appendChild(item);
+                });
 
-                ['startDate', 'endDate'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) {
-                        isChecked ? el.removeAttribute('required') : el.setAttribute('required', 'required');
-                        if (!isChecked) setMinDate(el, today);
+                errorContainer.appendChild(errorList);
+
+                // Scroll to error container
+                errorContainer.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+                console.groupEnd();
+            }
+
+            /**
+             * Handle form submission
+             */
+            async function handleFormSubmit(e) {
+                e.preventDefault();
+                console.group('Form submission started');
+
+                // Disable submit button to prevent double submission
+                savePromoBtn.disabled = true;
+                savePromoBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...';
+                console.debug('Submit button disabled and loading state set');
+
+                try {
+                    const formData = new FormData(addPromoForm);
+                    console.debug('FormData created from form');
+
+                    // Get all selected products and remove duplicates
+                    const selectedProducts = Array.from(document.querySelectorAll('.product-check:checked'))
+                        .map(checkbox => checkbox.value);
+
+                    // Remove duplicate products
+                    const uniqueProducts = [...new Set(selectedProducts)];
+                    console.debug('Selected products (after removing duplicates):', uniqueProducts);
+
+                    // Clear existing applicableProducts entries
+                    formData.delete('applicableProducts[]');
+
+                    // Add unique products to form data
+                    uniqueProducts.forEach(productId => {
+                        formData.append('applicableProducts[]', productId);
+                    });
+
+                    console.debug('Unique applicableProducts added to FormData');
+
+                    // Debug: Log form data before sending
+                    for (let [key, value] of formData.entries()) {
+                        console.debug(`FormData: ${key} = ${value}`);
+                    }
+
+                    // Send data to server
+                    console.debug(`Sending request to: ${BASE_URL}api-proxy.php?action=add-promo`);
+                    const response = await fetch(BASE_URL + 'api-proxy.php?action=add-promo', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    console.debug('Response received, status:', response.status);
+
+                    // First check if the response is JSON
+                    const contentType = response.headers.get('content-type');
+                    let data;
+
+                    if (contentType && contentType.includes('application/json')) {
+                        data = await response.json();
+                    } else {
+                        // If not JSON, get the text response for debugging
+                        const textResponse = await response.text();
+                        console.error('Non-JSON response received:', textResponse);
+                        throw new Error(`Server returned non-JSON response (${response.status}): ${textResponse.substring(0, 100)}...`);
+                    }
+
+                    console.debug('Response data:', data);
+
+                    if (!response.ok) {
+                        console.warn('API returned non-OK response:', data);
+                        throw data;
+                    }
+
+                    if (data.success) {
+                        console.info('Promo saved successfully, redirecting...');
+                        // Show success message and redirect
+                        window.location.href = data.redirect_url || (BASE_URL + 'manage_promos');
+                    } else {
+                        console.warn('API returned success:false:', data);
+                        // Show error message
+                        if (data.errors) {
+                            console.debug('Showing validation errors');
+                            showValidationErrors(data.errors);
+                        } else {
+                            alert(data.message || 'Terjadi kesalahan saat menyimpan promo');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error during form submission:', error);
+
+                    // Improved error message based on error type
+                    let errorMessage = 'Terjadi kesalahan saat menyimpan promo';
+                    if (error instanceof SyntaxError) {
+                        errorMessage = 'Invalid response from server. Please try again.';
+                    } else if (error.message) {
+                        errorMessage = error.message;
+                    }
+
+                    alert(errorMessage);
+                } finally {
+                    // Re-enable submit button
+                    savePromoBtn.disabled = false;
+                    savePromoBtn.textContent = 'Simpan Promo';
+                    console.debug('Submit button re-enabled');
+                    console.groupEnd();
+                }
+            }
+
+            // Add form submit event listener
+            if (addPromoForm) {
+                addPromoForm.addEventListener('submit', handleFormSubmit);
+                console.debug('Form submit event listener added');
+            } else {
+                console.error('addPromoForm element not found');
+            }
+
+            // Discount type change handler
+            if (discountTypeEl) {
+                discountTypeEl.addEventListener('change', () => {
+                    const isPercentage = discountTypeEl.value === 'percentage';
+                    console.debug(`Discount type changed to ${discountTypeEl.value}, isPercentage: ${isPercentage}`);
+
+                    setDisplay(maxDiscountField, isPercentage);
+                    discountSuffix.textContent = isPercentage ? '%' : 'IDR';
+
+                    // Show/hide format hint
+                    const discountHelp = document.getElementById('discountHelp');
+                    setDisplay(discountHelp, isPercentage);
+
+                    // Update discount value format
+                    if (isPercentage) {
+                        discountValueNumeric.update({
+                            decimalPlaces: 2,
+                            digitGroupSeparator: '',
+                            decimalCharacter: '.'
+                        });
+                        discountValueNumeric.set(0);
+                        console.debug('Discount value format updated for percentage');
+                    } else {
+                        discountValueNumeric.update({
+                            decimalPlaces: 0,
+                            digitGroupSeparator: '.',
+                            decimalCharacter: ','
+                        });
+                        discountValueNumeric.set(0);
+                        console.debug('Discount value format updated for fixed amount');
+                    }
+                });
+            }
+
+            // Show format hint if initial type is percentage
+            if (discountTypeEl?.value === 'percentage') {
+                console.debug('Initial discount type is percentage, showing format hint');
+                setDisplay(document.getElementById('discountHelp'), true);
+            }
+
+            // Allow clicking on the entire row to toggle product selection
+            productRows.forEach(row => {
+                row.style.cursor = 'pointer';
+
+                row.addEventListener('click', (e) => {
+                    // Ignore clicks on the checkbox itself
+                    if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
+                        console.debug('Clicked directly on checkbox, ignoring row click');
+                        return;
+                    }
+
+                    // Toggle the checkbox inside the row
+                    const checkbox = row.querySelector('.product-check');
+                    if (checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        console.debug(`Toggled checkbox for product ${checkbox.value}, new state: ${checkbox.checked}`);
+
+                        // Trigger the change event manually
+                        const event = new Event('change', {
+                            bubbles: true
+                        });
+                        checkbox.dispatchEvent(event);
                     }
                 });
             });
 
-            /** Set initial visibility of date fields on load */
-            setDisplay(dateFields, !infiniteCheckbox.checked, 'flex');
+            // Update event listener for infinite duration
+            if (infiniteCheckbox) {
+                infiniteCheckbox.addEventListener('change', () => {
+                    const isChecked = infiniteCheckbox.checked;
+                    console.debug(`Infinite duration checkbox changed to ${isChecked}`);
 
-            /** Filter product table rows based on user input */
-            productSearchEl?.addEventListener('input', () => {
-                const keyword = productSearchEl.value.toLowerCase();
+                    setDisplay(dateFields, !isChecked, 'flex');
 
-                productRows.forEach(row => {
-                    const name = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
-                    setDisplay(row, name.includes(keyword), 'table-row');
+                    if (isChecked) {
+                        startDateEl.removeAttribute('required');
+                        endDateEl.removeAttribute('required');
+                        startDateFP.clear();
+                        endDateFP.clear();
+                        console.debug('Date fields cleared and required attribute removed');
+                    } else {
+                        startDateEl.setAttribute('required', 'required');
+                        endDateEl.setAttribute('required', 'required');
+                        startDateFP.set('minDate', 'today');
+                        endDateFP.set('minDate', 'today');
+                        console.debug('Date fields set as required with minDate=today');
+                    }
                 });
+            }
 
-                // Recalculate the selected count after filtering
-                updateSelectedCount();
-            });
+            // Main category change handler
+            if (mainCatEl) {
+                mainCatEl.addEventListener('change', () => {
+                    const mainCatId = mainCatEl.value;
+                    console.debug(`Main category changed to ${mainCatId}`);
 
-            /** Select all currently visible products */
-            selectAllBtn?.addEventListener('click', () => {
-                productCheckboxes.forEach(cb => {
-                    const rowVisible = cb.closest('tr').style.display !== 'none';
-                    if (rowVisible) {
-                        cb.checked = true;
+                    subOptions.forEach(opt => setDisplay(opt, false));
+                    document.querySelectorAll(`.subcat-${mainCatId}`).forEach(opt => setDisplay(opt, true));
+                    subCatEl.value = '';
+                    console.debug(`Updated subcategory options for main category ${mainCatId}`);
+                });
+            }
 
-                        // Trigger change event
+            // Filter product table rows based on user input
+            if (productSearchEl) {
+                productSearchEl.addEventListener('input', () => {
+                    const keyword = productSearchEl.value.toLowerCase();
+                    console.debug(`Product search input: "${keyword}"`);
+
+                    productRows.forEach(row => {
+                        const name = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                        setDisplay(row, name.includes(keyword), 'table-row');
+                    });
+
+                    // Recalculate the selected count after filtering
+                    updateSelectedCount();
+                });
+            }
+
+            // Select all currently visible products
+            if (selectAllBtn) {
+                selectAllBtn.addEventListener('click', () => {
+                    console.debug('Select all button clicked');
+
+                    productCheckboxes.forEach(cb => {
+                        const rowVisible = cb.closest('tr').style.display !== 'none';
+                        if (rowVisible) {
+                            cb.checked = true;
+                            const event = new Event('change', {
+                                bubbles: true
+                            });
+                            cb.dispatchEvent(event);
+                        }
+                    });
+                    console.debug('All visible products selected');
+                });
+            }
+
+            // Deselect all products regardless of visibility
+            if (deselectAllBtn) {
+                deselectAllBtn.addEventListener('click', () => {
+                    console.debug('Deselect all button clicked');
+
+                    productCheckboxes.forEach(cb => {
+                        cb.checked = false;
                         const event = new Event('change', {
                             bubbles: true
                         });
                         cb.dispatchEvent(event);
-                    }
-                });
-            });
-
-            /** Deselect all products regardless of visibility */
-            deselectAllBtn?.addEventListener('click', () => {
-                productCheckboxes.forEach(cb => {
-                    cb.checked = false;
-
-                    // Trigger change event
-                    const event = new Event('change', {
-                        bubbles: true
                     });
-                    cb.dispatchEvent(event);
+                    console.debug('All products deselected');
                 });
-            });
+            }
 
             /**
              * Update the count of selected and visible products.
@@ -951,14 +1162,23 @@ $errorMessage = $flash['error'];
                     return cb.checked && cb.closest('tr').style.display !== 'none';
                 }).length;
 
-                selectedCountEl.textContent = `${selected} produk dipilih`;
+                if (selectedCountEl) {
+                    selectedCountEl.textContent = `${selected} produk dipilih`;
+                    console.debug(`Selected count updated: ${selected} products`);
+                }
             }
 
             // Attach change event to each checkbox to keep count updated
-            productCheckboxes.forEach(cb => cb.addEventListener('change', updateSelectedCount));
+            productCheckboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    console.debug(`Product checkbox ${cb.value} changed to ${cb.checked}`);
+                    updateSelectedCount();
+                });
+            });
 
             // Display count initially
             updateSelectedCount();
+            console.debug('Initial selected count displayed');
 
             // Toggle status promo information
             const promoStatusCheckbox = document.getElementById('promoStatus');
@@ -968,7 +1188,10 @@ $errorMessage = $flash['error'];
              * Update promo status explanation text based on checkbox state
              */
             function updatePromoStatusInfo() {
-                if (!promoStatusInfo) return;
+                if (!promoStatusInfo) {
+                    console.warn('promoStatusInfo element not found');
+                    return;
+                }
 
                 if (promoStatusCheckbox.checked) {
                     promoStatusInfo.textContent =
@@ -977,15 +1200,19 @@ $errorMessage = $flash['error'];
                     promoStatusInfo.textContent =
                         "Jika kotak ini tidak dicentang, promo akan disimpan dalam status nonaktif dan promo perlu diaktifkan secara manual nanti melalui halaman manage promo.";
                 }
+                console.debug('Promo status info updated');
             }
 
             // Initialize and add event listener
             if (promoStatusCheckbox) {
-                updatePromoStatusInfo(); // Set initial text
-                promoStatusCheckbox.addEventListener('change', updatePromoStatusInfo);
+                updatePromoStatusInfo();
+                promoStatusCheckbox.addEventListener('change', () => {
+                    console.debug(`Promo status checkbox changed to ${promoStatusCheckbox.checked}`);
+                    updatePromoStatusInfo();
+                });
             }
 
-            // Toggle auto-apply information ---
+            // Toggle auto-apply information
             const autoApplyCheckbox = document.getElementById('autoApply');
             const autoApplyInfo = autoApplyCheckbox?.closest('.mb-3')?.querySelector('.form-text');
 
@@ -993,18 +1220,28 @@ $errorMessage = $flash['error'];
              * Update the auto-apply explanation text based on checkbox state.
              */
             function updateAutoApplyInfo() {
-                if (!autoApplyInfo) return;
+                if (!autoApplyInfo) {
+                    console.warn('autoApplyInfo element not found');
+                    return;
+                }
 
                 if (autoApplyCheckbox.checked) {
                     autoApplyInfo.textContent = "Promo akan otomatis diterapkan di keranjang pengguna yang memenuhi syarat.";
                 } else {
                     autoApplyInfo.textContent = "Pelanggan harus memasukkan kode promo sebelum check out di keranjang.";
                 }
+                console.debug('Auto-apply info updated');
             }
 
-            autoApplyCheckbox?.addEventListener('change', updateAutoApplyInfo);
-            updateAutoApplyInfo();
-            // --- End of auto-apply section ---
+            if (autoApplyCheckbox) {
+                autoApplyCheckbox.addEventListener('change', () => {
+                    console.debug(`Auto-apply checkbox changed to ${autoApplyCheckbox.checked}`);
+                    updateAutoApplyInfo();
+                });
+                updateAutoApplyInfo();
+            }
+
+            console.log('Initialization complete');
         });
     </script>
     <!-- End of Script for Add Promo Modal -->
