@@ -1,5 +1,5 @@
 <?php
-// /SCI/controllers/promo/add-promo.php
+// controller: add-promo.php
 
 // Enable error reporting for debugging
 error_reporting(E_ALL);
@@ -13,6 +13,7 @@ error_log("Request Time: " . date('Y-m-d H:i:s'));
 // Load environment and database configuration
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/database/database-config.php';
+require_once __DIR__ . '/../../config/model/slug/slug_functions.php';
 
 // Debug: Log config loaded
 error_log("Configuration files loaded");
@@ -206,6 +207,14 @@ try {
         exit;
     }
 
+    try {
+        $slugService = new SlugService($pdo, $env);
+        $promoSlug = $slugService->generatePromoSlug($promoName);
+        error_log("Generated promo slug: " . $promoSlug);
+    } catch (Exception $e) {
+        handleError("Slug generation failed: " . $e->getMessage(), $env);
+    }
+
     // Start transaction
     $pdo->beginTransaction();
     error_log("Database transaction started");
@@ -215,6 +224,7 @@ try {
         $stmt = $pdo->prepare("
             INSERT INTO promos (
                 promo_name, 
+                slug,
                 description, 
                 discount_type, 
                 discount_value, 
@@ -230,6 +240,7 @@ try {
                 status
             ) VALUES (
                 :promo_name, 
+                :slug,
                 :description, 
                 :discount_type, 
                 :discount_value, 
@@ -250,6 +261,7 @@ try {
 
         $insertData = [
             ':promo_name' => $promoName,
+            ':slug' => $promoSlug,
             ':description' => $promoDescription,
             ':discount_type' => $discountType,
             ':discount_value' => $discountValue,
