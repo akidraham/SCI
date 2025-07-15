@@ -98,7 +98,9 @@ if (!$promoId || !$newStatus || !$adminId) {
 
 try {
     $promoService = new \App\Promo\PromoService($pdo);
+    ob_start(); // Start output buffering to capture any output
     $promoService->updateStatus((int) $promoId, $newStatus, (int) $adminId, $config, $env);
+    ob_end_clean(); // Clear output buffer to prevent any unwanted output
 
     echo json_encode(['success' => true]);
     exit;
