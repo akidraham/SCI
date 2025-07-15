@@ -111,13 +111,13 @@ try {
 
         if ($adminId) {
             logAdminAction(
-                $adminId,
-                'update_status',
-                'products',
-                $productId,
-                $logMessage,
-                $envConfig,
-                isLive() ? 'live' : 'local'
+                admin_id: $adminId,
+                action: 'update_status',
+                config: $envConfig,
+                env: isLive() ? 'live' : 'local',
+                table_name: 'products',
+                record_id: $productId,
+                details: $logMessage
             );
         } else {
             error_log("Admin ID not found, skipping log entry.");

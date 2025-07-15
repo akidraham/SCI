@@ -197,11 +197,13 @@ function deleteTag(PDO $pdo, int $tagId, int $adminId): bool
         if ($stmt->execute()) { // Execute the query.
             if ($stmt->rowCount() > 0) { // Check if any row was affected.
                 logAdminAction(
-                    $adminId,
-                    'delete',
-                    'tags',
-                    $tagId,
-                    "Tag with ID $tagId deleted successfully."
+                    admin_id: $adminId,
+                    action: 'delete',
+                    config: getEnvironmentConfig(),
+                    env: isLive() ? 'live' : 'local',
+                    table_name: 'tags',
+                    record_id: $tagId,
+                    details: "Tag with ID $tagId deleted successfully."
                 ); // Log the deletion action with admin ID.
                 return true; // Return true if deletion was successful.
             }

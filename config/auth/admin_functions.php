@@ -25,7 +25,7 @@ $env = ($_SERVER['HTTP_HOST'] === 'localhost') ? 'local' : 'live';
  * @param string $env The environment setting ('local' or 'live').
  * @return void
  */
-function logAdminAction($admin_id, $action, $table_name = null, $record_id = null, $details = null, $config, $env)
+function logAdminAction($admin_id, $action, $config, $env, $table_name = null, $record_id = null, $details = null)
 {
     $pdo = getPDOConnection($config, $env); // Establish database connection
 

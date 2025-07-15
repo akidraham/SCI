@@ -823,13 +823,13 @@ function handleAddProductForm($config, $env)
 
             // Log admin activity after successful addition
             logAdminAction(
-                $_SESSION['user_id'],        // Admin ID from session
-                'add_product',               // Action type
-                'products',                  // Affected table
-                $result['product_id'],       // New product ID
-                "Added new product: " . $productData['name'], // Details
-                $config,
-                $env
+                admin_id: $_SESSION['user_id'],
+                action: 'add_product',
+                config: $config,
+                env: $env,
+                table_name: 'products',
+                record_id: $result['product_id'],
+                details: "Added new product: " . $productData['name'],
             );
 
             // Store success message and reset form input
@@ -1267,7 +1267,15 @@ function handleEditProductForm($config, $env)
             if ($result['error'])
                 throw new Exception($result['message']);
 
-            logAdminAction($_SESSION['user_id'], 'update_product', 'products', $result['product_id'], "Updated product: " . $productData['name'], $config, $env);
+            logAdminAction(
+                admin_id: $_SESSION['user_id'],
+                action: 'update_product',
+                config: $config,
+                env: $env,
+                table_name: 'products',
+                record_id: $result['product_id'],
+                details: "Updated product: " . $productData['name'],
+            );
 
             $_SESSION['success_message'] = 'Product updated successfully!';
             $_SESSION['form_success'] = true;
@@ -1358,13 +1366,14 @@ function deleteProduct($id, $admin_id, $config, $env)
 
             // Log the admin action for auditing purposes.
             logAdminAction(
-                $admin_id,
-                'delete',
-                'products',
-                $id,
-                'Deleted product ID ' . $id . ' along with associated categories and images.',
-                $config,
-                $env
+                admin_id: $admin_id,
+                action: 'delete',
+                config: $config,
+                env: $env,
+                table_name: 'products',
+                record_id: $id,
+                details: 'Deleted product ID ' . $id . ' along with associated categories and images.',
+
             );
 
             return ['error' => false, 'message' => 'Product, category, and images successfully deleted.'];

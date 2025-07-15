@@ -1492,7 +1492,15 @@ function changeUserRole($admin_id, $user_id, $new_role, $config, $env)
         $stmt->execute();
 
         // Mencatat aksi admin untuk keperluan audit
-        logAdminAction($admin_id, 'change_role', 'users', $user_id, "Changed user role to $new_role for user ID $user_id", $config, $env);
+        logAdminAction(
+            admin_id: $admin_id,
+            action: 'change_role',
+            config: $config,
+            env: $env,
+            table_name: 'users',
+            record_id: $user_id,
+            details: "Changed user role to $new_role for user ID $user_id",
+        );
 
         // Menampilkan pesan sukses (escaped untuk mencegah XSS)
         echo escapeHTML("User role successfully updated to $new_role.");
@@ -1539,7 +1547,16 @@ function deleteUser($admin_id, $user_id, $config, $env)
         $stmt->execute(); // Execute deletion query
 
         // Log the admin action for auditing purposes
-        logAdminAction($admin_id, 'delete_user', 'users', $user_id, "Deleted user with ID $user_id", $config, $env);
+        logAdminAction(
+            admin_id: $admin_id,
+            action: 'delete_user',
+            config: $config,
+            env: $env,
+            table_name: 'users',
+            record_id: $user_id,
+            details: "Deleted user with ID $user_id",
+
+        );
 
         echo escapeHTML("User successfully deleted."); // Display success message (escaped to prevent XSS)
     } catch (PDOException $e) {
