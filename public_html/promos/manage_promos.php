@@ -708,11 +708,27 @@ $errorMessage = $flash['error'];
     <!-- Promo Status Dropdown Script -->
     <script>
         /**
-         * Handles the promo status dropdown and status update via AJAX.
-         * - Initializes Bootstrap dropdowns for status buttons.
-         * - Handles click events on status options and sends an AJAX request to update the promo status.
-         * - On success, reloads the page with cache busting.
-         * - On failure, displays an alert with the error message.
+         * Handles initialization of Bootstrap dropdowns and manages promo status changes via event delegation.
+         * 
+         * - Initializes Bootstrap dropdowns on elements with the `.dropdown-toggle` class.
+         * - Listens for click events on promo status dropdown menu items within the `#promosTableBody` element.
+         * - Validates the new status and sends an AJAX POST request to update the promo status.
+         * - Handles server responses and reloads the page on success or displays an error message on failure.
+         * 
+         * @requires Bootstrap 5 (for Dropdown)
+         * @requires BASE_URL global variable
+         * 
+         * @event DOMContentLoaded
+         *   Initializes dropdowns and sets up event delegation for promo status changes.
+         * 
+         * @event click (on .dropdown-menu a[data-promo-id])
+         *   Handles status change requests for promos.
+         * 
+         * @param {string} promoId - The ID of the promo to update.
+         * @param {string} newStatus - The new status to set for the promo. Must be one of 'active', 'inactive', 'scheduled', 'expired'.
+         * @param {string} csrf_token - CSRF token for request validation.
+         * 
+         * @returns {void}
          */
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Bootstrap dropdowns
@@ -733,35 +749,42 @@ $errorMessage = $flash['error'];
 
                 e.preventDefault();
 
-                // Validate status
                 const promoId = item.dataset.promoId;
                 const newStatus = item.dataset.newStatus;
+
                 if (!promoId || !newStatus || !allowedStatuses.includes(newStatus)) {
                     alert('Invalid status');
                     return;
                 }
 
-                // Send status update request
-                fetch('../api-proxy.php?action=update_promo_status', {
+                const requestData = {
+                    promo_id: promoId,
+                    new_status: newStatus,
+                    csrf_token: '<?= $_SESSION['csrf_token']; ?>'
+                };
+
+                fetch(BASE_URL + 'api-proxy.php?action=update_promo_status', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-Token': '<?php echo $_SESSION['csrf_token']; ?>'
+                            'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({
-                            promo_id: promoId,
-                            new_status: newStatus
-                        })
+                        body: JSON.stringify(requestData)
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Refresh page with cache busting
-                            const url = new URL(window.location.href);
-                            url.searchParams.set('refresh', Date.now());
-                            window.location.href = url.toString();
-                        } else {
-                            alert('Failed to update status: ' + data.message);
+                    .then(response => response.text())
+                    .then(text => {
+                        try {
+                            const data = JSON.parse(text);
+                            if (data.success) {
+                                window.location.reload(true);
+                            } else {
+                                alert('Failed to update status: ' + data.message);
+                            }
+                        } catch (e) {
+                            if (text.includes('success')) {
+                                throw new Error('Invalid JSON response: ' + text.substring(0, 100));
+                            } else {
+                                throw new Error('Server returned non-JSON response: ' + text.substring(0, 100));
+                            }
                         }
                     })
                     .catch(error => {

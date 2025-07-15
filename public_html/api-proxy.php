@@ -16,7 +16,8 @@ $allowedActions = [
     'get_product_details' => '../api/get_product_details.php',
     'update_product_status' => '../api/update_product_status.php',
     'filter_products' => '../api/get_products.php',
-    'add-promo' => '../controllers/promo/add-promo.php'
+    'add-promo' => '../controllers/promo/add-promo.php',
+    'update_promo_status' => '../controllers/promo/update_promo_status.php',
 ];
 
 // Periksa apakah action valid
