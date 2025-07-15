@@ -701,17 +701,79 @@ $errorMessage = $flash['error'];
     <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/vendor/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autonumeric@4.6.0/dist/autoNumeric.min.js"></script>
-    <!-- Custom JS -->
-    <script type="text/javascript" src="<?php echo $baseUrl; ?>assets/js/custom.js"></script>
     <!-- Load baseUrl for JS -->
     <script>
         const BASE_URL = '<?= $baseUrl ?>';
     </script>
+    <!-- Promo Status Dropdown Script -->
+    <script>
+        /**
+         * Handles the promo status dropdown and status update via AJAX.
+         * - Initializes Bootstrap dropdowns for status buttons.
+         * - Handles click events on status options and sends an AJAX request to update the promo status.
+         * - On success, reloads the page with cache busting.
+         * - On failure, displays an alert with the error message.
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap dropdowns
+            var dropdowns = document.querySelectorAll('.dropdown-toggle');
+            dropdowns.forEach(function(dropdown) {
+                dropdown.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    new bootstrap.Dropdown(this).toggle();
+                });
+            });
+
+            // Event delegation for promo status change
+            const allowedStatuses = ['active', 'inactive', 'scheduled', 'expired'];
+
+            document.querySelector('#promosTableBody').addEventListener('click', function(e) {
+                const item = e.target.closest('.dropdown-menu a[data-promo-id]');
+                if (!item) return;
+
+                e.preventDefault();
+
+                // Validate status
+                const promoId = item.dataset.promoId;
+                const newStatus = item.dataset.newStatus;
+                if (!promoId || !newStatus || !allowedStatuses.includes(newStatus)) {
+                    alert('Invalid status');
+                    return;
+                }
+
+                // Send status update request
+                fetch('../api-proxy.php?action=update_promo_status', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-Token': '<?php echo $_SESSION['csrf_token']; ?>'
+                        },
+                        body: JSON.stringify({
+                            promo_id: promoId,
+                            new_status: newStatus
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Refresh page with cache busting
+                            const url = new URL(window.location.href);
+                            url.searchParams.set('refresh', Date.now());
+                            window.location.href = url.toString();
+                        } else {
+                            alert('Failed to update status: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error: ' + error.message);
+                    });
+            });
+        });
+    </script>
+    <!-- End of Promo Status Dropdown Script -->
     <!-- Script for Add Promo Modal -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM fully loaded and parsed'); // Debug: DOM ready
-
             /** Cache DOM elements to avoid redundant lookups */
             const discountTypeEl = document.getElementById('discountType');
             const maxDiscountField = document.getElementById('maxDiscountField');
@@ -736,27 +798,6 @@ $errorMessage = $flash['error'];
             const addPromoForm = document.getElementById('addPromoForm');
             const savePromoBtn = document.getElementById('savePromoBtn');
 
-            // Debug: Log element availability
-            console.debug('Element availability:', {
-                discountTypeEl: !!discountTypeEl,
-                maxDiscountField: !!maxDiscountField,
-                discountSuffix: !!discountSuffix,
-                mainCatEl: !!mainCatEl,
-                subCatEl: !!subCatEl,
-                startDateEl: !!startDateEl,
-                endDateEl: !!endDateEl,
-                infiniteCheckbox: !!infiniteCheckbox,
-                dateFields: !!dateFields,
-                productSearchEl: !!productSearchEl,
-                selectedCountEl: !!selectedCountEl,
-                productRows: productRows.length,
-                productCheckboxes: productCheckboxes.length,
-                selectAllBtn: !!selectAllBtn,
-                deselectAllBtn: !!deselectAllBtn,
-                addPromoForm: !!addPromoForm,
-                savePromoBtn: !!savePromoBtn
-            });
-
             // Initialize AutoNumeric for currency/number formatting
             let minPurchaseNumeric, maxDiscountNumeric, discountValueNumeric;
             try {
@@ -767,7 +808,6 @@ $errorMessage = $flash['error'];
                     unformatOnSubmit: true,
                     minimumValue: '0'
                 });
-                console.debug('minPurchaseNumeric initialized successfully');
 
                 maxDiscountNumeric = new AutoNumeric('#maxDiscount', {
                     digitGroupSeparator: '.',
@@ -776,7 +816,6 @@ $errorMessage = $flash['error'];
                     unformatOnSubmit: true,
                     minimumValue: '0'
                 });
-                console.debug('maxDiscountNumeric initialized successfully');
 
                 // Initialize discountValue (default: percentage)
                 discountValueNumeric = new AutoNumeric('#discountValue', {
@@ -787,7 +826,6 @@ $errorMessage = $flash['error'];
                     minimumValue: '0'
                 });
                 discountValueNumeric.set(0); // Default value
-                console.debug('discountValueNumeric initialized with default value 0');
             } catch (e) {
                 console.error('Error initializing AutoNumeric:', e);
             }
@@ -798,7 +836,6 @@ $errorMessage = $flash['error'];
                 dateFormat: "Y-m-d H:i",
                 minDate: "today",
                 time_24hr: true,
-                locale: "id",
                 minuteIncrement: 5,
                 static: true,
                 disableMobile: true,
@@ -811,16 +848,13 @@ $errorMessage = $flash['error'];
                 startDateFP = flatpickr("#startDate", {
                     ...dateTimeConfig,
                     onChange: function(selectedDates) {
-                        console.debug('Start date changed to:', selectedDates[0]);
                         endDateFP.set('minDate', selectedDates[0]);
                     }
                 });
-                console.debug('startDateFP initialized successfully');
 
                 endDateFP = flatpickr("#endDate", {
                     ...dateTimeConfig
                 });
-                console.debug('endDateFP initialized successfully');
             } catch (e) {
                 console.error('Error initializing Flatpickr:', e);
             }
@@ -832,12 +866,8 @@ $errorMessage = $flash['error'];
              * @param {string} [displayType='block'] - The display type to use when showing.
              */
             const setDisplay = (el, show, displayType = 'block') => {
-                if (!el) {
-                    console.warn('setDisplay: Element is null or undefined');
-                    return;
-                }
+                if (!el) return;
                 el.style.display = show ? displayType : 'none';
-                console.debug(`setDisplay: ${el.id || el.className} set to ${show ? 'visible' : 'hidden'}`);
             };
 
             /**
@@ -845,13 +875,9 @@ $errorMessage = $flash['error'];
              * @param {Array} errors - Array of error messages
              */
             function showValidationErrors(errors) {
-                console.group('Showing validation errors');
-                console.debug('Errors:', errors);
-
                 // Create error container if not exists
                 let errorContainer = document.getElementById('validationErrors');
                 if (!errorContainer) {
-                    console.debug('Creating new validationErrors container');
                     errorContainer = document.createElement('div');
                     errorContainer.id = 'validationErrors';
                     errorContainer.className = 'alert alert-danger';
@@ -884,8 +910,6 @@ $errorMessage = $flash['error'];
                     behavior: 'smooth',
                     block: 'start'
                 });
-
-                console.groupEnd();
             }
 
             /**
@@ -893,16 +917,13 @@ $errorMessage = $flash['error'];
              */
             async function handleFormSubmit(e) {
                 e.preventDefault();
-                console.group('Form submission started');
 
                 // Disable submit button to prevent double submission
                 savePromoBtn.disabled = true;
                 savePromoBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...';
-                console.debug('Submit button disabled and loading state set');
 
                 try {
                     const formData = new FormData(addPromoForm);
-                    console.debug('FormData created from form');
 
                     // Get all selected products and remove duplicates
                     const selectedProducts = Array.from(document.querySelectorAll('.product-check:checked'))
@@ -910,7 +931,6 @@ $errorMessage = $flash['error'];
 
                     // Remove duplicate products
                     const uniqueProducts = [...new Set(selectedProducts)];
-                    console.debug('Selected products (after removing duplicates):', uniqueProducts);
 
                     // Clear existing applicableProducts entries
                     formData.delete('applicableProducts[]');
@@ -920,21 +940,11 @@ $errorMessage = $flash['error'];
                         formData.append('applicableProducts[]', productId);
                     });
 
-                    console.debug('Unique applicableProducts added to FormData');
-
-                    // Debug: Log form data before sending
-                    for (let [key, value] of formData.entries()) {
-                        console.debug(`FormData: ${key} = ${value}`);
-                    }
-
                     // Send data to server
-                    console.debug(`Sending request to: ${BASE_URL}api-proxy.php?action=add-promo`);
                     const response = await fetch(BASE_URL + 'api-proxy.php?action=add-promo', {
                         method: 'POST',
                         body: formData
                     });
-
-                    console.debug('Response received, status:', response.status);
 
                     // First check if the response is JSON
                     const contentType = response.headers.get('content-type');
@@ -943,36 +953,24 @@ $errorMessage = $flash['error'];
                     if (contentType && contentType.includes('application/json')) {
                         data = await response.json();
                     } else {
-                        // If not JSON, get the text response for debugging
                         const textResponse = await response.text();
-                        console.error('Non-JSON response received:', textResponse);
                         throw new Error(`Server returned non-JSON response (${response.status}): ${textResponse.substring(0, 100)}...`);
                     }
 
-                    console.debug('Response data:', data);
-
-                    if (!response.ok) {
-                        console.warn('API returned non-OK response:', data);
-                        throw data;
-                    }
+                    if (!response.ok) throw data;
 
                     if (data.success) {
-                        console.info('Promo saved successfully, redirecting...');
                         // Show success message and redirect
                         window.location.href = data.redirect_url || (BASE_URL + 'manage_promos');
                     } else {
-                        console.warn('API returned success:false:', data);
                         // Show error message
                         if (data.errors) {
-                            console.debug('Showing validation errors');
                             showValidationErrors(data.errors);
                         } else {
                             alert(data.message || 'Terjadi kesalahan saat menyimpan promo');
                         }
                     }
                 } catch (error) {
-                    console.error('Error during form submission:', error);
-
                     // Improved error message based on error type
                     let errorMessage = 'Terjadi kesalahan saat menyimpan promo';
                     if (error instanceof SyntaxError) {
@@ -980,30 +978,23 @@ $errorMessage = $flash['error'];
                     } else if (error.message) {
                         errorMessage = error.message;
                     }
-
                     alert(errorMessage);
                 } finally {
                     // Re-enable submit button
                     savePromoBtn.disabled = false;
                     savePromoBtn.textContent = 'Simpan Promo';
-                    console.debug('Submit button re-enabled');
-                    console.groupEnd();
                 }
             }
 
             // Add form submit event listener
             if (addPromoForm) {
                 addPromoForm.addEventListener('submit', handleFormSubmit);
-                console.debug('Form submit event listener added');
-            } else {
-                console.error('addPromoForm element not found');
             }
 
             // Discount type change handler
             if (discountTypeEl) {
                 discountTypeEl.addEventListener('change', () => {
                     const isPercentage = discountTypeEl.value === 'percentage';
-                    console.debug(`Discount type changed to ${discountTypeEl.value}, isPercentage: ${isPercentage}`);
 
                     setDisplay(maxDiscountField, isPercentage);
                     discountSuffix.textContent = isPercentage ? '%' : 'IDR';
@@ -1020,7 +1011,6 @@ $errorMessage = $flash['error'];
                             decimalCharacter: '.'
                         });
                         discountValueNumeric.set(0);
-                        console.debug('Discount value format updated for percentage');
                     } else {
                         discountValueNumeric.update({
                             decimalPlaces: 0,
@@ -1028,14 +1018,12 @@ $errorMessage = $flash['error'];
                             decimalCharacter: ','
                         });
                         discountValueNumeric.set(0);
-                        console.debug('Discount value format updated for fixed amount');
                     }
                 });
             }
 
             // Show format hint if initial type is percentage
             if (discountTypeEl?.value === 'percentage') {
-                console.debug('Initial discount type is percentage, showing format hint');
                 setDisplay(document.getElementById('discountHelp'), true);
             }
 
@@ -1045,17 +1033,12 @@ $errorMessage = $flash['error'];
 
                 row.addEventListener('click', (e) => {
                     // Ignore clicks on the checkbox itself
-                    if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') {
-                        console.debug('Clicked directly on checkbox, ignoring row click');
-                        return;
-                    }
+                    if (e.target.tagName === 'INPUT' && e.target.type === 'checkbox') return;
 
                     // Toggle the checkbox inside the row
                     const checkbox = row.querySelector('.product-check');
                     if (checkbox) {
                         checkbox.checked = !checkbox.checked;
-                        console.debug(`Toggled checkbox for product ${checkbox.value}, new state: ${checkbox.checked}`);
-
                         // Trigger the change event manually
                         const event = new Event('change', {
                             bubbles: true
@@ -1069,7 +1052,6 @@ $errorMessage = $flash['error'];
             if (infiniteCheckbox) {
                 infiniteCheckbox.addEventListener('change', () => {
                     const isChecked = infiniteCheckbox.checked;
-                    console.debug(`Infinite duration checkbox changed to ${isChecked}`);
 
                     setDisplay(dateFields, !isChecked, 'flex');
 
@@ -1078,13 +1060,11 @@ $errorMessage = $flash['error'];
                         endDateEl.removeAttribute('required');
                         startDateFP.clear();
                         endDateFP.clear();
-                        console.debug('Date fields cleared and required attribute removed');
                     } else {
                         startDateEl.setAttribute('required', 'required');
                         endDateEl.setAttribute('required', 'required');
                         startDateFP.set('minDate', 'today');
                         endDateFP.set('minDate', 'today');
-                        console.debug('Date fields set as required with minDate=today');
                     }
                 });
             }
@@ -1093,12 +1073,10 @@ $errorMessage = $flash['error'];
             if (mainCatEl) {
                 mainCatEl.addEventListener('change', () => {
                     const mainCatId = mainCatEl.value;
-                    console.debug(`Main category changed to ${mainCatId}`);
 
                     subOptions.forEach(opt => setDisplay(opt, false));
                     document.querySelectorAll(`.subcat-${mainCatId}`).forEach(opt => setDisplay(opt, true));
                     subCatEl.value = '';
-                    console.debug(`Updated subcategory options for main category ${mainCatId}`);
                 });
             }
 
@@ -1106,7 +1084,6 @@ $errorMessage = $flash['error'];
             if (productSearchEl) {
                 productSearchEl.addEventListener('input', () => {
                     const keyword = productSearchEl.value.toLowerCase();
-                    console.debug(`Product search input: "${keyword}"`);
 
                     productRows.forEach(row => {
                         const name = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
@@ -1121,8 +1098,6 @@ $errorMessage = $flash['error'];
             // Select all currently visible products
             if (selectAllBtn) {
                 selectAllBtn.addEventListener('click', () => {
-                    console.debug('Select all button clicked');
-
                     productCheckboxes.forEach(cb => {
                         const rowVisible = cb.closest('tr').style.display !== 'none';
                         if (rowVisible) {
@@ -1133,15 +1108,12 @@ $errorMessage = $flash['error'];
                             cb.dispatchEvent(event);
                         }
                     });
-                    console.debug('All visible products selected');
                 });
             }
 
             // Deselect all products regardless of visibility
             if (deselectAllBtn) {
                 deselectAllBtn.addEventListener('click', () => {
-                    console.debug('Deselect all button clicked');
-
                     productCheckboxes.forEach(cb => {
                         cb.checked = false;
                         const event = new Event('change', {
@@ -1149,7 +1121,6 @@ $errorMessage = $flash['error'];
                         });
                         cb.dispatchEvent(event);
                     });
-                    console.debug('All products deselected');
                 });
             }
 
@@ -1164,21 +1135,16 @@ $errorMessage = $flash['error'];
 
                 if (selectedCountEl) {
                     selectedCountEl.textContent = `${selected} produk dipilih`;
-                    console.debug(`Selected count updated: ${selected} products`);
                 }
             }
 
             // Attach change event to each checkbox to keep count updated
             productCheckboxes.forEach(cb => {
-                cb.addEventListener('change', () => {
-                    console.debug(`Product checkbox ${cb.value} changed to ${cb.checked}`);
-                    updateSelectedCount();
-                });
+                cb.addEventListener('change', updateSelectedCount);
             });
 
             // Display count initially
             updateSelectedCount();
-            console.debug('Initial selected count displayed');
 
             // Toggle status promo information
             const promoStatusCheckbox = document.getElementById('promoStatus');
@@ -1188,10 +1154,7 @@ $errorMessage = $flash['error'];
              * Update promo status explanation text based on checkbox state
              */
             function updatePromoStatusInfo() {
-                if (!promoStatusInfo) {
-                    console.warn('promoStatusInfo element not found');
-                    return;
-                }
+                if (!promoStatusInfo) return;
 
                 if (promoStatusCheckbox.checked) {
                     promoStatusInfo.textContent =
@@ -1200,16 +1163,12 @@ $errorMessage = $flash['error'];
                     promoStatusInfo.textContent =
                         "Jika kotak ini tidak dicentang, promo akan disimpan dalam status nonaktif dan promo perlu diaktifkan secara manual nanti melalui halaman manage promo.";
                 }
-                console.debug('Promo status info updated');
             }
 
             // Initialize and add event listener
             if (promoStatusCheckbox) {
                 updatePromoStatusInfo();
-                promoStatusCheckbox.addEventListener('change', () => {
-                    console.debug(`Promo status checkbox changed to ${promoStatusCheckbox.checked}`);
-                    updatePromoStatusInfo();
-                });
+                promoStatusCheckbox.addEventListener('change', updatePromoStatusInfo);
             }
 
             // Toggle auto-apply information
@@ -1220,28 +1179,19 @@ $errorMessage = $flash['error'];
              * Update the auto-apply explanation text based on checkbox state.
              */
             function updateAutoApplyInfo() {
-                if (!autoApplyInfo) {
-                    console.warn('autoApplyInfo element not found');
-                    return;
-                }
+                if (!autoApplyInfo) return;
 
                 if (autoApplyCheckbox.checked) {
                     autoApplyInfo.textContent = "Promo akan otomatis diterapkan di keranjang pengguna yang memenuhi syarat.";
                 } else {
                     autoApplyInfo.textContent = "Pelanggan harus memasukkan kode promo sebelum check out di keranjang.";
                 }
-                console.debug('Auto-apply info updated');
             }
 
             if (autoApplyCheckbox) {
-                autoApplyCheckbox.addEventListener('change', () => {
-                    console.debug(`Auto-apply checkbox changed to ${autoApplyCheckbox.checked}`);
-                    updateAutoApplyInfo();
-                });
+                autoApplyCheckbox.addEventListener('change', updateAutoApplyInfo);
                 updateAutoApplyInfo();
             }
-
-            console.log('Initialization complete');
         });
     </script>
     <!-- End of Script for Add Promo Modal -->
